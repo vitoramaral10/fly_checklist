@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../../main/routes.dart';
@@ -9,6 +10,12 @@ class HomePage extends GetView<GetxHomePresenter> {
 
   @override
   Widget build(BuildContext context) {
+    // Bloqueia a rotação da tela, mantendo apenas orientação retrato
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
