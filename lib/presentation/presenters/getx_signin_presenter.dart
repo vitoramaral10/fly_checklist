@@ -11,15 +11,19 @@ import '../../ui/pages/signin/signin.dart';
 class GetxSignInPresenter extends GetxController implements SignInPresenter {
   final LoginWithEmail loginWithEmail;
   final LoginWithGoogle loginWithGoogle;
+  final RecoveryPassword recoveryPassword;
 
   GetxSignInPresenter({
     required this.loginWithEmail,
     required this.loginWithGoogle,
+    required this.recoveryPassword,
   });
 
   final formKey = GlobalKey<FormState>();
+  final formRecoverKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final emailRecoveryController = TextEditingController();
 
   final _obscurePassword = true.obs;
   final _isLoading = false.obs;
@@ -70,6 +74,31 @@ class GetxSignInPresenter extends GetxController implements SignInPresenter {
       log(e.toString(), name: 'GetxSignInPresenter.signInWithGoogle');
 
       throw UiError.unexpected;
+    }
+  }
+
+  @override
+  Future<void> recoverPassword() async {
+    if (formRecoverKey.currentState?.validate() ?? false) {
+      _isLoading.value = true;
+      try {
+        // Assuming a method exists in the use case to handle password recovery
+        return recoveryPassword.call(email: emailRecoveryController.text);
+      } on DomainError catch (e) {
+        log(e.toString(), name: 'GetxSignInPresenter.recoverPassword');
+
+        switch (e) {
+          case DomainError.invalidEmail:
+            throw UiError.invalidEmail;
+          default:
+            throw UiError.unexpected;
+        }
+      } catch (e) {
+        log(e.toString(), name: 'GetxSignInPresenter.recoverPassword');
+        throw UiError.unexpected;
+      } finally {
+        _isLoading.value = false;
+      }
     }
   }
 }

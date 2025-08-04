@@ -12,6 +12,7 @@ class _SignInBinding extends Bindings {
       GetxSignInPresenter(
         loginWithEmail: makeFireauthLoginWithEmail(),
         loginWithGoogle: makeFireauthLoginWithGoogle(),
+        recoveryPassword: makeFireauthRecoveryPassword(),
       ),
     );
   }

@@ -108,4 +108,26 @@ class FireauthAdapter implements FireauthClient {
       throw FireauthError.unexpected;
     }
   }
+
+  @override
+  Future<void> sendPasswordResetEmail({required String email}) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      log(e.toString(), name: 'FireauthAdapter.sendPasswordResetEmail');
+
+      switch (e.code) {
+        case 'invalid-email':
+          throw FireauthError.invalidEmail;
+        default:
+          throw FireauthError.unexpected;
+      }
+    } catch (e) {
+      log(
+        e.toString(),
+        name: 'FireauthAdapter.sendPasswordResetEmail.unexpected',
+      );
+      throw FireauthError.unexpected;
+    }
+  }
 }
