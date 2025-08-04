@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import '../../../presentation/presenters/presenters.dart';
+import '../../../../presentation/presenters/presenters.dart';
 
 Bindings makeHomeBinding() => _HomeBinding();
 

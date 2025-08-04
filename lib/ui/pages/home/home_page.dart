@@ -24,7 +24,7 @@ class HomePage extends GetView<GetxHomePresenter> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  colorScheme.primaryContainer.withOpacity(0.3),
+                  colorScheme.primaryContainer.withValues(alpha: 0.3),
                   colorScheme.surface,
                   colorScheme.surface,
                 ],
@@ -50,7 +50,7 @@ class HomePage extends GetView<GetxHomePresenter> {
                     color: colorScheme.primary,
                     shadows: [
                       Shadow(
-                        color: colorScheme.primary.withOpacity(0.3),
+                        color: colorScheme.primary.withValues(alpha: 0.3),
                         blurRadius: 16,
                         offset: const Offset(0, 4),
                       ),
