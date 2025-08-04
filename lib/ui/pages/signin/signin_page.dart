@@ -99,6 +99,7 @@ class SignInPage extends GetView<GetxSignInPresenter> {
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () async {
+                      controller.emailRecoveryController.clear();
                       await showForgotPasswordBottomSheet(context);
                     },
                     child: const Text(

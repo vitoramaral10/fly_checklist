@@ -82,6 +82,13 @@ class ForgotPasswordBottomSheet extends GetView<GetxSignInPresenter> {
                         await controller.recoverPassword();
                         if (context.mounted) Navigator.of(context).pop();
                         if (context.mounted) Navigator.of(context).pop();
+
+                        if (context.mounted) {
+                          showSuccessDialog(
+                            context,
+                            'Instruções de recuperação enviadas para o e-mail.',
+                          );
+                        }
                       } on UiError catch (e) {
                         if (context.mounted) Navigator.of(context).pop();
                         if (context.mounted) {
