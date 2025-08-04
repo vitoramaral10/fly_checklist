@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class EmailVerificationPage extends StatelessWidget {
+import '../../../main/routes.dart';
+import '../../../presentation/presenters/presenters.dart';
+
+class EmailVerificationPage extends GetView<GetxEmailVerificationPresenter> {
   const EmailVerificationPage({super.key});
 
   @override
@@ -49,7 +53,10 @@ class EmailVerificationPage extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               TextButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  controller.logout();
+                  Get.offAllNamed(Routes.signIn);
+                },
                 icon: const Icon(Icons.logout),
                 label: const Text('Voltar para o login'),
                 style: TextButton.styleFrom(foregroundColor: colorScheme.error),

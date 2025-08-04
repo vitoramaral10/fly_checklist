@@ -1,1 +1,3 @@
-abstract class EmailVerificationPresenter {}
+abstract class EmailVerificationPresenter {
+  Future<void> logout();
+}

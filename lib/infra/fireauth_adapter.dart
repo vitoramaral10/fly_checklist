@@ -150,4 +150,14 @@ class FireauthAdapter implements FireauthClient {
       throw FireauthError.unexpected;
     }
   }
+
+  @override
+  Future<void> logout() {
+    try {
+      return FirebaseAuth.instance.signOut();
+    } catch (e) {
+      log(e.toString(), name: 'FireauthAdapter.logout.unexpected');
+      throw FireauthError.unexpected;
+    }
+  }
 }
