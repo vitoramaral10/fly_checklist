@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fly_checklist/ui/components/components.dart';
 import 'package:get/get.dart';
 
 import '../../../main/routes.dart';
 import '../../../presentation/presenters/presenters.dart';
+import '../../helpers/helpers.dart';
 
 class EmailVerificationPage extends GetView<GetxEmailVerificationPresenter> {
   const EmailVerificationPage({super.key});
@@ -47,7 +49,22 @@ class EmailVerificationPage extends GetView<GetxEmailVerificationPresenter> {
               ),
               const SizedBox(height: 16),
               TextButton.icon(
-                onPressed: () {},
+                onPressed: () async {
+                  try {
+                    showLoadingDialog(context);
+                    await controller.sendEmailVerification();
+                    if (context.mounted) Navigator.of(context).pop();
+                    if (context.mounted) {
+                      showSuccessDialog(
+                        context,
+                        'E-mail de verificação reenviado com sucesso. Por favor, verifique sua caixa de entrada.',
+                      );
+                    }
+                  } on UiError catch (e) {
+                    if (context.mounted) Navigator.of(context).pop();
+                    if (context.mounted) showErrorDialog(context, e.message);
+                  }
+                },
                 icon: const Icon(Icons.send_outlined),
                 label: const Text('Reenviar e-mail de verificação'),
               ),

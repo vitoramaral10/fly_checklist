@@ -13,7 +13,7 @@ class _SignInBinding extends Bindings {
         loginWithEmail: makeFireauthLoginWithEmail(),
         loginWithGoogle: makeFireauthLoginWithGoogle(),
         recoveryPassword: makeFireauthRecoveryPassword(),
-        checkEmailVerification: makeFireauthCheckEmailVerification(),
+        getUser: makeFireauthGetUser(),
       ),
     );
   }

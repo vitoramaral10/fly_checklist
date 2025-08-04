@@ -14,11 +14,9 @@ class FireauthGetUser extends GetxController implements GetUser {
   FireauthGetUser({required this.fireauthClient});
 
   @override
-  UserEntity call() {
+  Future<UserEntity> call() async {
     try {
-      final user = fireauthClient.getUser();
-
-      print(user);
+      final user = await fireauthClient.getUser();
 
       return user != null
           ? UserModel.fromJson(user).toEntity()

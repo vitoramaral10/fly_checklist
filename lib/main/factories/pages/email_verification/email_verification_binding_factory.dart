@@ -11,6 +11,7 @@ class _EmailVerificationBinding extends Bindings {
     Get.put(
       GetxEmailVerificationPresenter(
         logoutAccount: makeFireauthLogoutAccount(),
+        sendVerificationEmail: makeFireauthSendVerificationEmail(),
       ),
     );
   }

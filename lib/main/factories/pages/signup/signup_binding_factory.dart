@@ -12,6 +12,7 @@ class _SignUpBinding extends Bindings {
       GetxSignUpPresenter(
         registerWithEmail: makeFireauthRegisterWithEmail(),
         registerWithGoogle: makeFireauthRegisterWithGoogle(),
+        sendVerificationEmail: makeFireauthSendVerificationEmail(),
       ),
     );
   }

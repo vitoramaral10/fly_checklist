@@ -1,5 +1,5 @@
 import '../entities/entities.dart';
 
 abstract class GetUser {
-  UserEntity call();
+  Future<UserEntity> call();
 }

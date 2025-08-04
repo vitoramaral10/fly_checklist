@@ -132,21 +132,30 @@ class FireauthAdapter implements FireauthClient {
   }
 
   @override
-  Map<String, dynamic>? getUser() {
+  Future<Map<String, dynamic>?> getUser() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
 
-      return user != null
-          ? {
-              'uid': user.uid,
-              'email': user.email,
-              'displayName': user.displayName,
-              'photoURL': user.photoURL,
-              'emailVerified': user.emailVerified,
-            }
-          : null;
+      if (user != null) {
+        // Força o reload das informações do usuário para garantir dados atualizados
+        await user.reload();
+        // Pega o usuário atualizado após o reload
+        final updatedUser = FirebaseAuth.instance.currentUser;
+
+        return updatedUser != null
+            ? {
+                'uid': updatedUser.uid,
+                'email': updatedUser.email,
+                'displayName': updatedUser.displayName,
+                'photoURL': updatedUser.photoURL,
+                'emailVerified': updatedUser.emailVerified,
+              }
+            : null;
+      }
+
+      return null;
     } catch (e) {
-      log(e.toString(), name: 'FireauthAdapter.getUserByEmail.unexpected');
+      log(e.toString(), name: 'FireauthAdapter.getUser.unexpected');
       throw FireauthError.unexpected;
     }
   }
@@ -157,6 +166,19 @@ class FireauthAdapter implements FireauthClient {
       return FirebaseAuth.instance.signOut();
     } catch (e) {
       log(e.toString(), name: 'FireauthAdapter.logout.unexpected');
+      throw FireauthError.unexpected;
+    }
+  }
+
+  @override
+  Future<void> sendEmailVerification() {
+    try {
+      return FirebaseAuth.instance.currentUser!.sendEmailVerification();
+    } catch (e) {
+      log(
+        e.toString(),
+        name: 'FireauthAdapter.sendEmailVerification.unexpected',
+      );
       throw FireauthError.unexpected;
     }
   }

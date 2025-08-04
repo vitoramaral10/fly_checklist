@@ -13,6 +13,8 @@ abstract class FireauthClient {
     required String password,
   });
   Future<void> sendPasswordResetEmail({required String email});
-  Map<String, dynamic>? getUser();
+  Future<Map<String, dynamic>?> getUser();
   Future<void> logout();
+
+  Future<void> sendEmailVerification();
 }

@@ -48,7 +48,7 @@ class GetxHomePresenter extends GetxController implements HomePresenter {
   @override
   Future<void> checkIsAuthenticated() async {
     try {
-      final user = getUser.call();
+      final user = await getUser.call();
 
       if (user.emailVerified == true) {
         Get.offAllNamed(Routes.dashboard);

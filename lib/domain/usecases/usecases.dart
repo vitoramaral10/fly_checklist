@@ -6,3 +6,4 @@ export 'logout_account.dart';
 export 'recovery_password.dart';
 export 'register_with_email.dart';
 export 'register_with_google.dart';
+export 'send_verification_email.dart';

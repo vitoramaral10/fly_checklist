@@ -12,13 +12,13 @@ class GetxSignInPresenter extends GetxController implements SignInPresenter {
   final LoginWithEmail loginWithEmail;
   final LoginWithGoogle loginWithGoogle;
   final RecoveryPassword recoveryPassword;
-  final CheckEmailVerification checkEmailVerification;
+  final GetUser getUser;
 
   GetxSignInPresenter({
     required this.loginWithEmail,
     required this.loginWithGoogle,
     required this.recoveryPassword,
-    required this.checkEmailVerification,
+    required this.getUser,
   });
 
   final formKey = GlobalKey<FormState>();
@@ -50,9 +50,9 @@ class GetxSignInPresenter extends GetxController implements SignInPresenter {
           password: passwordController.text,
         );
 
-        final emailChecked = checkEmailVerification.call();
+        final user = await getUser.call();
 
-        if (!emailChecked) {
+        if (user.emailVerified != true) {
           return "email";
         }
       } on DomainError catch (e) {

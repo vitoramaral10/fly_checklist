@@ -11,10 +11,12 @@ import '../../ui/pages/pages.dart';
 class GetxSignUpPresenter implements SignUpPresenter {
   final RegisterWithEmail registerWithEmail;
   final RegisterWithGoogle registerWithGoogle;
+  final SendVerificationEmail sendVerificationEmail;
 
   GetxSignUpPresenter({
     required this.registerWithEmail,
     required this.registerWithGoogle,
+    required this.sendVerificationEmail,
   });
 
   final formKey = GlobalKey<FormState>();
@@ -46,6 +48,8 @@ class GetxSignUpPresenter implements SignUpPresenter {
           email: emailController.text,
           password: passwordController.text,
         );
+
+        await sendVerificationEmail.call();
       } on DomainError catch (e) {
         log(e.toString(), name: 'GetxSignUpPresenter.signUp');
 
