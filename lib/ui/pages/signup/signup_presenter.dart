@@ -4,4 +4,6 @@ abstract class SignUpPresenter {
 
   void togglePasswordVisibility();
   void toggleConfirmPasswordVisibility();
+  Future<void> signUp();
+  Future<void> signUpWithGoogle();
 }

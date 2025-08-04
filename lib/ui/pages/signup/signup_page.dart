@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../main/routes.dart';
 import '../../../presentation/presenters/presenters.dart';
 
 class SignUpPage extends GetView<GetxSignUpPresenter> {
@@ -22,7 +23,7 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Form(
-            // TODO: Adicionar GlobalKey<FormState> para validação
+            key: controller.formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -45,6 +46,7 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                 ),
                 const SizedBox(height: 48),
                 TextFormField(
+                  controller: controller.nameController,
                   decoration: const InputDecoration(
                     labelText: 'Nome completo',
                     prefixIcon: Icon(Icons.person_outline_rounded),
@@ -55,9 +57,16 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                   keyboardType: TextInputType.name,
                   textCapitalization: TextCapitalization.words,
                   textInputAction: TextInputAction.next,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira seu nome completo';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
+                  controller: controller.emailController,
                   decoration: const InputDecoration(
                     labelText: 'E-mail',
                     prefixIcon: Icon(Icons.alternate_email_rounded),
@@ -67,10 +76,20 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                   ),
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira seu e-mail';
+                    }
+                    if (!GetUtils.isEmail(value)) {
+                      return 'E-mail inválido';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 20),
                 Obx(
                   () => TextFormField(
+                    controller: controller.passwordController,
                     decoration: InputDecoration(
                       labelText: 'Senha',
                       prefixIcon: const Icon(Icons.lock_outline_rounded),
@@ -88,12 +107,21 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                     ),
                     obscureText: controller.obscurePassword,
                     textInputAction: TextInputAction.next,
-                    onFieldSubmitted: (_) {},
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, insira sua senha';
+                      }
+                      if (value.length < 6) {
+                        return 'A senha deve ter pelo menos 6 caracteres';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 const SizedBox(height: 20),
                 Obx(
                   () => TextFormField(
+                    controller: controller.confirmPasswordController,
                     decoration: InputDecoration(
                       labelText: 'Confirme sua senha',
                       prefixIcon: Icon(Icons.lock_outline_rounded),
@@ -111,18 +139,26 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                     ),
                     obscureText: controller.obscureConfirmPassword,
                     textInputAction: TextInputAction.done,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, confirme sua senha';
+                      }
+                      if (value != controller.passwordController.text) {
+                        return 'As senhas não coincidem';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 const SizedBox(height: 32),
                 FilledButton(
-                  onPressed: () {},
-
+                  onPressed: controller.signUp,
                   child: const Text('CRIAR CONTA'),
                 ),
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
-                    Get.back();
+                    Get.offAllNamed(Routes.signIn);
                   },
                   child: Text(
                     'Já tem uma conta? Faça login',
@@ -142,7 +178,7 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                 ),
                 const SizedBox(height: 16),
                 FilledButton.icon(
-                  onPressed: () {},
+                  onPressed: controller.signUpWithGoogle,
                   style: FilledButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: colorScheme.onSurface,
