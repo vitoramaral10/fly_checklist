@@ -1,1 +1,1 @@
-enum FireauthError { unexpected, emailAlreadyInUse, invalidEmail, operationNotAllowed, weakPassword }
+enum FireauthError { unexpected, emailAlreadyInUse, invalidEmail, operationNotAllowed, weakPassword, invalidCredential, userNotFound }

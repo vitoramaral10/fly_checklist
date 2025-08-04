@@ -9,9 +9,13 @@ import '../../ui/helpers/helpers.dart';
 import '../../ui/pages/signin/signin.dart';
 
 class GetxSignInPresenter extends GetxController implements SignInPresenter {
+  final LoginWithEmail loginWithEmail;
   final LoginWithGoogle loginWithGoogle;
 
-  GetxSignInPresenter({required this.loginWithGoogle});
+  GetxSignInPresenter({
+    required this.loginWithEmail,
+    required this.loginWithGoogle,
+  });
 
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
@@ -35,12 +39,23 @@ class GetxSignInPresenter extends GetxController implements SignInPresenter {
     if (formKey.currentState?.validate() ?? false) {
       _isLoading.value = true;
       try {
-        // Simulate a sign-in process
-        await Future.delayed(const Duration(seconds: 2));
-        // Handle successful sign-in logic here
+        await loginWithEmail.call(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+      } on DomainError catch (e) {
+        log(e.toString(), name: 'GetxSignInPresenter.signIn');
+
+        switch (e) {
+          case DomainError.invalidCredential:
+            throw UiError.invalidCredential;
+          default:
+            throw UiError.unexpected;
+        }
       } catch (e) {
-        // Handle sign-in error logic here
-        Get.snackbar('Error', 'Failed to sign in: $e');
+        log(e.toString(), name: 'GetxSignInPresenter.signIn');
+
+        throw UiError.unexpected;
       } finally {
         _isLoading.value = false;
       }

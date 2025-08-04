@@ -72,4 +72,40 @@ class FireauthAdapter implements FireauthClient {
       throw FireauthError.unexpected;
     }
   }
+
+  @override
+  Future<void> signInWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final user = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      if (user.user == null) {
+        throw FireauthError.unexpected;
+      }
+    } on FirebaseAuthException catch (e) {
+      log(e.toString(), name: 'FireauthAdapter.signInWithEmailAndPassword');
+
+      switch (e.code) {
+        case 'invalid-credential':
+          throw FireauthError.invalidCredential;
+        case 'user-not-found':
+          throw FireauthError.invalidCredential;
+        case 'wrong-password':
+          throw FireauthError.invalidCredential;
+        default:
+          throw FireauthError.unexpected;
+      }
+    } catch (e) {
+      log(
+        e.toString(),
+        name: 'FireauthAdapter.signInWithEmailAndPassword.unexpected',
+      );
+      throw FireauthError.unexpected;
+    }
+  }
 }

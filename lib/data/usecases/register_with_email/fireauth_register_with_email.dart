@@ -37,12 +37,6 @@ class FireauthRegisterWithEmail implements RegisterWithEmail {
         default:
           throw DomainError.unexpected;
       }
-    } on GoogleSignInError catch (e) {
-      log(
-        e.toString(),
-        name: 'FireauthRegisterWithGoogle.call.googleSignInError',
-      );
-      throw DomainError.unexpected;
     } catch (e) {
       log(e.toString(), name: 'FireauthRegisterWithGoogle.call.unexpected');
       throw DomainError.unexpected;

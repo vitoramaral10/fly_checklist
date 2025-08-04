@@ -111,10 +111,17 @@ class SignInPage extends GetView<GetxSignInPresenter> {
                 FilledButton(
                   onPressed: controller.isLoading
                       ? null
-                      : () {
-                          if (controller.formKey.currentState?.validate() ??
-                              false) {
-                            controller.signIn();
+                      : () async {
+                          try {
+                            showLoadingDialog(context);
+                            await controller.signIn();
+                            if (context.mounted) Navigator.of(context).pop();
+                            Get.offAllNamed(Routes.dashboard);
+                          } on UiError catch (e) {
+                            if (context.mounted) Navigator.of(context).pop();
+                            if (context.mounted) {
+                              showErrorDialog(context, e.message);
+                            }
                           }
                         },
                   child: Obx(

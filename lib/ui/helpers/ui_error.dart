@@ -1,4 +1,10 @@
-enum UiError { unexpected, invalidEmail, emailInUse, weakPassword }
+enum UiError {
+  unexpected,
+  invalidEmail,
+  emailInUse,
+  weakPassword,
+  invalidCredential,
+}
 
 extension UiErrorExtension on UiError {
   String get message {
@@ -11,6 +17,8 @@ extension UiErrorExtension on UiError {
         return 'Este e-mail já está em uso. Por favor, tente com outro e-mail.';
       case UiError.weakPassword:
         return 'A senha informada é muito fraca. Por favor, escolha uma senha mais forte.';
+      case UiError.invalidCredential:
+        return 'As credenciais informadas são inválidas. Por favor, verifique e tente novamente.';
     }
   }
 }
