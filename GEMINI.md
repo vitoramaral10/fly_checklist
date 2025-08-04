@@ -16,6 +16,7 @@
 - Use nomes de variáveis e métodos descritivos e em inglês.
 - Mantenha a indentação consistente com 2 espaços.
 - Utilize `const` sempre que possível para otimizar o desempenho.
+- Sempre utilize `withAlpha` em detrimento de `withOpacity` para manipulação de cores.
 
 ## Regarding Dependencies:
 
