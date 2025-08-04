@@ -6,9 +6,11 @@ class Routes {
   static const String home = '/';
   static const String signUp = '/sign-up';
   static const String signIn = '/sign-in';
+  static const String forgotPassword = '/forgot-password';
 
   static List<GetPage> pages = [
     GetPage(name: home, page: makeHomePage, binding: makeHomeBinding()),
     GetPage(name: signUp, page: makeSignUpPage, binding: makeSignUpBinding()),
+    GetPage(name: signIn, page: makeSignInPage, binding: makeSignInBinding()),
   ];
 }

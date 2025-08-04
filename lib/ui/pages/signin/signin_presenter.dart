@@ -1,0 +1,7 @@
+abstract class SignInPresenter {
+  bool get obscurePassword;
+  bool get isLoading;
+
+  void togglePasswordVisibility();
+  Future<void> signIn();
+}

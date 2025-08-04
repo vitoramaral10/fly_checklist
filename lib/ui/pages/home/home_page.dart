@@ -81,8 +81,7 @@ class HomePage extends GetView<GetxHomePresenter> {
                     width: double.infinity,
                     child: FilledButton.icon(
                       onPressed: () {
-                        // TODO: Implementar navegação para a tela de login.
-                        // Ex: controller.goToLoginPage();
+                        Get.offAllNamed(Routes.signIn);
                       },
                       icon: const Icon(Icons.login_rounded),
                       label: const Text('Acessar minha conta'),

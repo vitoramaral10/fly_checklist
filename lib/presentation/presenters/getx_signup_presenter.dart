@@ -26,7 +26,10 @@ class GetxSignUpPresenter implements SignUpPresenter {
 
   @override
   Future<void> signUp() async {
-    if (formKey.currentState!.validate() == true) {}
+    if (formKey.currentState!.validate() == true) {
+      // TODO: implement signUp
+      throw UnimplementedError();
+    }
   }
 
   @override
