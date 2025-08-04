@@ -7,7 +7,7 @@ class FireauthLogoutAccount implements LogoutAccount {
   FireauthLogoutAccount({required this.firebaseAuth});
 
   @override
-  Future<void> call() {
-    return firebaseAuth.logout();
+  Future<void> call() async {
+    await firebaseAuth.logout();
   }
 }

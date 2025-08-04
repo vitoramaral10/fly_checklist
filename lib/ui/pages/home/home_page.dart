@@ -39,72 +39,79 @@ class HomePage extends GetView<GetxHomePresenter> {
                 horizontal: 24.0,
                 vertical: 32.0,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Spacer(),
-                  // Ícone principal que remete à identidade do app.
-                  Icon(
-                    Icons.task_alt_rounded,
-                    size: 120,
-                    color: colorScheme.primary,
-                    shadows: [
-                      Shadow(
-                        color: colorScheme.primary.withValues(alpha: 0.3),
-                        blurRadius: 16,
-                        offset: const Offset(0, 4),
+              child: Obx(
+                () => Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Spacer(),
+                    // Ícone principal que remete à identidade do app.
+                    Icon(
+                      Icons.task_alt_rounded,
+                      size: 120,
+                      color: colorScheme.primary,
+                      shadows: [
+                        Shadow(
+                          color: colorScheme.primary.withValues(alpha: 0.3),
+                          blurRadius: 16,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    // Título do aplicativo.
+                    Text(
+                      'Fly Checklist',
+                      style: textTheme.displaySmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.onSurface,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  // Título do aplicativo.
-                  Text(
-                    'Fly Checklist',
-                    style: textTheme.displaySmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onSurface,
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  // Subtítulo ou slogan.
-                  Text(
-                    'Organize suas tarefas e alcance seus objetivos com simplicidade.',
-                    style: textTheme.titleMedium?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
+                    const SizedBox(height: 16),
+                    // Subtítulo ou slogan.
+                    Text(
+                      'Organize suas tarefas e alcance seus objetivos com simplicidade.',
+                      style: textTheme.titleMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const Spacer(flex: 2),
-                  // Botão de ação principal.
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.icon(
-                      onPressed: () {
-                        Get.offAllNamed(Routes.signIn);
-                      },
-                      icon: const Icon(Icons.login_rounded),
-                      label: const Text('Acessar minha conta'),
-                      style: FilledButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        textStyle: textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
+                    const Spacer(flex: 2),
+
+                    const SizedBox(height: 12),
+                    if (!controller.enableButtons)
+                      const CircularProgressIndicator(),
+                    if (controller.enableButtons)
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton.icon(
+                          onPressed: () {
+                            Get.offAllNamed(Routes.signIn);
+                          },
+                          icon: const Icon(Icons.login_rounded),
+                          label: const Text('Acessar minha conta'),
+                          style: FilledButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            textStyle: textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  // Botão de ação secundária.
-                  SizedBox(
-                    width: double.infinity,
-                    child: TextButton(
-                      onPressed: () {
-                        Get.offAllNamed(Routes.signUp);
-                      },
-                      child: const Text('Criar conta'),
-                    ),
-                  ),
-                ],
+                    const SizedBox(height: 12),
+                    // Botão de ação secundária.
+                    if (controller.enableButtons)
+                      SizedBox(
+                        width: double.infinity,
+                        child: TextButton(
+                          onPressed: () {
+                            Get.offAllNamed(Routes.signUp);
+                          },
+                          child: const Text('Criar conta'),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
           ),

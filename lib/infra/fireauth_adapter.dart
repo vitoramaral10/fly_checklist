@@ -132,7 +132,7 @@ class FireauthAdapter implements FireauthClient {
   }
 
   @override
-  Map<String, dynamic> getUser() {
+  Map<String, dynamic>? getUser() {
     try {
       final user = FirebaseAuth.instance.currentUser;
 
@@ -144,7 +144,7 @@ class FireauthAdapter implements FireauthClient {
               'photoURL': user.photoURL,
               'emailVerified': user.emailVerified,
             }
-          : {};
+          : null;
     } catch (e) {
       log(e.toString(), name: 'FireauthAdapter.getUserByEmail.unexpected');
       throw FireauthError.unexpected;
