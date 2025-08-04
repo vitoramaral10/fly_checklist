@@ -1,9 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'firebase_options.dart';
 import 'main/routes.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(const MyApp());
 }
 
@@ -19,8 +24,6 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Fly Checklist',
       theme: ThemeData(
-        // 2. Usa o esquema de cores gerado, mas sobrescreve a cor primária
-        //    com o tom de vermelho exato que você quer.
         colorScheme: colorScheme.copyWith(primary: Color(0xFFE10600)),
         useMaterial3: true, // Garante que o Material 3 está ativo
         brightness: Brightness.light, // Define o brilho como claro
