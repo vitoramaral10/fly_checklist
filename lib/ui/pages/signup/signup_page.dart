@@ -149,7 +149,17 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                 ),
                 const SizedBox(height: 32),
                 FilledButton(
-                  onPressed: controller.signUp,
+                  onPressed: () async {
+                    try {
+                      showLoadingDialog(context);
+                      await controller.signUp();
+                      if (context.mounted) Navigator.of(context).pop();
+                      Get.offAllNamed(Routes.dashboard);
+                    } on UiError catch (e) {
+                      if (context.mounted) Navigator.of(context).pop();
+                      if (context.mounted) showErrorDialog(context, e.message);
+                    }
+                  },
                   child: const Text('CRIAR CONTA'),
                 ),
                 const SizedBox(height: 16),

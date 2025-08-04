@@ -5,14 +5,17 @@ import 'package:get/get.dart';
 
 import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/usecases.dart';
-import '../../main/routes.dart';
 import '../../ui/helpers/helpers.dart';
 import '../../ui/pages/pages.dart';
 
 class GetxSignUpPresenter implements SignUpPresenter {
+  final RegisterWithEmail registerWithEmail;
   final RegisterWithGoogle registerWithGoogle;
 
-  GetxSignUpPresenter({required this.registerWithGoogle});
+  GetxSignUpPresenter({
+    required this.registerWithEmail,
+    required this.registerWithGoogle,
+  });
 
   final formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
@@ -37,8 +40,30 @@ class GetxSignUpPresenter implements SignUpPresenter {
   @override
   Future<void> signUp() async {
     if (formKey.currentState!.validate() == true) {
-      // TODO: implement signUp
-      throw UnimplementedError();
+      try {
+        await registerWithEmail.call(
+          name: nameController.text,
+          email: emailController.text,
+          password: passwordController.text,
+        );
+      } on DomainError catch (e) {
+        log(e.toString(), name: 'GetxSignUpPresenter.signUp');
+
+        switch (e) {
+          case DomainError.invalidEmail:
+            throw UiError.invalidEmail;
+          case DomainError.emailInUse:
+            throw UiError.emailInUse;
+          case DomainError.weakPassword:
+            throw UiError.weakPassword;
+          default:
+            throw UiError.unexpected;
+        }
+      } catch (e) {
+        log(e.toString(), name: 'GetxSignUpPresenter.signUp.unexpected');
+
+        throw UiError.unexpected;
+      }
     }
   }
 

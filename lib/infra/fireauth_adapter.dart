@@ -35,4 +35,41 @@ class FireauthAdapter implements FireauthClient {
       throw FireauthError.unexpected;
     }
   }
+
+  @override
+  Future<void> createUserWithEmailAndPassword({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final user = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      await user.user?.updateDisplayName(name);
+    } on FirebaseAuthException catch (e) {
+      log(e.toString(), name: 'FireauthAdapter.createUserWithEmailAndPassword');
+
+      switch (e.code) {
+        case 'email-already-in-use':
+          throw FireauthError.emailAlreadyInUse;
+        case 'invalid-email':
+          throw FireauthError.invalidEmail;
+        case 'operation-not-allowed':
+          throw FireauthError.operationNotAllowed;
+        case 'weak-password':
+          throw FireauthError.weakPassword;
+        default:
+          throw FireauthError.unexpected;
+      }
+    } catch (e) {
+      log(
+        e.toString(),
+        name: 'FireauthAdapter.createUserWithEmailAndPassword.unexpected',
+      );
+      throw FireauthError.unexpected;
+    }
+  }
 }

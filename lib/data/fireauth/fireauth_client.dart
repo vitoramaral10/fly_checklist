@@ -3,4 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 abstract class FireauthClient {
   Future<void> signInWithCredential({required AuthCredential credential});
   AuthCredential createCredential({required String idToken});
+  Future<void> createUserWithEmailAndPassword({
+    required String name,
+    required String email,
+    required String password,
+  });
 }

@@ -9,7 +9,10 @@ class _SignUpBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(
-      GetxSignUpPresenter(registerWithGoogle: makeFireauthRegisterWithGoogle()),
+      GetxSignUpPresenter(
+        registerWithEmail: makeFireauthRegisterWithEmail(),
+        registerWithGoogle: makeFireauthRegisterWithGoogle(),
+      ),
     );
   }
 }
