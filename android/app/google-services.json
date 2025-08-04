@@ -12,7 +12,20 @@
           "package_name": "br.dev.vitormelo.fly_checklist"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "109866582485-7sct9p0229dvsfodh3tkgu6l2q81chtm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.dev.vitormelo.fly_checklist",
+            "certificate_hash": "7022bb9c09ae3640fa27a13ebbf28a383358118f"
+          }
+        },
+        {
+          "client_id": "109866582485-5cjn3i45k0to8ulghv4a7kt10et03sn3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCJfDzMfvfoVhjYHIYQDyw_4_-Gix_4vFY"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "109866582485-5cjn3i45k0to8ulghv4a7kt10et03sn3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
