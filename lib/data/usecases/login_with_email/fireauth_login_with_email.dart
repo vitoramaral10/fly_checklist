@@ -3,7 +3,6 @@ import 'dart:developer';
 import '../../../domain/helpers/helpers.dart';
 import '../../../domain/usecases/usecases.dart';
 import '../../fireauth/fireauth.dart';
-import '../../google_signin/google_signin.dart';
 
 class FireauthLoginWithEmail implements LoginWithEmail {
   final FireauthClient firebaseAuthClient;
