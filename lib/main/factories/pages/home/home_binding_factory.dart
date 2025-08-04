@@ -7,6 +7,6 @@ Bindings makeHomeBinding() => _HomeBinding();
 class _HomeBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(() => GetxHomePresenter());
+    Get.put(GetxHomePresenter());
   }
 }

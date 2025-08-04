@@ -8,43 +8,159 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Criar conta')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextFormField(decoration: const InputDecoration(labelText: 'Nome')),
-            const SizedBox(height: 16.0),
-            TextFormField(
-              decoration: const InputDecoration(labelText: 'E-mail'),
-            ),
-            const SizedBox(height: 16.0),
-            TextFormField(
-              decoration: const InputDecoration(labelText: 'Senha'),
-              obscureText: true,
-            ),
-            const SizedBox(height: 32.0),
-            ElevatedButton(onPressed: () {}, child: const Text('CADASTRAR')),
-            const SizedBox(height: 16.0),
-            const Row(
+      appBar: AppBar(
+        title: const Text('Criar conta'),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          child: Form(
+            // TODO: Adicionar GlobalKey<FormState> para validação
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(child: Divider()),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text('OU'),
+                const SizedBox(height: 24),
+                Text(
+                  'Bem-vindo(a)!',
+                  style: textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme.onSurface,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                Expanded(child: Divider()),
+                const SizedBox(height: 8),
+                Text(
+                  'Preencha os campos abaixo para criar sua conta.',
+                  style: textTheme.titleMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 48),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Nome completo',
+                    prefixIcon: Icon(Icons.person_outline_rounded),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                  ),
+                  keyboardType: TextInputType.name,
+                  textCapitalization: TextCapitalization.words,
+                  textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'E-mail',
+                    prefixIcon: Icon(Icons.alternate_email_rounded),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: 20),
+                Obx(
+                  () => TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Senha',
+                      prefixIcon: const Icon(Icons.lock_outline_rounded),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          controller.obscurePassword
+                              ? Icons.visibility_off_rounded
+                              : Icons.visibility_rounded,
+                        ),
+                        onPressed: controller.togglePasswordVisibility,
+                      ),
+                      border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                    ),
+                    obscureText: controller.obscurePassword,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (_) {},
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Obx(
+                  () => TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Confirme sua senha',
+                      prefixIcon: Icon(Icons.lock_outline_rounded),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          controller.obscureConfirmPassword
+                              ? Icons.visibility_off_rounded
+                              : Icons.visibility_rounded,
+                        ),
+                        onPressed: controller.toggleConfirmPasswordVisibility,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                    ),
+                    obscureText: controller.obscureConfirmPassword,
+                    textInputAction: TextInputAction.done,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                FilledButton(
+                  onPressed: () {},
+
+                  child: const Text('CRIAR CONTA'),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: Text(
+                    'Já tem uma conta? Faça login',
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                ),
+                // Google Sign-In Button
+                const SizedBox(height: 16),
+                Text(
+                  'Ou continue com',
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                FilledButton.icon(
+                  onPressed: () {},
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: colorScheme.onSurface,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                      side: BorderSide(color: colorScheme.outline),
+                    ),
+                  ),
+                  icon: Image.asset(
+                    'assets/images/google.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                  label: const Text('Continuar com Google'),
+                ),
               ],
             ),
-            const SizedBox(height: 16.0),
-            ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.g_translate),
-              label: const Text('ENTRAR COM O GOOGLE'),
-            ),
-          ],
+          ),
         ),
       ),
     );

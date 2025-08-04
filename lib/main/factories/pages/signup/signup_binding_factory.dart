@@ -7,6 +7,6 @@ Bindings makeSignUpBinding() => _SignUpBinding();
 class _SignUpBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(() => GetxSignUpPresenter());
+    Get.put(GetxSignUpPresenter());
   }
 }
