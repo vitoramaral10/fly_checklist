@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../main/routes.dart';
 import '../../../presentation/presenters/presenters.dart';
+import 'components/components.dart';
 
 class SignInPage extends GetView<GetxSignInPresenter> {
   const SignInPage({super.key});
@@ -95,7 +96,9 @@ class SignInPage extends GetView<GetxSignInPresenter> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () => Get.toNamed(Routes.forgotPassword),
+                    onPressed: () async {
+                      await showForgotPasswordBottomSheet(context);
+                    },
                     child: const Text(
                       'Esqueci minha senha',
                       style: TextStyle(fontSize: 16),
