@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 
 import '../../../main/routes.dart';
 import '../../../presentation/presenters/presenters.dart';
+import '../../components/components.dart';
+import '../../helpers/helpers.dart';
 
 class SignUpPage extends GetView<GetxSignUpPresenter> {
   const SignUpPage({super.key});
@@ -173,7 +175,18 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                 ),
                 const SizedBox(height: 16),
                 FilledButton.icon(
-                  onPressed: controller.signUpWithGoogle,
+                  onPressed: () async {
+                    try {
+                      showLoadingDialog(context);
+                      await controller.signUpWithGoogle();
+                      if (context.mounted) Navigator.of(context).pop();
+
+                      Get.offAllNamed(Routes.dashboard);
+                    } on UiError catch (e) {
+                      if (context.mounted) Navigator.of(context).pop();
+                      if (context.mounted) showErrorDialog(context, e.message);
+                    }
+                  },
                   style: FilledButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: colorScheme.onSurface,

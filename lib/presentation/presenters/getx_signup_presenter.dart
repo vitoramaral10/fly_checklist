@@ -1,9 +1,19 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../ui/pages/signup/signup.dart';
+import '../../domain/helpers/helpers.dart';
+import '../../domain/usecases/usecases.dart';
+import '../../main/routes.dart';
+import '../../ui/helpers/helpers.dart';
+import '../../ui/pages/pages.dart';
 
 class GetxSignUpPresenter implements SignUpPresenter {
+  final RegisterWithGoogle registerWithGoogle;
+
+  GetxSignUpPresenter({required this.registerWithGoogle});
+
   final formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final emailController = TextEditingController();
@@ -33,8 +43,13 @@ class GetxSignUpPresenter implements SignUpPresenter {
   }
 
   @override
-  Future<void> signUpWithGoogle() {
-    // TODO: implement signUpWithGoogle
-    throw UnimplementedError();
+  Future<void> signUpWithGoogle() async {
+    try {
+      await registerWithGoogle.call();
+    } on DomainError catch (e) {
+      log(e.toString(), name: 'GetxSignUpPresenter.signUpWithGoogle');
+
+      throw UiError.unexpected;
+    }
   }
 }
