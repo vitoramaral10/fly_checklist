@@ -4,4 +4,5 @@ abstract class SignInPresenter {
 
   void togglePasswordVisibility();
   Future<void> signIn();
+  Future<void> signInWithGoogle();
 }

@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 
 import '../../../main/routes.dart';
 import '../../../presentation/presenters/presenters.dart';
+import '../../components/components.dart';
+import '../../helpers/helpers.dart';
 import 'components/components.dart';
 
 class SignInPage extends GetView<GetxSignInPresenter> {
@@ -150,7 +152,18 @@ class SignInPage extends GetView<GetxSignInPresenter> {
                 ),
                 const SizedBox(height: 16),
                 FilledButton.icon(
-                  onPressed: () {},
+                  onPressed: () async {
+                    try {
+                      showLoadingDialog(context);
+                      await controller.signInWithGoogle();
+                      if (context.mounted) Navigator.of(context).pop();
+
+                      Get.offAllNamed(Routes.dashboard);
+                    } on UiError catch (e) {
+                      if (context.mounted) Navigator.of(context).pop();
+                      if (context.mounted) showErrorDialog(context, e.message);
+                    }
+                  },
                   icon: Image.asset('assets/images/google.png', height: 24),
                   label: const Text(
                     'Entrar com Google',
