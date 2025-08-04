@@ -13,5 +13,10 @@ class Routes {
     GetPage(name: home, page: makeHomePage, binding: makeHomeBinding()),
     GetPage(name: signUp, page: makeSignUpPage, binding: makeSignUpBinding()),
     GetPage(name: signIn, page: makeSignInPage, binding: makeSignInBinding()),
+    GetPage(
+      name: emailVerification,
+      page: makeEmailVerificationPage,
+      binding: makeEmailVerificationBinding(),
+    ),
   ];
 }
