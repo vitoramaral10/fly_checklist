@@ -3,7 +3,7 @@ abstract class SignInPresenter {
   bool get isLoading;
 
   void togglePasswordVisibility();
-  Future<void> signIn();
+  Future<String?> signIn();
   Future<void> signInWithGoogle();
   Future<void> recoverPassword();
 }

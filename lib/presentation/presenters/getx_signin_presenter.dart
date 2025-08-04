@@ -12,11 +12,13 @@ class GetxSignInPresenter extends GetxController implements SignInPresenter {
   final LoginWithEmail loginWithEmail;
   final LoginWithGoogle loginWithGoogle;
   final RecoveryPassword recoveryPassword;
+  final CheckEmailVerification checkEmailVerification;
 
   GetxSignInPresenter({
     required this.loginWithEmail,
     required this.loginWithGoogle,
     required this.recoveryPassword,
+    required this.checkEmailVerification,
   });
 
   final formKey = GlobalKey<FormState>();
@@ -39,7 +41,7 @@ class GetxSignInPresenter extends GetxController implements SignInPresenter {
   }
 
   @override
-  Future<void> signIn() async {
+  Future<String?> signIn() async {
     if (formKey.currentState?.validate() ?? false) {
       _isLoading.value = true;
       try {
@@ -47,6 +49,12 @@ class GetxSignInPresenter extends GetxController implements SignInPresenter {
           email: emailController.text,
           password: passwordController.text,
         );
+
+        final emailChecked = checkEmailVerification.call();
+
+        if (!emailChecked) {
+          return "email";
+        }
       } on DomainError catch (e) {
         log(e.toString(), name: 'GetxSignInPresenter.signIn');
 
@@ -64,6 +72,7 @@ class GetxSignInPresenter extends GetxController implements SignInPresenter {
         _isLoading.value = false;
       }
     }
+    return null;
   }
 
   @override

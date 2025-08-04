@@ -1,3 +1,4 @@
+export 'check_email_verification.dart';
 export 'login_with_email.dart';
 export 'login_with_google.dart';
 export 'recovery_password.dart';

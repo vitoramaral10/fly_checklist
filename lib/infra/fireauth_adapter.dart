@@ -130,4 +130,24 @@ class FireauthAdapter implements FireauthClient {
       throw FireauthError.unexpected;
     }
   }
+
+  @override
+  Map<String, dynamic> getUser() {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      return user != null
+          ? {
+              'uid': user.uid,
+              'email': user.email,
+              'displayName': user.displayName,
+              'photoURL': user.photoURL,
+              'emailVerified': user.emailVerified,
+            }
+          : {};
+    } catch (e) {
+      log(e.toString(), name: 'FireauthAdapter.getUserByEmail.unexpected');
+      throw FireauthError.unexpected;
+    }
+  }
 }
