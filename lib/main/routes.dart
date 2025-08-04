@@ -18,5 +18,10 @@ class Routes {
       page: makeEmailVerificationPage,
       binding: makeEmailVerificationBinding(),
     ),
+    GetPage(
+      name: dashboard,
+      page: makeDashboardPage,
+      binding: makeDashboardBinding(),
+    ),
   ];
 }
