@@ -60,6 +60,14 @@ class SettingsPage extends GetView<GetxSettingsPresenter> {
             _buildSettingsCard(theme, [
               _buildSettingsItem(
                 theme: theme,
+                icon: Icons.info_outline_rounded,
+                title: 'Sobre o App',
+                onTap: () {
+                  showAboutBottomSheet(context);
+                },
+              ),
+              _buildSettingsItem(
+                theme: theme,
                 icon: Icons.privacy_tip_outlined,
                 title: 'Política de Privacidade',
                 onTap: () {},
@@ -145,7 +153,7 @@ class SettingsPage extends GetView<GetxSettingsPresenter> {
     required IconData icon,
     required String title,
     String? subtitle,
-    required VoidCallback onTap,
+    VoidCallback? onTap,
   }) {
     return ListTile(
       leading: Icon(icon, color: theme.colorScheme.onSurfaceVariant),
