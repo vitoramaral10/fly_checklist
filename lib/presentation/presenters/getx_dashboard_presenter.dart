@@ -12,9 +12,14 @@ import '../../ui/pages/pages.dart';
 class GetxDashboardPresenter extends GetxController
     implements DashboardPresenter {
   final GetUser getUser;
+  final LoadTasks loadTasks;
   final CreateTask createTask;
 
-  GetxDashboardPresenter({required this.getUser, required this.createTask});
+  GetxDashboardPresenter({
+    required this.getUser,
+    required this.loadTasks,
+    required this.createTask,
+  });
 
   final formNewTaskKey = GlobalKey<FormState>();
   final newTaskTitleController = TextEditingController();
@@ -25,6 +30,7 @@ class GetxDashboardPresenter extends GetxController
   final _hasError = Rxn<String>();
   final _user = Rxn<UserEntity>();
   final _newTaskPriority = Rxn<int>(2);
+  final _tasks = <TaskEntity>[].obs;
 
   @override
   bool get isLoading => _isLoading.value;
@@ -34,6 +40,8 @@ class GetxDashboardPresenter extends GetxController
   UserEntity? get user => _user.value;
   @override
   int? get newTaskPriority => _newTaskPriority.value;
+  @override
+  List<TaskEntity> get tasks => _tasks;
 
   @override
   set newTaskPriority(int? value) {
@@ -56,6 +64,7 @@ class GetxDashboardPresenter extends GetxController
   Future<void> loadAllData() async {
     try {
       await loadUser();
+      await getAllTasks();
     } on DomainError catch (e) {
       log(e.toString(), name: 'GetxDashboardPresenter.loadAllData');
       _hasError.value = UiError.unexpected.message;
@@ -68,6 +77,17 @@ class GetxDashboardPresenter extends GetxController
     try {
       final user = await getUser.call();
       _user.value = user;
+    } on DomainError catch (e) {
+      log(e.toString(), name: 'GetxDashboardPresenter.loadUser');
+      throw DomainError.unexpected;
+    }
+  }
+
+  @override
+  Future<void> getAllTasks() async {
+    try {
+      final tasks = await loadTasks.call(user!.uid);
+      _tasks.value = tasks;
     } on DomainError catch (e) {
       log(e.toString(), name: 'GetxDashboardPresenter.loadUser');
       throw DomainError.unexpected;

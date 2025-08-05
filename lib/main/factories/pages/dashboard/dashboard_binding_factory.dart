@@ -12,6 +12,7 @@ class _DashboardBinding extends Bindings {
       GetxDashboardPresenter(
         getUser: makeFireauthGetUser(),
         createTask: makeFirestoreCreateTask(),
+        loadTasks: makeFirestoreLoadTasks(),
       ),
     );
   }

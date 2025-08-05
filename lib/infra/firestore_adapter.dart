@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import '../data/firestore/firestore.dart';
 
@@ -16,22 +15,33 @@ class FirestoreAdapter implements FirestoreClient {
     required Map<String, dynamic> data,
   }) async {
     try {
-      // Ensure user is authenticated
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser == null) {
-        log('User not authenticated', name: 'FirestoreAdapter.createTask');
-        throw FirestoreError.unexpected;
-      }
-
-      // Verify the authenticated user matches the userId parameter
-      if (currentUser.uid != userId) {
-        log('User ID mismatch: ${currentUser.uid} != $userId', name: 'FirestoreAdapter.createTask');
-        throw FirestoreError.unexpected;
-      }
-
-      await instance.collection('users').doc(userId).collection('tasks').add(data);
+      await instance
+          .collection('users')
+          .doc(userId)
+          .collection('tasks')
+          .add(data);
     } on FirebaseException catch (e) {
       log(e.toString(), name: 'FirestoreAdapter.createTask');
+      throw FirestoreError.unexpected;
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> loadTasks({required String userId}) async {
+    try {
+      final snapshot = await instance
+          .collection('users')
+          .doc(userId)
+          .collection('tasks')
+          .get();
+
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id;
+        return data;
+      }).toList();
+    } on FirebaseException catch (e) {
+      log(e.toString(), name: 'FirestoreAdapter.loadTasks');
       throw FirestoreError.unexpected;
     }
   }

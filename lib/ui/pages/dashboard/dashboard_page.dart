@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fly_checklist/domain/entities/task_entity.dart';
 import 'package:get/get.dart';
 
 import '../../../main/routes.dart';
@@ -116,16 +117,26 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
           ),
         ),
         const SizedBox(height: 16),
-        _buildQuickTaskItem(theme, 'Comprar pão para o café da manhã', true),
-        const SizedBox(height: 8),
-        _buildQuickTaskItem(theme, 'Reunião de equipe às 14h no Zoom', false),
-        const SizedBox(height: 8),
-        _buildQuickTaskItem(theme, 'Ligar para o cliente da empresa X', false),
+        controller.tasks.isEmpty
+            ? Text(
+                'Nenhuma tarefa rápida disponível.',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              )
+            : Column(
+                children: controller.tasks.map((task) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: _buildQuickTaskItem(theme, task),
+                  );
+                }).toList(),
+              ),
       ],
     );
   }
 
-  Widget _buildQuickTaskItem(ThemeData theme, String title, bool isDone) {
+  Widget _buildQuickTaskItem(ThemeData theme, TaskEntity task) {
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -136,24 +147,32 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
       ),
       child: ListTile(
         leading: Icon(
-          isDone
+          task.isDone
               ? Icons.check_box_rounded
               : Icons.check_box_outline_blank_rounded,
-          color: isDone
+          color: task.isDone
               ? theme.colorScheme.primary
               : theme.colorScheme.onSurfaceVariant,
         ),
         title: Text(
-          title,
+          task.title,
           style: theme.textTheme.bodyLarge?.copyWith(
-            decoration: isDone
+            decoration: task.isDone
                 ? TextDecoration.lineThrough
                 : TextDecoration.none,
-            color: isDone
+            color: task.isDone
                 ? theme.colorScheme.onSurfaceVariant
                 : theme.colorScheme.onSurface,
           ),
         ),
+        subtitle: task.dueDate != null
+            ? Text(
+                '${task.dueDate!.day.toString().padLeft(2, '0')}/${task.dueDate!.month.toString().padLeft(2, '0')}/${task.dueDate!.year}',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              )
+            : null,
         onTap: () {
           // TODO: Implementar a lógica para marcar/desmarcar a tarefa
         },

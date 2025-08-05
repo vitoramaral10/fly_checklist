@@ -1,6 +1,7 @@
 export 'change_password_factory.dart';
 export 'create_task_factory.dart';
 export 'get_user_factory.dart';
+export 'load_tasks_factory.dart';
 export 'login_with_email_factory.dart';
 export 'login_with_google_factory.dart';
 export 'logout_account_factory.dart';
