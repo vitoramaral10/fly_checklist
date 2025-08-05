@@ -1,91 +1,106 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class DashboardPage extends StatelessWidget {
+import '../../../main/routes.dart';
+import '../../../presentation/presenters/presenters.dart';
+import 'components/dashboard_loading_page.dart';
+
+class DashboardPage extends GetView<GetxDashboardPresenter> {
   const DashboardPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final screenWidth = MediaQuery.of(context).size.width;
+    return Obx(() {
+      if (controller.isLoading) {
+        return const DashboardLoadingPage();
+      }
 
-    return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 20,
+      final theme = Theme.of(context);
+      final screenWidth = MediaQuery.of(context).size.width;
+
+      return Scaffold(
+        body: SafeArea(
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 20,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Olá,',
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          Text(
+                            controller.user!.name.split(' ')[0],
+                            style: theme.textTheme.headlineMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: theme.colorScheme.onSurface,
+                            ),
+                          ),
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Get.toNamed(Routes.settings);
+                        },
+                        child: (controller.user?.photoUrl == null)
+                            ? CircleAvatar(
+                                radius: 32,
+                                backgroundColor: theme.colorScheme.secondary,
+                                child: Icon(
+                                  Icons.person_rounded,
+                                  color: theme.colorScheme.onSecondary,
+                                  size: 32,
+                                ),
+                              )
+                            : CircleAvatar(
+                                radius: 32,
+                                backgroundImage: NetworkImage(
+                                  controller.user!.photoUrl!,
+                                ),
+                              ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: _buildHeader(context, theme),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
-                child: _buildQuickTasks(context, theme),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+                  child: _buildQuickTasks(context, theme),
+                ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 32, 24, 0),
-                child: _buildTaskGroupsHeader(context, theme),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 32, 24, 0),
+                  child: _buildTaskGroupsHeader(context, theme),
+                ),
               ),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.all(24),
-              sliver: _buildTaskGroupsGrid(context, theme, screenWidth),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Implementar ação de adicionar nova tarefa
-        },
-        child: const Icon(Icons.add_rounded),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context, ThemeData theme) {
-    // Os dados do usuário (nome e foto) devem vir do presenter
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Olá,',
-              style: theme.textTheme.titleLarge?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+              SliverPadding(
+                padding: const EdgeInsets.all(24),
+                sliver: _buildTaskGroupsGrid(context, theme, screenWidth),
               ),
-            ),
-            Text(
-              'Vitor', // TODO: Substituir pelo nome do usuário
-              style: theme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.onSurface,
-              ),
-            ),
-          ],
-        ),
-        GestureDetector(
-          onTap: () {
-            // TODO: Navegar para a tela de configurações
-            // Get.toNamed('/settings');
-          },
-          child: const CircleAvatar(
-            radius: 32,
-            backgroundImage: NetworkImage(
-              'https://i.pravatar.cc/150?u=a042581f4e29026704d',
-            ), // TODO: Substituir pela foto do usuário
+            ],
           ),
         ),
-      ],
-    );
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // TODO: Implementar ação de adicionar nova tarefa
+          },
+          child: const Icon(Icons.add_rounded),
+        ),
+      );
+    });
   }
 
   Widget _buildQuickTasks(BuildContext context, ThemeData theme) {

@@ -8,6 +8,7 @@ class Routes {
   static const String signIn = '/sign-in';
   static const String emailVerification = '/email-verification';
   static const String dashboard = '/dashboard';
+  static const String settings = '/settings';
 
   static List<GetPage> pages = [
     GetPage(name: home, page: makeHomePage, binding: makeHomeBinding()),

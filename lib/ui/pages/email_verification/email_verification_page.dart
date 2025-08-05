@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:fly_checklist/ui/components/components.dart';
 import 'package:get/get.dart';
 
 import '../../../main/routes.dart';
 import '../../../presentation/presenters/presenters.dart';
+import '../../components/components.dart';
 import '../../helpers/helpers.dart';
 
 class EmailVerificationPage extends GetView<GetxEmailVerificationPresenter> {
