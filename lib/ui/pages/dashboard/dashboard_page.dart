@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../main/routes.dart';
 import '../../../presentation/presenters/presenters.dart';
-import 'components/dashboard_loading_page.dart';
+import '../pages.dart';
 
 class DashboardPage extends GetView<GetxDashboardPresenter> {
   const DashboardPage({super.key});
@@ -95,7 +95,8 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            // TODO: Implementar ação de adicionar nova tarefa
+            controller.clearNewTaskFields();
+            showNewTaskBottomSheet(context);
           },
           child: const Icon(Icons.add_rounded),
         ),

@@ -1,1 +1,1 @@
-export 'fireauth_adapter.dart';
+export 'fireauth_adapter_factory.dart';

@@ -8,8 +8,11 @@ Bindings makeDashboardBinding() => _DashboardBinding();
 class _DashboardBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(GetxDashboardPresenter(
-      getUser: makeFireauthGetUser()
-    ));
+    Get.put(
+      GetxDashboardPresenter(
+        getUser: makeFireauthGetUser(),
+        createTask: makeFirestoreCreateTask(),
+      ),
+    );
   }
 }
