@@ -33,7 +33,9 @@ class SettingsPage extends GetView<GetxSettingsPresenter> {
                 theme: theme,
                 icon: Icons.lock_outline_rounded,
                 title: 'Alterar Senha',
-                onTap: () {},
+                onTap: () {
+                  showChangePasswordBottomSheet(context);
+                },
               ),
               _buildSettingsItem(
                 theme: theme,

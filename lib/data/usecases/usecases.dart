@@ -1,3 +1,4 @@
+export 'change_password/change_password.dart';
 export 'get_user/get_user.dart';
 export 'login_with_email/login_with_email.dart';
 export 'login_with_google/login_with_google.dart';

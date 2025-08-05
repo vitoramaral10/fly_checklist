@@ -182,4 +182,23 @@ class FireauthAdapter implements FireauthClient {
       throw FireauthError.unexpected;
     }
   }
+
+  @override
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        await user.updatePassword(newPassword);
+      } else {
+        throw FireauthError.unexpected;
+      }
+    } on FirebaseAuthException catch (e) {
+      log(e.toString(), name: 'FireauthAdapter.updatePassword');
+      throw FireauthError.unexpected;
+    } catch (e) {
+      log(e.toString(), name: 'FireauthAdapter.updatePassword.unexpected');
+      throw FireauthError.unexpected;
+    }
+  }
 }

@@ -12,6 +12,8 @@ class _SettingsBinding extends Bindings {
       GetxSettingsPresenter(
         getUser: makeFireauthGetUser(),
         logoutAccount: makeFireauthLogoutAccount(),
+        loginWithEmail: makeFireauthLoginWithEmail(),
+        changePassword: makeFireauthChangePassword(),
       ),
     );
   }

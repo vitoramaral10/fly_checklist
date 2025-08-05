@@ -1,3 +1,4 @@
+export 'change_password_factory.dart';
 export 'get_user_factory.dart';
 export 'login_with_email_factory.dart';
 export 'login_with_google_factory.dart';

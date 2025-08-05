@@ -15,6 +15,6 @@ abstract class FireauthClient {
   Future<void> sendPasswordResetEmail({required String email});
   Future<Map<String, dynamic>?> getUser();
   Future<void> logout();
-
   Future<void> sendEmailVerification();
+  Future<void> updatePassword(String newPassword);
 }
