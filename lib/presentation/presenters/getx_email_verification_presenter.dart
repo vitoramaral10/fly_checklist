@@ -10,16 +10,37 @@ import '../../ui/helpers/helpers.dart';
 class GetxEmailVerificationPresenter extends GetxController
     implements EmailVerificationPresenter {
   final LogoutAccount logoutAccount;
+  final GetUser getUser;
   final SendVerificationEmail sendVerificationEmail;
 
   GetxEmailVerificationPresenter({
     required this.logoutAccount,
+    required this.getUser,
     required this.sendVerificationEmail,
   });
 
   @override
   Future<void> logout() {
     return logoutAccount.call();
+  }
+
+  @override
+  Future<void> verifyEmail() async {
+    try {
+      final user = await getUser.call();
+
+      if (!user.emailVerified) {
+        throw UiError.emailNotVerified;
+      }
+    } on DomainError catch (e) {
+      log(e.toString(), name: 'VerifyEmail');
+      throw UiError.unexpected;
+    } on UiError {
+      rethrow;
+    } catch (e) {
+      log(e.toString(), name: 'VerifyEmail');
+      throw UiError.unexpected;
+    }
   }
 
   @override

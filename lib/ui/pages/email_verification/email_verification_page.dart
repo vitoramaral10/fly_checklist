@@ -43,7 +43,19 @@ class EmailVerificationPage extends GetView<GetxEmailVerificationPresenter> {
               ),
               const SizedBox(height: 48),
               FilledButton.icon(
-                onPressed: () {},
+                onPressed: () async {
+                  try {
+                    showLoadingDialog(context);
+                    await controller.verifyEmail();
+                    if (context.mounted) Navigator.of(context).pop();
+                    if (context.mounted) {
+                      Get.offAllNamed(Routes.dashboard);
+                    }
+                  } on UiError catch (e) {
+                    if (context.mounted) Navigator.of(context).pop();
+                    if (context.mounted) showErrorDialog(context, e.message);
+                  }
+                },
                 icon: const Icon(Icons.refresh),
                 label: const Text('Já verifiquei, continuar'),
               ),

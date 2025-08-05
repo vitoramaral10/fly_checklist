@@ -154,7 +154,7 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                       showLoadingDialog(context);
                       await controller.signUp();
                       if (context.mounted) Navigator.of(context).pop();
-                      Get.offAllNamed(Routes.dashboard);
+                      Get.offAllNamed(Routes.emailVerification);
                     } on UiError catch (e) {
                       if (context.mounted) Navigator.of(context).pop();
                       if (context.mounted) showErrorDialog(context, e.message);

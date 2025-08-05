@@ -4,6 +4,7 @@ enum UiError {
   emailInUse,
   weakPassword,
   invalidCredential,
+  emailNotVerified,
 }
 
 extension UiErrorExtension on UiError {
@@ -19,6 +20,8 @@ extension UiErrorExtension on UiError {
         return 'A senha informada é muito fraca. Por favor, escolha uma senha mais forte.';
       case UiError.invalidCredential:
         return 'As credenciais informadas são inválidas. Por favor, verifique e tente novamente.';
+      case UiError.emailNotVerified:
+        return 'Seu e-mail ainda não foi verificado. Por favor, verifique sua caixa de entrada e siga as instruções para ativar sua conta.';
     }
   }
 }
