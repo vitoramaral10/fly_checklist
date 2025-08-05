@@ -24,5 +24,10 @@ class Routes {
       page: makeDashboardPage,
       binding: makeDashboardBinding(),
     ),
+    GetPage(
+      name: settings,
+      page: makeSettingsPage,
+      binding: makeSettingsBinding(),
+    ),
   ];
 }
