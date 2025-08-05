@@ -1,4 +1,3 @@
-export 'check_email_verification.dart';
 export 'get_user.dart';
 export 'login_with_email.dart';
 export 'login_with_google.dart';
