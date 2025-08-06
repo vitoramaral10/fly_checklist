@@ -33,8 +33,9 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
     if (task != null) {
       controller.newTaskTitleController.text = task!.title;
       controller.newTaskDescriptionController.text = task!.description;
-      controller.newTaskDueDateController.text =
-          task!.dueDate?.toLocal().toString().split(' ')[0] ?? '';
+      controller.newTaskDueDateController.text = DateFormat.yMd().format(
+        task!.dueDate!,
+      );
       controller.newTaskPriority = task!.priority;
     }
 

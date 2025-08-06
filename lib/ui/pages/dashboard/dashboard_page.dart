@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fly_checklist/domain/entities/task_entity.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../../main/routes.dart';
 import '../../../presentation/presenters/presenters.dart';
@@ -159,7 +160,7 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
         ),
         subtitle: task.dueDate != null
             ? Text(
-                '${task.dueDate!.day.toString().padLeft(2, '0')}/${task.dueDate!.month.toString().padLeft(2, '0')}/${task.dueDate!.year}',
+                DateFormat.yMd().format(task.dueDate!),
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
