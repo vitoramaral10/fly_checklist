@@ -57,6 +57,7 @@ class TaskItem extends StatelessWidget {
           ),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16),
+        margin: const EdgeInsets.symmetric(vertical: 4),
         alignment: Alignment.centerLeft,
         child: Icon(
           Icons.delete_rounded,
@@ -64,7 +65,7 @@ class TaskItem extends StatelessWidget {
         ),
       ),
       child: Card(
-        margin: EdgeInsets.zero,
+        margin: EdgeInsets.symmetric(vertical: 4),
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
