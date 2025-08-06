@@ -156,12 +156,13 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
                             );
 
                             if (isDelete) {
-                              showLoadingDialog(context);
+                              if (context.mounted) showLoadingDialog(context);
                               await controller.onDeleteTask(task);
-                              Get.back(); // Fecha o diálogo de loading
+                              if (context.mounted) Navigator.of(context).pop();
                               showSuccessSnackbar(
-                                'Tarefa excluída',
-                                'A tarefa "${task.title}" foi excluída com sucesso.',
+                                title: 'Tarefa excluída',
+                                message:
+                                    'A tarefa "${task.title}" foi excluída com sucesso.',
                               );
                               return true;
                             } else {

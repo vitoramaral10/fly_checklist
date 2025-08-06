@@ -187,9 +187,8 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
                           if (context.mounted) Navigator.of(context).pop();
 
                           if (context.mounted) {
-                            showSuccessDialog(
-                              context,
-                              (task != null)
+                            showSuccessSnackbar(
+                              message: (task != null)
                                   ? 'Tarefa atualizada com sucesso!'
                                   : 'Tarefa criada com sucesso!',
                             );

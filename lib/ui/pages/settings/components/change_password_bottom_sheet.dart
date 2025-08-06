@@ -159,9 +159,8 @@ class _ChangePasswordBottomSheetContent extends GetView<GetxSettingsPresenter> {
                             context,
                           ).pop(); // Fecha o diálogo de loading
                           Navigator.of(context).pop(); // Fecha o bottom sheet
-                          showSuccessDialog(
-                            context,
-                            'Senha alterada com sucesso!',
+                          showSuccessSnackbar(
+                            message: 'Senha alterada com sucesso!',
                           );
                         } on UiError catch (e) {
                           showErrorDialog(context, e.message);
