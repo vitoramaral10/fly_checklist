@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fly_checklist/domain/entities/task_entity.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import '../../../main/routes.dart';
 import '../../../presentation/presenters/presenters.dart';
@@ -142,87 +140,56 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
                   child: ListView(
                     shrinkWrap: true,
                     children: controller.tasks.map((task) {
-                      return _buildQuickTaskItem(theme, task);
+                      return TaskItem(
+                        task: task,
+                        onTap: () {
+                          controller.clearNewTaskFields();
+                          showTaskBottomSheet(Get.context!, task: task);
+                        },
+                        confirmDismiss: (direction) async {
+                          try {
+                            final isDelete = await showConfirmationDialog(
+                              context,
+                              title: 'Excluir Tarefa',
+                              content:
+                                  'Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.',
+                            );
+
+                            if (isDelete) {
+                              showLoadingDialog(context);
+                              await controller.onDeleteTask(task);
+                              Get.back(); // Fecha o diálogo de loading
+                              showSuccessSnackbar(
+                                'Tarefa excluída',
+                                'A tarefa "${task.title}" foi excluída com sucesso.',
+                              );
+                              return true;
+                            } else {
+                              return false;
+                            }
+                          } catch (e) {
+                            showErrorSnackbar(
+                              'Erro ao excluir tarefa',
+                              'Não foi possível excluir a tarefa. Tente novamente mais tarde.',
+                            );
+                            return false;
+                          }
+                        },
+                        onCheckboxChanged: (value) async {
+                          try {
+                            await controller.toggleTaskCompletion(task);
+                          } catch (e) {
+                            showErrorSnackbar(
+                              'Erro ao atualizar tarefa',
+                              'Não foi possível atualizar o status da tarefa. Tente novamente mais tarde.',
+                            );
+                          }
+                        },
+                      );
                     }).toList(),
                   ),
                 ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildQuickTaskItem(ThemeData theme, TaskEntity task) {
-    IconData priorityIcon;
-    Color priorityColor;
-    switch (task.priority) {
-      case 4:
-        priorityIcon = Icons.priority_high_rounded;
-        priorityColor = Colors.red;
-        break;
-      case 3:
-        priorityIcon = Icons.arrow_upward_rounded;
-        priorityColor = Colors.orange;
-        break;
-      case 2:
-        priorityIcon = Icons.drag_handle_rounded;
-        priorityColor = Colors.amber;
-        break;
-      case 1:
-        priorityIcon = Icons.arrow_downward_rounded;
-        priorityColor = Colors.green;
-        break;
-      default:
-        priorityIcon = Icons.low_priority_rounded;
-        priorityColor = Colors.grey;
-    }
-
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: theme.colorScheme.outlineVariant.withAlpha(100),
-        ),
-      ),
-      child: ListTile(
-        dense: true,
-        leading: Icon(priorityIcon, color: priorityColor),
-        title: Text(
-          task.title,
-          style: theme.textTheme.bodyLarge?.copyWith(
-            decoration: task.isDone
-                ? TextDecoration.lineThrough
-                : TextDecoration.none,
-            color: task.isDone
-                ? theme.colorScheme.onSurfaceVariant
-                : theme.colorScheme.onSurface,
-          ),
-        ),
-        subtitle: task.dueDate != null
-            ? Text(
-                DateFormat.yMd().format(task.dueDate!),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              )
-            : null,
-        trailing: Checkbox(
-          value: task.isDone,
-          onChanged: (bool? value) async {
-            try {
-              await controller.toggleTaskCompletion(task);
-            } catch (e) {
-              showErrorSnackbar(
-                'Erro ao atualizar tarefa',
-                'Não foi possível atualizar o status da tarefa. Tente novamente mais tarde.',
-              );
-            }
-          },
-        ),
-        onTap: () {
-          controller.clearNewTaskFields();
-          showTaskBottomSheet(Get.context!, task: task);
-        },
       ),
     );
   }
