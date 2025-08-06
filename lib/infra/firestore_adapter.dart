@@ -46,6 +46,24 @@ class FirestoreAdapter implements FirestoreClient {
   }
 
   @override
+  Future<void> deleteTask({
+    required String userId,
+    required String taskId,
+  }) async {
+    try {
+      await instance
+          .collection('users')
+          .doc(userId)
+          .collection('tasks')
+          .doc(taskId)
+          .delete();
+    } on FirebaseException catch (e) {
+      log(e.toString(), name: 'FirestoreAdapter.deleteTask');
+      throw FirestoreError.unexpected;
+    }
+  }
+
+  @override
   Future<List<Map<String, dynamic>>> loadTasks({required String userId}) async {
     try {
       final snapshot = await instance

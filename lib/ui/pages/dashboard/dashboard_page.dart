@@ -23,81 +23,89 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
 
       return Scaffold(
         body: SafeArea(
-          child: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 20,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Olá,',
-                            style: theme.textTheme.titleLarge?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                          Text(
-                            controller.user!.name.split(' ')[0],
-                            style: theme.textTheme.headlineMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: theme.colorScheme.onSurface,
-                            ),
-                          ),
-                        ],
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Get.toNamed(Routes.settings);
-                        },
-                        child: (controller.user?.photoUrl == null)
-                            ? CircleAvatar(
-                                radius: 32,
-                                backgroundColor: theme.colorScheme.secondary,
-                                child: Icon(
-                                  Icons.person_rounded,
-                                  color: theme.colorScheme.onSecondary,
-                                  size: 32,
-                                ),
-                              )
-                            : CircleAvatar(
-                                radius: 32,
-                                backgroundImage: NetworkImage(
-                                  controller.user!.photoUrl!,
-                                ),
+          top: true,
+          bottom: false,
+          child: RefreshIndicator(
+            onRefresh: () async {
+              await controller.loadAllData();
+            },
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 20,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Olá,',
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
                               ),
-                      ),
-                    ],
+                            ),
+                            Text(
+                              controller.user!.name.split(' ')[0],
+                              style: theme.textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: theme.colorScheme.onSurface,
+                              ),
+                            ),
+                          ],
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Get.toNamed(Routes.settings);
+                          },
+                          child: (controller.user?.photoUrl == null)
+                              ? CircleAvatar(
+                                  radius: 32,
+                                  backgroundColor: theme.colorScheme.secondary,
+                                  child: Icon(
+                                    Icons.person_rounded,
+                                    color: theme.colorScheme.onSecondary,
+                                    size: 32,
+                                  ),
+                                )
+                              : CircleAvatar(
+                                  radius: 32,
+                                  backgroundImage: NetworkImage(
+                                    controller.user!.photoUrl!,
+                                  ),
+                                ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
-                  child: _buildQuickTasks(context, theme),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+                    child: _buildQuickTasks(context, theme),
+                  ),
                 ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 32, 24, 0),
-                  child: _buildTaskGroupsHeader(context, theme),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+                    child: _buildTaskGroupsHeader(context, theme),
+                  ),
                 ),
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.all(24),
-                sliver: _buildTaskGroupsGrid(context, theme, screenWidth),
-              ),
-            ],
+                SliverPadding(
+                  padding: const EdgeInsets.all(24),
+                  sliver: _buildTaskGroupsGrid(context, theme, screenWidth),
+                ),
+              ],
+            ),
           ),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
+            controller.clearNewTaskFields();
             showTaskBottomSheet(context);
           },
           child: const Icon(Icons.add_rounded),
@@ -108,32 +116,38 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
 
   Widget _buildQuickTasks(BuildContext context, ThemeData theme) {
     // Os dados das tarefas rápidas devem vir do presenter
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Lembretes Rápidos',
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.3,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Tarefas Rápidas',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        controller.tasks.isEmpty
-            ? Text(
-                'Nenhuma tarefa rápida disponível.',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
+          const SizedBox(height: 16),
+          controller.tasks.isEmpty
+              ? Text(
+                  'Nenhuma tarefa rápida disponível.',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                )
+              : Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: controller.tasks.map((task) {
+                      return _buildQuickTaskItem(theme, task);
+                    }).toList(),
+                  ),
                 ),
-              )
-            : Column(
-                children: controller.tasks.map((task) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: _buildQuickTaskItem(theme, task),
-                  );
-                }).toList(),
-              ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -147,6 +161,7 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
         ),
       ),
       child: ListTile(
+        dense: true,
         title: Text(
           task.title,
           style: theme.textTheme.bodyLarge?.copyWith(
@@ -180,6 +195,7 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
           },
         ),
         onTap: () {
+          controller.clearNewTaskFields();
           showTaskBottomSheet(Get.context!, task: task);
         },
       ),

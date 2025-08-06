@@ -1,5 +1,6 @@
 export 'change_password/change_password.dart';
 export 'create_task/create_task.dart';
+export 'delete_task/delete_task.dart';
 export 'get_user/get_user.dart';
 export 'load_tasks/load_tasks.dart';
 export 'login_with_email/login_with_email.dart';

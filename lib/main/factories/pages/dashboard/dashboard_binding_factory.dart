@@ -14,6 +14,7 @@ class _DashboardBinding extends Bindings {
         loadTasks: makeFirestoreLoadTasks(),
         createTask: makeFirestoreCreateTask(),
         updateTask: makeFirestoreUpdateTask(),
+        deleteTask: makeFirestoreDeleteTask(),
       ),
     );
   }

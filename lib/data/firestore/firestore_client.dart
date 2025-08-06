@@ -8,5 +8,6 @@ abstract class FirestoreClient {
     required String taskId,
     required Map<String, dynamic> data,
   });
+  Future<void> deleteTask({required String userId, required String taskId});
   Future<List<Map<String, dynamic>>> loadTasks({required String userId});
 }

@@ -4,10 +4,10 @@ abstract class DashboardPresenter {
   bool get isLoading;
   String? get hasError;
   UserEntity? get user;
-  int? get newTaskPriority;
+  int? get taskPriority;
   List<TaskEntity> get tasks;
 
-  set newTaskPriority(int? value);
+  set taskPriority(int? value);
 
   Future<void> loadAllData();
   Future<void> loadUser();
@@ -16,4 +16,5 @@ abstract class DashboardPresenter {
   void clearNewTaskFields();
   Future<void> toggleTaskCompletion(TaskEntity task);
   Future<void> onUpdateTask(TaskEntity task);
+  Future<void> onDeleteTask(TaskEntity task);
 }

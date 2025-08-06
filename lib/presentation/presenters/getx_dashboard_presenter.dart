@@ -16,23 +16,25 @@ class GetxDashboardPresenter extends GetxController
   final LoadTasks loadTasks;
   final CreateTask createTask;
   final UpdateTask updateTask;
+  final DeleteTask deleteTask;
 
   GetxDashboardPresenter({
     required this.getUser,
     required this.loadTasks,
     required this.createTask,
     required this.updateTask,
+    required this.deleteTask,
   });
 
   final formNewTaskKey = GlobalKey<FormState>();
-  final newTaskTitleController = TextEditingController();
-  final newTaskDescriptionController = TextEditingController();
-  final newTaskDueDateController = TextEditingController();
+  final taskTitleController = TextEditingController();
+  final taskDescriptionController = TextEditingController();
+  final taskDueDateController = TextEditingController();
 
   final _isLoading = true.obs;
   final _hasError = Rxn<String>();
   final _user = Rxn<UserEntity>();
-  final _newTaskPriority = Rxn<int>(2);
+  final _taskPriority = Rxn<int>(2);
   final _tasks = <TaskEntity>[].obs;
 
   @override
@@ -42,16 +44,16 @@ class GetxDashboardPresenter extends GetxController
   @override
   UserEntity? get user => _user.value;
   @override
-  int? get newTaskPriority => _newTaskPriority.value;
+  int? get taskPriority => _taskPriority.value;
   @override
   List<TaskEntity> get tasks => _tasks;
 
   @override
-  set newTaskPriority(int? value) {
+  set taskPriority(int? value) {
     if (value != null && value >= 1 && value <= 5) {
-      _newTaskPriority.value = value;
+      _taskPriority.value = value;
     } else {
-      _newTaskPriority.value = null;
+      _taskPriority.value = null;
     }
   }
 
@@ -90,6 +92,22 @@ class GetxDashboardPresenter extends GetxController
   Future<void> getAllTasks() async {
     try {
       final tasks = await loadTasks.call(user!.uid);
+
+      tasks.sort((a, b) {
+        // Se ambos têm dueDate, ordena por dueDate (ascendente)
+        if (a.dueDate != null && b.dueDate != null) {
+          int cmp = a.dueDate!.compareTo(b.dueDate!);
+          if (cmp != 0) return cmp;
+          // Se dueDate igual, ordena por createdAt (ascendente)
+          return a.createdAt.compareTo(b.createdAt);
+        }
+        // Se só a tem dueDate, a vem antes
+        if (a.dueDate != null) return -1;
+        // Se só b tem dueDate, b vem antes
+        if (b.dueDate != null) return 1;
+        // Se nenhum tem dueDate, ordena por createdAt (ascendente)
+        return a.createdAt.compareTo(b.createdAt);
+      });
       _tasks.value = tasks;
     } on DomainError catch (e) {
       log(e.toString(), name: 'GetxDashboardPresenter.loadUser');
@@ -104,12 +122,12 @@ class GetxDashboardPresenter extends GetxController
         userId: user!.uid,
         task: TaskEntity(
           id: '',
-          title: newTaskTitleController.text,
-          description: newTaskDescriptionController.text,
-          dueDate: newTaskDueDateController.text.isNotEmpty
-              ? DateFormat.yMd().parse(newTaskDueDateController.text)
+          title: taskTitleController.text,
+          description: taskDescriptionController.text,
+          dueDate: taskDueDateController.text.isNotEmpty
+              ? DateFormat.yMd().parse(taskDueDateController.text)
               : null,
-          priority: newTaskPriority!,
+          priority: taskPriority!,
           isDone: false,
           createdAt: DateTime.now(),
         ),
@@ -125,10 +143,10 @@ class GetxDashboardPresenter extends GetxController
 
   @override
   void clearNewTaskFields() {
-    newTaskTitleController.clear();
-    newTaskDescriptionController.clear();
-    newTaskDueDateController.clear();
-    newTaskPriority = 2;
+    taskTitleController.clear();
+    taskDescriptionController.clear();
+    taskDueDateController.clear();
+    taskPriority = 2;
     formNewTaskKey.currentState?.reset();
   }
 
@@ -158,6 +176,19 @@ class GetxDashboardPresenter extends GetxController
       throw UiError.unexpected;
     } finally {
       clearNewTaskFields();
+      await getAllTasks();
+    }
+  }
+
+  @override
+  Future<void> onDeleteTask(TaskEntity task) async {
+    try {
+      await deleteTask.call(userId: user!.uid, task: task);
+    } on DomainError catch (e) {
+      log(e.toString(), name: 'GetxDashboardPresenter.onDeleteTask');
+
+      throw UiError.unexpected;
+    } finally {
       await getAllTasks();
     }
   }

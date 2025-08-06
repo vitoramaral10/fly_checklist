@@ -31,12 +31,12 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
     final colorScheme = theme.colorScheme;
 
     if (task != null) {
-      controller.newTaskTitleController.text = task!.title;
-      controller.newTaskDescriptionController.text = task!.description;
-      controller.newTaskDueDateController.text = DateFormat.yMd().format(
-        task!.dueDate!,
-      );
-      controller.newTaskPriority = task!.priority;
+      controller.taskTitleController.text = task!.title;
+      controller.taskDescriptionController.text = task!.description;
+      controller.taskDueDateController.text = (task!.dueDate != null)
+          ? DateFormat.yMd().format(task!.dueDate!)
+          : '';
+      controller.taskPriority = task!.priority;
     }
 
     return Padding(
@@ -70,7 +70,7 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
                 ),
                 const SizedBox(height: 24),
                 TextFormField(
-                  controller: controller.newTaskTitleController,
+                  controller: controller.taskTitleController,
                   decoration: const InputDecoration(
                     labelText: 'Título da Tarefa',
                     prefixIcon: Icon(Icons.title_outlined),
@@ -90,7 +90,7 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
-                  controller: controller.newTaskDescriptionController,
+                  controller: controller.taskDescriptionController,
                   decoration: const InputDecoration(
                     labelText: 'Descrição da Tarefa',
                     prefixIcon: Icon(Icons.description_outlined),
@@ -104,7 +104,7 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
-                  controller: controller.newTaskDueDateController,
+                  controller: controller.taskDueDateController,
                   decoration: const InputDecoration(
                     labelText: 'Data de Vencimento',
                     prefixIcon: Icon(Icons.date_range_outlined),
@@ -123,39 +123,41 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
                       lastDate: DateTime(2101),
                     );
                     if (selectedDate != null) {
-                      controller.newTaskDueDateController.text = DateFormat.yMd(
+                      controller.taskDueDateController.text = DateFormat.yMd(
                         'pt_BR',
                       ).format(selectedDate);
                     }
                   },
                 ),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<int>(
-                  value: controller.newTaskPriority,
-                  decoration: const InputDecoration(
-                    labelText: 'Prioridade',
-                    prefixIcon: Icon(Icons.priority_high_outlined),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                Obx(
+                  () => DropdownButtonFormField<int>(
+                    value: controller.taskPriority,
+                    decoration: const InputDecoration(
+                      labelText: 'Prioridade',
+                      prefixIcon: Icon(Icons.priority_high_outlined),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                      ),
                     ),
+                    items: const [
+                      DropdownMenuItem(value: 1, child: Text('Baixa')),
+                      DropdownMenuItem(value: 2, child: Text('Média')),
+                      DropdownMenuItem(value: 3, child: Text('Alta')),
+                      DropdownMenuItem(value: 4, child: Text('Crítica')),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        controller.taskPriority = value;
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Por favor, selecione a prioridade da tarefa.';
+                      }
+                      return null;
+                    },
                   ),
-                  items: const [
-                    DropdownMenuItem(value: 1, child: Text('Baixa')),
-                    DropdownMenuItem(value: 2, child: Text('Média')),
-                    DropdownMenuItem(value: 3, child: Text('Alta')),
-                    DropdownMenuItem(value: 4, child: Text('Crítica')),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      controller.newTaskPriority = value;
-                    }
-                  },
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Por favor, selecione a prioridade da tarefa.';
-                    }
-                    return null;
-                  },
                 ),
 
                 const SizedBox(height: 24),
@@ -169,14 +171,13 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
                           if (task != null) {
                             await controller.onUpdateTask(
                               task!.copyWith(
-                                title: controller.newTaskTitleController.text,
-                                description: controller
-                                    .newTaskDescriptionController
-                                    .text,
+                                title: controller.taskTitleController.text,
+                                description:
+                                    controller.taskDescriptionController.text,
                                 dueDate: DateTime.tryParse(
-                                  controller.newTaskDueDateController.text,
+                                  controller.taskDueDateController.text,
                                 ),
-                                priority: controller.newTaskPriority ?? 2,
+                                priority: controller.taskPriority ?? 2,
                               ),
                             );
                           } else {
@@ -205,6 +206,33 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
                   ),
                 ),
                 const SizedBox(height: 12),
+                if (task != null)
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      icon: const Icon(Icons.delete_outline, color: Colors.red),
+                      label: const Text(
+                        'Excluir',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.red),
+                      ),
+                      onPressed: () async {
+                        final isDelete = await showConfirmationDialog(
+                          context,
+                          title: 'Excluir Tarefa',
+                          content:
+                              'Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.',
+                        );
+
+                        if (isDelete) {
+                          await controller.onDeleteTask(task!);
+                          if (context.mounted) Navigator.of(context).pop();
+                        }
+                      },
+                    ),
+                  ),
               ],
             ),
           ),
