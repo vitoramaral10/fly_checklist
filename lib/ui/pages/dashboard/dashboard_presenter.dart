@@ -14,4 +14,6 @@ abstract class DashboardPresenter {
   Future<void> getAllTasks();
   Future<void> createNewTask();
   void clearNewTaskFields();
+  Future<void> toggleTaskCompletion(TaskEntity task);
+  Future<void> onUpdateTask(TaskEntity task);
 }

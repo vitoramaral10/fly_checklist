@@ -11,8 +11,9 @@ class _DashboardBinding extends Bindings {
     Get.put(
       GetxDashboardPresenter(
         getUser: makeFireauthGetUser(),
-        createTask: makeFirestoreCreateTask(),
         loadTasks: makeFirestoreLoadTasks(),
+        createTask: makeFirestoreCreateTask(),
+        updateTask: makeFirestoreUpdateTask(),
       ),
     );
   }

@@ -14,11 +14,13 @@ class GetxDashboardPresenter extends GetxController
   final GetUser getUser;
   final LoadTasks loadTasks;
   final CreateTask createTask;
+  final UpdateTask updateTask;
 
   GetxDashboardPresenter({
     required this.getUser,
     required this.loadTasks,
     required this.createTask,
+    required this.updateTask,
   });
 
   final formNewTaskKey = GlobalKey<FormState>();
@@ -119,5 +121,34 @@ class GetxDashboardPresenter extends GetxController
     newTaskDueDateController.clear();
     newTaskPriority = 2;
     formNewTaskKey.currentState?.reset();
+  }
+
+  @override
+  Future<void> toggleTaskCompletion(TaskEntity task) async {
+    try {
+      final updatedTask = task.copyWith(isDone: !task.isDone);
+
+      _tasks[_tasks.indexOf(task)] = updatedTask;
+
+      await updateTask.call(userId: user!.uid, task: updatedTask);
+    } on DomainError catch (e) {
+      log(e.toString(), name: 'GetxDashboardPresenter.toggleTaskCompletion');
+
+      _tasks[_tasks.indexOf(task)] = task;
+      throw UiError.unexpected;
+    }
+  }
+
+  @override
+  Future<void> onUpdateTask(TaskEntity task) async {
+    try {
+      await updateTask.call(userId: user!.uid, task: task);
+    } on DomainError catch (e) {
+      log(e.toString(), name: 'GetxDashboardPresenter.onUpdateTask');
+
+      throw UiError.unexpected;
+    } finally {
+      await getAllTasks();
+    }
   }
 }

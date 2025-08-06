@@ -27,6 +27,25 @@ class FirestoreAdapter implements FirestoreClient {
   }
 
   @override
+  Future<void> updateTask({
+    required String userId,
+    required String taskId,
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      await instance
+          .collection('users')
+          .doc(userId)
+          .collection('tasks')
+          .doc(taskId)
+          .update(data);
+    } on FirebaseException catch (e) {
+      log(e.toString(), name: 'FirestoreAdapter.updateTask');
+      throw FirestoreError.unexpected;
+    }
+  }
+
+  @override
   Future<List<Map<String, dynamic>>> loadTasks({required String userId}) async {
     try {
       final snapshot = await instance

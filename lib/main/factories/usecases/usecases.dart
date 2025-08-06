@@ -9,3 +9,4 @@ export 'recovery_password_factory.dart';
 export 'register_with_email_factory.dart';
 export 'register_with_google_factory.dart';
 export 'send_verification_email_factory.dart';
+export 'update_task_factory.dart';

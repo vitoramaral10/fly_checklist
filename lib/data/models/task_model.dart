@@ -42,4 +42,25 @@ class TaskModel {
       isDone: isDone, // Default value, can be changed later
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'description': description,
+      'dueDate': dueDate != null ? Timestamp.fromDate(dueDate!) : null,
+      'priority': priority,
+      'isDone': isDone,
+    };
+  }
+
+  factory TaskModel.fromEntity(TaskEntity entity) {
+    return TaskModel(
+      id: entity.id,
+      title: entity.title,
+      description: entity.description,
+      dueDate: entity.dueDate,
+      priority: entity.priority,
+      isDone: entity.isDone,
+    );
+  }
 }

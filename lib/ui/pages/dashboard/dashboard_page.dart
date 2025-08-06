@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../main/routes.dart';
 import '../../../presentation/presenters/presenters.dart';
+import '../../components/components.dart';
 import '../pages.dart';
 
 class DashboardPage extends GetView<GetxDashboardPresenter> {
@@ -146,14 +147,6 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
         ),
       ),
       child: ListTile(
-        leading: Icon(
-          task.isDone
-              ? Icons.check_box_rounded
-              : Icons.check_box_outline_blank_rounded,
-          color: task.isDone
-              ? theme.colorScheme.primary
-              : theme.colorScheme.onSurfaceVariant,
-        ),
         title: Text(
           task.title,
           style: theme.textTheme.bodyLarge?.copyWith(
@@ -173,8 +166,21 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
                 ),
               )
             : null,
+        trailing: Checkbox(
+          value: task.isDone,
+          onChanged: (bool? value) async {
+            try {
+              await controller.toggleTaskCompletion(task);
+            } catch (e) {
+              showErrorSnackbar(
+                'Erro ao atualizar tarefa',
+                'Não foi possível atualizar o status da tarefa. Tente novamente mais tarde.',
+              );
+            }
+          },
+        ),
         onTap: () {
-          // TODO: Implementar a lógica para marcar/desmarcar a tarefa
+          showNewTaskBottomSheet(Get.context!, task: task);
         },
       ),
     );

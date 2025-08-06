@@ -1,27 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:fly_checklist/domain/entities/task_entity.dart';
 import 'package:get/get.dart';
 
 import '../../../../presentation/presenters/presenters.dart';
 import '../../../components/components.dart';
 import '../../../helpers/helpers.dart';
 
-Future<void> showNewTaskBottomSheet(BuildContext context) async {
+Future<void> showNewTaskBottomSheet(
+  BuildContext context, {
+  TaskEntity? task,
+}) async {
   await showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     builder: (context) {
-      return const NewTaskBottomSheet();
+      return NewTaskBottomSheet(task: task);
     },
   );
 }
 
 class NewTaskBottomSheet extends GetView<GetxDashboardPresenter> {
-  const NewTaskBottomSheet({super.key});
+  final TaskEntity? task;
+
+  const NewTaskBottomSheet({super.key, this.task});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+
+    if (task != null) {
+      controller.newTaskTitleController.text = task!.title;
+      controller.newTaskDescriptionController.text = task!.description;
+      controller.newTaskDueDateController.text =
+          task!.dueDate?.toLocal().toString().split(' ')[0] ?? '';
+      controller.newTaskPriority = task!.priority;
+    }
 
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
@@ -42,7 +56,10 @@ class NewTaskBottomSheet extends GetView<GetxDashboardPresenter> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                Text('Nova Tarefa', style: theme.textTheme.headlineSmall),
+                Text(
+                  (task != null) ? 'Editar Tarefa' : 'Nova Tarefa',
+                  style: theme.textTheme.headlineSmall,
+                ),
                 const SizedBox(height: 16),
                 Text(
                   'Insira os detalhes da nova tarefa aqui.',
@@ -145,14 +162,31 @@ class NewTaskBottomSheet extends GetView<GetxDashboardPresenter> {
                       if (controller.formNewTaskKey.currentState!.validate()) {
                         try {
                           showLoadingDialog(context);
-                          await controller.createNewTask();
+                          if (task != null) {
+                            await controller.onUpdateTask(
+                              task!.copyWith(
+                                title: controller.newTaskTitleController.text,
+                                description: controller
+                                    .newTaskDescriptionController
+                                    .text,
+                                dueDate: DateTime.tryParse(
+                                  controller.newTaskDueDateController.text,
+                                ),
+                                priority: controller.newTaskPriority ?? 2,
+                              ),
+                            );
+                          } else {
+                            await controller.createNewTask();
+                          }
                           if (context.mounted) Navigator.of(context).pop();
                           if (context.mounted) Navigator.of(context).pop();
 
                           if (context.mounted) {
                             showSuccessDialog(
                               context,
-                              'Tarefa criada com sucesso!',
+                              (task != null)
+                                  ? 'Tarefa atualizada com sucesso!'
+                                  : 'Tarefa criada com sucesso!',
                             );
                           }
                         } on UiError catch (e) {
@@ -163,7 +197,7 @@ class NewTaskBottomSheet extends GetView<GetxDashboardPresenter> {
                         }
                       }
                     },
-                    child: const Text('Enviar'),
+                    child: Text((task != null) ? 'Atualizar' : 'Criar'),
                   ),
                 ),
                 const SizedBox(height: 12),

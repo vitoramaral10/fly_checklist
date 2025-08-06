@@ -9,3 +9,4 @@ export 'recovery_password.dart';
 export 'register_with_email.dart';
 export 'register_with_google.dart';
 export 'send_verification_email.dart';
+export 'update_task.dart';

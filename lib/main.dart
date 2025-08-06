@@ -36,6 +36,10 @@ class MyApp extends StatelessWidget {
         colorScheme: colorScheme.copyWith(primary: Color(0xFFE10600)),
         useMaterial3: true, // Garante que o Material 3 está ativo
         brightness: Brightness.light, // Define o brilho como claro
+        checkboxTheme: CheckboxThemeData(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          side: BorderSide(color: colorScheme.outlineVariant, width: 1.5),
+        ),
       ),
       initialRoute: Routes.home,
       getPages: Routes.pages,
