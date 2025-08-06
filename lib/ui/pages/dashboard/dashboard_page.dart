@@ -152,6 +152,30 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
   }
 
   Widget _buildQuickTaskItem(ThemeData theme, TaskEntity task) {
+    IconData priorityIcon;
+    Color priorityColor;
+    switch (task.priority) {
+      case 4:
+        priorityIcon = Icons.priority_high_rounded;
+        priorityColor = Colors.red;
+        break;
+      case 3:
+        priorityIcon = Icons.arrow_upward_rounded;
+        priorityColor = Colors.orange;
+        break;
+      case 2:
+        priorityIcon = Icons.drag_handle_rounded;
+        priorityColor = Colors.amber;
+        break;
+      case 1:
+        priorityIcon = Icons.arrow_downward_rounded;
+        priorityColor = Colors.green;
+        break;
+      default:
+        priorityIcon = Icons.low_priority_rounded;
+        priorityColor = Colors.grey;
+    }
+
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -162,6 +186,7 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
       ),
       child: ListTile(
         dense: true,
+        leading: Icon(priorityIcon, color: priorityColor),
         title: Text(
           task.title,
           style: theme.textTheme.bodyLarge?.copyWith(
