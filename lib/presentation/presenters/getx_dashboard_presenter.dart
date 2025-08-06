@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fly_checklist/domain/helpers/helpers.dart';
 import 'package:fly_checklist/ui/helpers/helpers.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../domain/entities/entities.dart';
 import '../../domain/usecases/usecases.dart';
@@ -101,16 +102,24 @@ class GetxDashboardPresenter extends GetxController
     try {
       await createTask.call(
         userId: user!.uid,
-        params: CreateTaskParams(
+        task: TaskEntity(
+          id: '',
           title: newTaskTitleController.text,
           description: newTaskDescriptionController.text,
-          dueDate: DateTime.tryParse(newTaskDueDateController.text),
-          priority: newTaskPriority ?? 2,
+          dueDate: newTaskDueDateController.text.isNotEmpty
+              ? DateFormat.yMd().parse(newTaskDueDateController.text)
+              : null,
+          priority: newTaskPriority!,
+          isDone: false,
+          createdAt: DateTime.now(),
         ),
       );
     } on DomainError catch (e) {
       log(e.toString(), name: 'GetxDashboardPresenter.createNewTask');
       throw UiError.unexpected;
+    } finally {
+      clearNewTaskFields();
+      await getAllTasks();
     }
   }
 
@@ -148,6 +157,7 @@ class GetxDashboardPresenter extends GetxController
 
       throw UiError.unexpected;
     } finally {
+      clearNewTaskFields();
       await getAllTasks();
     }
   }

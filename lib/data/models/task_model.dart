@@ -9,6 +9,7 @@ class TaskModel {
   final DateTime? dueDate;
   final int priority;
   final bool isDone;
+  final DateTime createdAt;
 
   TaskModel({
     required this.id,
@@ -17,6 +18,7 @@ class TaskModel {
     this.dueDate,
     required this.priority,
     required this.isDone,
+    required this.createdAt,
   });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class TaskModel {
           : null,
       priority: json['priority'] as int,
       isDone: json['isDone'] as bool? ?? false,
+      createdAt: (json['createdAt'] as Timestamp).toDate(),
     );
   }
 
@@ -40,6 +43,7 @@ class TaskModel {
       dueDate: dueDate,
       priority: priority,
       isDone: isDone, // Default value, can be changed later
+      createdAt: createdAt,
     );
   }
 
@@ -50,6 +54,7 @@ class TaskModel {
       'dueDate': dueDate != null ? Timestamp.fromDate(dueDate!) : null,
       'priority': priority,
       'isDone': isDone,
+      'createdAt': Timestamp.fromDate(createdAt),
     };
   }
 
@@ -61,6 +66,7 @@ class TaskModel {
       dueDate: entity.dueDate,
       priority: entity.priority,
       isDone: entity.isDone,
+      createdAt: entity.createdAt,
     );
   }
 }

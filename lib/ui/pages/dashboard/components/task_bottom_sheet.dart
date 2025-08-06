@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fly_checklist/domain/entities/task_entity.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../presentation/presenters/presenters.dart';
 import '../../../components/components.dart';
 import '../../../helpers/helpers.dart';
 
-Future<void> showNewTaskBottomSheet(
+Future<void> showTaskBottomSheet(
   BuildContext context, {
   TaskEntity? task,
 }) async {
@@ -14,15 +15,15 @@ Future<void> showNewTaskBottomSheet(
     context: context,
     isScrollControlled: true,
     builder: (context) {
-      return NewTaskBottomSheet(task: task);
+      return TaskBottomSheet(task: task);
     },
   );
 }
 
-class NewTaskBottomSheet extends GetView<GetxDashboardPresenter> {
+class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
   final TaskEntity? task;
 
-  const NewTaskBottomSheet({super.key, this.task});
+  const TaskBottomSheet({super.key, this.task});
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +113,7 @@ class NewTaskBottomSheet extends GetView<GetxDashboardPresenter> {
                   ),
                   keyboardType: TextInputType.datetime,
                   textInputAction: TextInputAction.done,
+                  readOnly: true,
                   onTap: () async {
                     final selectedDate = await showDatePicker(
                       context: context,
@@ -120,8 +122,9 @@ class NewTaskBottomSheet extends GetView<GetxDashboardPresenter> {
                       lastDate: DateTime(2101),
                     );
                     if (selectedDate != null) {
-                      controller.newTaskDueDateController.text =
-                          '${selectedDate.toLocal()}'.split(' ')[0];
+                      controller.newTaskDueDateController.text = DateFormat.yMd(
+                        'pt_BR',
+                      ).format(selectedDate);
                     }
                   },
                 ),

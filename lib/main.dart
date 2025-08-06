@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 
 import 'firebase_options.dart';
@@ -17,6 +18,8 @@ Future<void> main() async {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;
   };
+
+  // Initialize de intl
 
   runApp(const MyApp());
 }
@@ -43,6 +46,17 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: Routes.home,
       getPages: Routes.pages,
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        // Add your app-specific localization delegate here
+      ],
+      supportedLocales: [
+        const Locale('en', ''), // English
+        const Locale('es', ''), // Spanish
+        const Locale('pt', 'BR'), // Portuguese (Brazil)
+      ],
     );
   }
 }

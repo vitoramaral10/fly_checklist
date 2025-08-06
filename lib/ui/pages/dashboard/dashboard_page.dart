@@ -97,8 +97,7 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            controller.clearNewTaskFields();
-            showNewTaskBottomSheet(context);
+            showTaskBottomSheet(context);
           },
           child: const Icon(Icons.add_rounded),
         ),
@@ -180,7 +179,7 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
           },
         ),
         onTap: () {
-          showNewTaskBottomSheet(Get.context!, task: task);
+          showTaskBottomSheet(Get.context!, task: task);
         },
       ),
     );
