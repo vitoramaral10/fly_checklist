@@ -1,4 +1,3 @@
-import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -11,14 +10,6 @@ import 'main/routes.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  // Configure Firebase App Check
-  await FirebaseAppCheck.instance.activate(
-    // Use debug provider for development
-    androidProvider: kDebugMode
-        ? AndroidProvider.debug
-        : AndroidProvider.playIntegrity,
-  );
 
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
