@@ -94,6 +94,10 @@ class GetxDashboardPresenter extends GetxController
       final tasks = await loadTasks.call(user!.uid);
 
       tasks.sort((a, b) {
+        // Tarefas concluídas sempre vão para o final
+        if (a.isDone && !b.isDone) return 1;
+        if (!a.isDone && b.isDone) return -1;
+
         // Se ambos têm dueDate, ordena por dueDate (ascendente)
         if (a.dueDate != null && b.dueDate != null) {
           int cmp = a.dueDate!.compareTo(b.dueDate!);
@@ -163,6 +167,8 @@ class GetxDashboardPresenter extends GetxController
 
       _tasks[_tasks.indexOf(task)] = task;
       throw UiError.unexpected;
+    } finally {
+      await getAllTasks();
     }
   }
 
