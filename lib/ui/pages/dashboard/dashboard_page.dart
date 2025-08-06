@@ -208,7 +208,7 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
         IconButton(
           icon: const Icon(Icons.add_circle_outline_rounded),
           onPressed: () {
-            // TODO: Implementar a lógica para adicionar um novo grupo
+            showGroupBottomSheet(context);
           },
           tooltip: 'Adicionar Grupo',
         ),
