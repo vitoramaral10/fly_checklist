@@ -45,21 +45,21 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
 
     // Ícones predefinidos para seleção
     final availableIcons = [
-      Icons.checklist,
-      Icons.list_alt,
-      Icons.task_alt,
-      Icons.assignment,
-      Icons.work,
-      Icons.home,
-      Icons.school,
-      Icons.fitness_center,
-      Icons.shopping_cart,
-      Icons.restaurant,
-      Icons.car_repair,
-      Icons.flight,
-      Icons.medical_services,
-      Icons.pets,
-      Icons.sports_soccer,
+      Icons.checklist_rounded,
+      Icons.list_alt_rounded,
+      Icons.task_alt_rounded,
+      Icons.assignment_rounded,
+      Icons.work_rounded,
+      Icons.home_rounded,
+      Icons.school_rounded,
+      Icons.fitness_center_rounded,
+      Icons.shopping_cart_rounded,
+      Icons.restaurant_rounded,
+      Icons.car_repair_rounded,
+      Icons.flight_rounded,
+      Icons.medical_services_rounded,
+      Icons.pets_rounded,
+      Icons.sports_soccer_rounded,
     ];
 
     // Preencher campos se estiver editando
