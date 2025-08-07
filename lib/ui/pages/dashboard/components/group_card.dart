@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../../domain/entities/entities.dart';
+import '../../../../main/routes.dart';
 
 class GroupCard extends StatelessWidget {
   final GroupEntity group;
@@ -20,7 +22,7 @@ class GroupCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: InkWell(
         onTap: () {
-          // TODO: Navegar para a tela de detalhes do grupo
+          Get.toNamed(Routes.group, arguments: group);
         },
         borderRadius: BorderRadius.circular(20),
         child: Padding(
