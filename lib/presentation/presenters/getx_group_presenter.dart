@@ -41,6 +41,7 @@ class GetxGroupPresenter extends GetxController implements GroupPresenter {
 
     await loadUser();
     await loadGroup();
+    await getAllTasks();
 
     _isLoading.value = false;
     _hasError.value = null;

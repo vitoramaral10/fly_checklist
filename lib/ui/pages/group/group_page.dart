@@ -123,11 +123,14 @@ class GroupPage extends GetView<GetxGroupPresenter> {
               () => SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final task = controller.tasks[index];
-                  return TaskItem(
-                    task: task,
-                    onCheckboxChanged: (value) {
-                      // TODO: Implement task update
-                    },
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: TaskItem(
+                      task: task,
+                      onCheckboxChanged: (value) {
+                        // TODO: Implement task update
+                      },
+                    ),
                   );
                 }, childCount: controller.tasks.length),
               ),
@@ -135,11 +138,20 @@ class GroupPage extends GetView<GetxGroupPresenter> {
           ],
         );
       }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Implement create task
-        },
-        child: const Icon(Icons.add_rounded),
+      floatingActionButton: Obx(
+        () => controller.group == null
+            ? const SizedBox.shrink()
+            : FloatingActionButton(
+                backgroundColor: controller.group!.color,
+                foregroundColor:
+                    controller.group!.color.computeLuminance() > 0.5
+                    ? Colors.black
+                    : Colors.white,
+                onPressed: () {
+                  // TODO: Implement create task
+                },
+                child: const Icon(Icons.add_rounded),
+              ),
       ),
     );
   }
