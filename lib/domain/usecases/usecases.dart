@@ -3,6 +3,7 @@ export 'create_group.dart';
 export 'create_task.dart';
 export 'delete_group.dart';
 export 'delete_task.dart';
+export 'get_group.dart';
 export 'get_user.dart';
 export 'load_groups.dart';
 export 'load_tasks.dart';

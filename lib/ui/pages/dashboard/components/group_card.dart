@@ -22,7 +22,7 @@ class GroupCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: InkWell(
         onTap: () {
-          Get.toNamed(Routes.group, arguments: group);
+          Get.toNamed(Routes.group.replaceAll(':id', group.id));
         },
         borderRadius: BorderRadius.circular(20),
         child: Padding(

@@ -11,6 +11,7 @@ class _GroupBinding extends Bindings {
     Get.put(
       GetxGroupPresenter(
         getUser: makeFireauthGetUser(),
+        getGroup: makeFirestoreGetGroup(),
         loadTasks: makeFirestoreLoadTasks(),
       ),
     );

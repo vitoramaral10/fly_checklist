@@ -1,1 +1,1 @@
-enum FirestoreError { unexpected }
+enum FirestoreError { unexpected, notFound }

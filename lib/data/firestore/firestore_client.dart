@@ -29,4 +29,8 @@ abstract class FirestoreClient {
     required String userId,
     required String groupId,
   });
+  Future<Map<String, dynamic>> getGroup({
+    required String userId,
+    required String groupId,
+  });
 }

@@ -194,4 +194,32 @@ class FirestoreAdapter implements FirestoreClient {
       throw FirestoreError.unexpected;
     }
   }
+
+  @override
+  Future<Map<String, dynamic>> getGroup({
+    required String userId,
+    required String groupId,
+  }) {
+    try {
+      return instance
+          .collection('users')
+          .doc(userId)
+          .collection('groups')
+          .doc(groupId)
+          .get()
+          .then((doc) {
+            if (doc.exists) {
+              var data = doc.data();
+              data!['id'] = doc.id;
+
+              return data;
+            } else {
+              throw FirestoreError.notFound;
+            }
+          });
+    } on FirebaseException catch (e) {
+      log(e.toString(), name: 'FirestoreAdapter.getGroup');
+      throw FirestoreError.unexpected;
+    }
+  }
 }

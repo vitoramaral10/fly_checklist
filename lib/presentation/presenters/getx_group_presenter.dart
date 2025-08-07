@@ -9,9 +9,14 @@ import '../../ui/pages/pages.dart';
 
 class GetxGroupPresenter extends GetxController implements GroupPresenter {
   final GetUser getUser;
+  final GetGroup getGroup;
   final LoadTasks loadTasks;
 
-  GetxGroupPresenter({required this.getUser, required this.loadTasks});
+  GetxGroupPresenter({
+    required this.getUser,
+    required this.getGroup,
+    required this.loadTasks,
+  });
 
   final _isLoading = true.obs;
   final _hasError = Rxn<String>();
@@ -31,10 +36,12 @@ class GetxGroupPresenter extends GetxController implements GroupPresenter {
   UserEntity? get user => _user.value;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
 
-    _group.value = Get.arguments;
+    await loadUser();
+    await loadGroup();
+
     _isLoading.value = false;
     _hasError.value = null;
   }
@@ -46,6 +53,20 @@ class GetxGroupPresenter extends GetxController implements GroupPresenter {
       _user.value = user;
     } on DomainError catch (e) {
       log(e.toString(), name: 'GetxDashboardPresenter.loadUser');
+      throw DomainError.unexpected;
+    }
+  }
+
+  @override
+  Future<void> loadGroup() async {
+    try {
+      final group = await getGroup.call(
+        userId: user!.uid,
+        groupId: Get.parameters['id']!,
+      );
+      _group.value = group;
+    } on DomainError catch (e) {
+      log(e.toString(), name: 'GetxDashboardPresenter.loadGroup');
       throw DomainError.unexpected;
     }
   }

@@ -9,7 +9,7 @@ class Routes {
   static const String emailVerification = '/email-verification';
   static const String dashboard = '/dashboard';
   static const String settings = '/settings';
-  static const String group = '/group';
+  static const String group = '/group/:id';
 
   static List<GetPage> pages = [
     GetPage(name: home, page: makeHomePage, binding: makeHomeBinding()),

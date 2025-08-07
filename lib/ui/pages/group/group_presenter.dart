@@ -8,5 +8,6 @@ abstract class GroupPresenter {
   UserEntity? get user;
 
   Future<void> loadUser();
+  Future<void> loadGroup();
   Future<void> getAllTasks();
 }

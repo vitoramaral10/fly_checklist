@@ -3,6 +3,7 @@ export 'create_group_factory.dart';
 export 'create_task_factory.dart';
 export 'delete_group_factory.dart';
 export 'delete_task_factory.dart';
+export 'get_group_factory.dart';
 export 'get_user_factory.dart';
 export 'load_groups_factory.dart';
 export 'load_tasks_factory.dart';
