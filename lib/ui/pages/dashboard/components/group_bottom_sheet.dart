@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fly_checklist/domain/entities/task_entity.dart';
+import 'package:fly_checklist/domain/entities/group_entity.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../presentation/presenters/presenters.dart';
 import '../../../components/components.dart';
@@ -9,34 +8,75 @@ import '../../../helpers/helpers.dart';
 
 Future<void> showGroupBottomSheet(
   BuildContext context, {
-  TaskEntity? task,
+  GroupEntity? group,
 }) async {
   await showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     builder: (context) {
-      return GroupBottomSheet(task: task);
+      return GroupBottomSheet(group: group);
     },
   );
 }
 
 class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
-  final TaskEntity? task;
+  final GroupEntity? group;
 
-  const GroupBottomSheet({super.key, this.task});
+  const GroupBottomSheet({super.key, this.group});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    if (task != null) {
-      controller.taskTitleController.text = task!.title;
-      controller.taskDescriptionController.text = task!.description;
-      controller.taskDueDateController.text = (task!.dueDate != null)
-          ? DateFormat.yMd().format(task!.dueDate!)
-          : '';
-      controller.taskPriority = task!.priority;
+    // Controladores para os campos do grupo
+    final nameController = TextEditingController();
+    final descriptionController = TextEditingController();
+    final selectedIcon = ValueNotifier<IconData>(Icons.checklist);
+    final selectedColor = ValueNotifier<Color>(colorScheme.primary);
+    final saveCheckState = ValueNotifier<bool>(true);
+    final formKey = GlobalKey<FormState>();
+
+    // Cores predefinidas para seleção
+    final availableColors = [
+      colorScheme.primary,
+      Colors.red,
+      Colors.green,
+      Colors.blue,
+      Colors.orange,
+      Colors.purple,
+      Colors.teal,
+      Colors.pink,
+      Colors.indigo,
+      Colors.brown,
+    ];
+
+    // Ícones predefinidos para seleção
+    final availableIcons = [
+      Icons.checklist,
+      Icons.list_alt,
+      Icons.task_alt,
+      Icons.assignment,
+      Icons.work,
+      Icons.home,
+      Icons.school,
+      Icons.fitness_center,
+      Icons.shopping_cart,
+      Icons.restaurant,
+      Icons.car_repair,
+      Icons.flight,
+      Icons.medical_services,
+      Icons.pets,
+      Icons.sports_soccer,
+    ];
+
+    // Preencher campos se estiver editando
+    if (group != null) {
+      nameController.text = group!.name;
+      descriptionController.text = group!.description ?? '';
+      selectedIcon.value = group!.icon;
+      selectedColor.value = group!.color;
+      saveCheckState.value = group!.saveCheckState;
     }
 
     return Padding(
@@ -45,10 +85,11 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           child: Form(
-            key: controller.formNewTaskKey,
+            key: formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                // Handle visual
                 Container(
                   width: 32,
                   height: 4,
@@ -58,139 +99,305 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
                   ),
                 ),
                 const SizedBox(height: 24),
+
+                // Título do modal
                 Text(
-                  (task != null) ? 'Editar Tarefa' : 'Nova Tarefa',
+                  (group != null) ? 'Editar Grupo' : 'Novo Grupo',
                   style: theme.textTheme.headlineSmall,
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Insira os detalhes da nova tarefa aqui.',
+                  'Configure os detalhes do seu grupo de tarefas.',
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 24),
+
+                // Campo Nome do Grupo
                 TextFormField(
-                  controller: controller.taskTitleController,
+                  controller: nameController,
                   decoration: const InputDecoration(
-                    labelText: 'Título da Tarefa',
-                    prefixIcon: Icon(Icons.title_outlined),
+                    labelText: 'Nome do Grupo',
+                    prefixIcon: Icon(Icons.label_outline),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16)),
                     ),
                   ),
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
-
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira o título da tarefa.';
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Por favor, insira o nome do grupo.';
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: 16),
+
+                // Campo Descrição (opcional)
                 TextFormField(
-                  controller: controller.taskDescriptionController,
+                  controller: descriptionController,
                   decoration: const InputDecoration(
-                    labelText: 'Descrição da Tarefa',
+                    labelText: 'Descrição (opcional)',
                     prefixIcon: Icon(Icons.description_outlined),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16)),
                     ),
                   ),
                   keyboardType: TextInputType.multiline,
-                  maxLines: 3,
+                  maxLines: 2,
                   textInputAction: TextInputAction.done,
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: controller.taskDueDateController,
-                  decoration: const InputDecoration(
-                    labelText: 'Data de Vencimento',
-                    prefixIcon: Icon(Icons.date_range_outlined),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                    ),
-                  ),
-                  keyboardType: TextInputType.datetime,
-                  textInputAction: TextInputAction.done,
-                  readOnly: true,
-                  onTap: () async {
-                    final selectedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101),
+
+                // Seletor de Cor
+                ValueListenableBuilder<Color>(
+                  valueListenable: selectedColor,
+                  builder: (context, color, _) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.palette_outlined,
+                              color: colorScheme.onSurface,
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              'Cor do Grupo',
+                              style: theme.textTheme.titleMedium,
+                            ),
+                            const Spacer(),
+                            Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                color: color,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: colorScheme.outline,
+                                  width: 2,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Wrap(
+                          spacing: 12,
+                          runSpacing: 12,
+                          children: availableColors.map((availableColor) {
+                            final isSelected = availableColor == color;
+                            return GestureDetector(
+                              onTap: () {
+                                selectedColor.value = availableColor;
+                              },
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: availableColor,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? colorScheme.onSurface
+                                        : colorScheme.outline,
+                                    width: isSelected ? 3 : 1,
+                                  ),
+                                ),
+                                child: isSelected
+                                    ? Icon(
+                                        Icons.check,
+                                        color:
+                                            availableColor.computeLuminance() >
+                                                0.5
+                                            ? Colors.black
+                                            : Colors.white,
+                                        size: 20,
+                                      )
+                                    : null,
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ],
                     );
-                    if (selectedDate != null) {
-                      controller.taskDueDateController.text = DateFormat.yMd(
-                        'pt_BR',
-                      ).format(selectedDate);
-                    }
                   },
                 ),
-                const SizedBox(height: 16),
-                Obx(
-                  () => DropdownButtonFormField<int>(
-                    value: controller.taskPriority,
-                    decoration: const InputDecoration(
-                      labelText: 'Prioridade',
-                      prefixIcon: Icon(Icons.priority_high_outlined),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
-                      ),
-                    ),
-                    items: const [
-                      DropdownMenuItem(value: 1, child: Text('Baixa')),
-                      DropdownMenuItem(value: 2, child: Text('Média')),
-                      DropdownMenuItem(value: 3, child: Text('Alta')),
-                      DropdownMenuItem(value: 4, child: Text('Crítica')),
-                    ],
-                    onChanged: (value) {
-                      if (value != null) {
-                        controller.taskPriority = value;
-                      }
-                    },
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Por favor, selecione a prioridade da tarefa.';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-
                 const SizedBox(height: 24),
+
+                // Seletor de Ícone
+                ValueListenableBuilder<IconData>(
+                  valueListenable: selectedIcon,
+                  builder: (context, icon, _) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.apps_outlined,
+                              color: colorScheme.onSurface,
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              'Ícone do Grupo',
+                              style: theme.textTheme.titleMedium,
+                            ),
+                            const Spacer(),
+                            ValueListenableBuilder<Color>(
+                              valueListenable: selectedColor,
+                              builder: (context, color, _) {
+                                return Container(
+                                  width: 32,
+                                  height: 32,
+                                  decoration: BoxDecoration(
+                                    color: color,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Icon(
+                                    icon,
+                                    color: color.computeLuminance() > 0.5
+                                        ? Colors.black
+                                        : Colors.white,
+                                    size: 20,
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: availableIcons.map((availableIcon) {
+                            final isSelected = availableIcon == icon;
+                            return GestureDetector(
+                              onTap: () {
+                                selectedIcon.value = availableIcon;
+                              },
+                              child: Container(
+                                width: 48,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? colorScheme.primaryContainer
+                                      : colorScheme.surface,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? colorScheme.primary
+                                        : colorScheme.outline,
+                                    width: isSelected ? 2 : 1,
+                                  ),
+                                ),
+                                child: Icon(
+                                  availableIcon,
+                                  color: isSelected
+                                      ? colorScheme.primary
+                                      : colorScheme.onSurface,
+                                  size: 24,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
+
+                // Switch para salvar estado dos checks
+                ValueListenableBuilder<bool>(
+                  valueListenable: saveCheckState,
+                  builder: (context, save, _) {
+                    return Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceVariant.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: colorScheme.outline.withOpacity(0.3),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.save_outlined, color: colorScheme.primary),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Salvar Estado dos Checks',
+                                  style: theme.textTheme.titleSmall,
+                                ),
+                                Text(
+                                  save
+                                      ? 'Os checks marcados serão mantidos entre sessões'
+                                      : 'Os checks serão resetados a cada nova sessão',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.onSurface.withOpacity(
+                                      0.7,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Switch(
+                            value: save,
+                            onChanged: (value) {
+                              saveCheckState.value = value;
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 32),
+
+                // Botão de Ação Principal
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
                     onPressed: () async {
-                      if (controller.formNewTaskKey.currentState!.validate()) {
+                      if (formKey.currentState!.validate()) {
                         try {
                           showLoadingDialog(context);
-                          if (task != null) {
-                            await controller.onUpdateTask(
-                              task!.copyWith(
-                                title: controller.taskTitleController.text,
-                                description:
-                                    controller.taskDescriptionController.text,
-                                dueDate: DateTime.tryParse(
-                                  controller.taskDueDateController.text,
-                                ),
-                                priority: controller.taskPriority ?? 2,
-                              ),
-                            );
-                          } else {
-                            await controller.createNewTask();
-                          }
+
+                          // TODO: Implementar lógica de criação/atualização do grupo
+                          // final newGroup = GroupEntity(
+                          //   id: group?.id ?? '',
+                          //   name: nameController.text.trim(),
+                          //   description: descriptionController.text.trim().isEmpty
+                          //       ? null
+                          //       : descriptionController.text.trim(),
+                          //   icon: selectedIcon.value,
+                          //   color: selectedColor.value,
+                          //   saveCheckState: saveCheckState.value,
+                          //   createdAt: group?.createdAt ?? DateTime.now(),
+                          //   updatedAt: group != null ? DateTime.now() : null,
+                          // );
+
+                          // if (group != null) {
+                          //   await controller.onUpdateGroup(newGroup);
+                          // } else {
+                          //   await controller.createNewGroup(newGroup);
+                          // }
+
                           if (context.mounted) Navigator.of(context).pop();
                           if (context.mounted) Navigator.of(context).pop();
 
                           if (context.mounted) {
                             showSuccessSnackbar(
-                              message: (task != null)
-                                  ? 'Tarefa atualizada com sucesso!'
-                                  : 'Tarefa criada com sucesso!',
+                              message: (group != null)
+                                  ? 'Grupo atualizado com sucesso!'
+                                  : 'Grupo criado com sucesso!',
                             );
                           }
                         } on UiError catch (e) {
@@ -198,20 +405,32 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
                           if (context.mounted) {
                             showErrorDialog(context, e.message);
                           }
+                        } catch (e) {
+                          if (context.mounted) Navigator.of(context).pop();
+                          if (context.mounted) {
+                            showErrorDialog(
+                              context,
+                              'Erro inesperado ao salvar grupo',
+                            );
+                          }
                         }
                       }
                     },
-                    child: Text((task != null) ? 'Atualizar' : 'Criar'),
+                    child: Text(
+                      (group != null) ? 'Atualizar Grupo' : 'Criar Grupo',
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
-                if (task != null)
+
+                // Botão de Exclusão (apenas para edição)
+                if (group != null)
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
                       icon: const Icon(Icons.delete_outline, color: Colors.red),
                       label: const Text(
-                        'Excluir',
+                        'Excluir Grupo',
                         style: TextStyle(color: Colors.red),
                       ),
                       style: OutlinedButton.styleFrom(
@@ -220,14 +439,29 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
                       onPressed: () async {
                         final isDelete = await showConfirmationDialog(
                           context,
-                          title: 'Excluir Tarefa',
+                          title: 'Excluir Grupo',
                           content:
-                              'Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.',
+                              'Tem certeza que deseja excluir este grupo? Todas as tarefas associadas também serão removidas. Esta ação não pode ser desfeita.',
                         );
 
                         if (isDelete) {
-                          await controller.onDeleteTask(task!);
-                          if (context.mounted) Navigator.of(context).pop();
+                          try {
+                            showLoadingDialog(context);
+                            // TODO: Implementar lógica de exclusão do grupo
+                            // await controller.onDeleteGroup(group!);
+                            if (context.mounted) Navigator.of(context).pop();
+                            if (context.mounted) Navigator.of(context).pop();
+                            if (context.mounted) {
+                              showSuccessSnackbar(
+                                message: 'Grupo excluído com sucesso!',
+                              );
+                            }
+                          } catch (e) {
+                            if (context.mounted) Navigator.of(context).pop();
+                            if (context.mounted) {
+                              showErrorDialog(context, 'Erro ao excluir grupo');
+                            }
+                          }
                         }
                       },
                     ),
