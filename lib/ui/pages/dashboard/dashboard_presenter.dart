@@ -8,6 +8,7 @@ abstract class DashboardPresenter {
   UserEntity? get user;
   int? get taskPriority;
   List<TaskEntity> get tasks;
+  List<GroupEntity> get groups;
   IconData get groupIcon;
   Color get groupColor;
   bool get saveCheckState;
@@ -19,10 +20,16 @@ abstract class DashboardPresenter {
 
   Future<void> loadAllData();
   Future<void> loadUser();
-  Future<void> getAllTasks();
-  Future<void> createNewTask();
-  void clearNewTaskFields();
+  void clearFields();
   Future<void> toggleTaskCompletion(TaskEntity task);
+
+  Future<void> getAllTasks();
+  Future<void> onCreateTask();
   Future<void> onUpdateTask(TaskEntity task);
   Future<void> onDeleteTask(TaskEntity task);
+
+  Future<void> getAllGroups();
+  Future<void> onCreateGroup();
+  Future<void> onUpdateGroup(GroupEntity group);
+  Future<void> onDeleteGroup(GroupEntity group);
 }

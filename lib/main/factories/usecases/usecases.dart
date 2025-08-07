@@ -1,7 +1,10 @@
 export 'change_password_factory.dart';
+export 'create_group_factory.dart';
 export 'create_task_factory.dart';
+export 'delete_group_factory.dart';
 export 'delete_task_factory.dart';
 export 'get_user_factory.dart';
+export 'load_groups_factory.dart';
 export 'load_tasks_factory.dart';
 export 'login_with_email_factory.dart';
 export 'login_with_google_factory.dart';
@@ -10,4 +13,5 @@ export 'recovery_password_factory.dart';
 export 'register_with_email_factory.dart';
 export 'register_with_google_factory.dart';
 export 'send_verification_email_factory.dart';
+export 'update_group_factory.dart';
 export 'update_task_factory.dart';

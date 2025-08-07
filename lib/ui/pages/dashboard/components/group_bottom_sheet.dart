@@ -353,25 +353,20 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
                         try {
                           showLoadingDialog(context);
 
-                          // TODO: Implementar lógica de criação/atualização do grupo
-                          // final newGroup = GroupEntity(
-                          //   id: group?.id ?? '',
-                          //   name: nameController.text.trim(),
-                          //   description: descriptionController.text.trim().isEmpty
-                          //       ? null
-                          //       : descriptionController.text.trim(),
-                          //   icon: selectedIcon.value,
-                          //   color: selectedColor.value,
-                          //   saveCheckState: saveCheckState.value,
-                          //   createdAt: group?.createdAt ?? DateTime.now(),
-                          //   updatedAt: group != null ? DateTime.now() : null,
-                          // );
-
-                          // if (group != null) {
-                          //   await controller.onUpdateGroup(newGroup);
-                          // } else {
-                          //   await controller.createNewGroup(newGroup);
-                          // }
+                          if (group != null) {
+                            await controller.onUpdateGroup(
+                              group!.copyWith(
+                                name: controller.groupNameController.text,
+                                description:
+                                    controller.groupDescriptionController.text,
+                                icon: controller.groupIcon,
+                                color: controller.groupColor,
+                                saveCheckState: controller.saveCheckState,
+                              ),
+                            );
+                          } else {
+                            await controller.onCreateGroup();
+                          }
 
                           if (context.mounted) Navigator.of(context).pop();
                           if (context.mounted) Navigator.of(context).pop();

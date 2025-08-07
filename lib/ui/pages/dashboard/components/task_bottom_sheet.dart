@@ -181,7 +181,7 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
                               ),
                             );
                           } else {
-                            await controller.createNewTask();
+                            await controller.onCreateTask();
                           }
                           if (context.mounted) Navigator.of(context).pop();
                           if (context.mounted) Navigator.of(context).pop();

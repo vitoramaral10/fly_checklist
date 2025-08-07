@@ -9,6 +9,8 @@ class GroupEntity {
   final bool saveCheckState;
   final DateTime createdAt;
   final DateTime? updatedAt;
+  final int completedTasks;
+  final int totalTasks;
 
   GroupEntity({
     required this.id,
@@ -19,6 +21,8 @@ class GroupEntity {
     required this.saveCheckState,
     required this.createdAt,
     this.updatedAt,
+    this.completedTasks = 0,
+    this.totalTasks = 0,
   });
 
   GroupEntity copyWith({

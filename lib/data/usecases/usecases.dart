@@ -1,7 +1,10 @@
 export 'change_password/change_password.dart';
+export 'create_group/create_group.dart';
 export 'create_task/create_task.dart';
+export 'delete_group/delete_group.dart';
 export 'delete_task/delete_task.dart';
 export 'get_user/get_user.dart';
+export 'load_groups/load_groups.dart';
 export 'load_tasks/load_tasks.dart';
 export 'login_with_email/login_with_email.dart';
 export 'login_with_google/login_with_google.dart';
@@ -10,4 +13,5 @@ export 'recovery_password/recovery_password.dart';
 export 'register_with_email/register_with_email.dart';
 export 'register_with_google/register_with_google.dart';
 export 'send_verification_email/send_verification_email.dart';
+export 'send_verification_email/update_group/update_group.dart';
 export 'update_task/update_task.dart';

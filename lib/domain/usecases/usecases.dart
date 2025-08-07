@@ -1,7 +1,10 @@
 export 'change_password.dart';
+export 'create_group.dart';
 export 'create_task.dart';
+export 'delete_group.dart';
 export 'delete_task.dart';
 export 'get_user.dart';
+export 'load_groups.dart';
 export 'load_tasks.dart';
 export 'login_with_email.dart';
 export 'login_with_google.dart';
@@ -10,4 +13,5 @@ export 'recovery_password.dart';
 export 'register_with_email.dart';
 export 'register_with_google.dart';
 export 'send_verification_email.dart';
+export 'update_group.dart';
 export 'update_task.dart';

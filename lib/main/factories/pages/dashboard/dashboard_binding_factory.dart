@@ -15,6 +15,10 @@ class _DashboardBinding extends Bindings {
         createTask: makeFirestoreCreateTask(),
         updateTask: makeFirestoreUpdateTask(),
         deleteTask: makeFirestoreDeleteTask(),
+        loadGroups: makeFirestoreLoadGroups(),
+        createGroup: makeFirestoreCreateGroup(),
+        updateGroup: makeFirestoreUpdateGroup(),
+        deleteGroup: makeFirestoreDeleteGroup(),
       ),
     );
   }

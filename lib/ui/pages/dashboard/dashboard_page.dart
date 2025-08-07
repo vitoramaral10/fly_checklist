@@ -103,7 +103,7 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            controller.clearNewTaskFields();
+            controller.clearFields();
             showTaskBottomSheet(context);
           },
           child: const Icon(Icons.add_rounded),
@@ -143,7 +143,7 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
                       return TaskItem(
                         task: task,
                         onTap: () {
-                          controller.clearNewTaskFields();
+                          controller.clearFields();
                           showTaskBottomSheet(Get.context!, task: task);
                         },
                         confirmDismiss: (direction) async {
@@ -223,132 +223,18 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
   ) {
     // Os dados dos grupos devem vir do presenter
     final crossAxisCount = screenWidth > 600 ? 4 : 2;
-    final items = [
-      _buildTaskGroupCard(
-        theme,
-        'Trabalho',
-        5,
-        8,
-        Colors.orange.shade300,
-        Icons.work_rounded,
-      ),
-      _buildTaskGroupCard(
-        theme,
-        'Pessoal',
-        2,
-        10,
-        Colors.blue.shade300,
-        Icons.person_rounded,
-      ),
-      _buildTaskGroupCard(
-        theme,
-        'Estudos',
-        7,
-        7,
-        Colors.green.shade300,
-        Icons.school_rounded,
-      ),
-      _buildTaskGroupCard(
-        theme,
-        'Casa',
-        1,
-        3,
-        Colors.pink.shade200,
-        Icons.home_rounded,
-      ),
-      _buildTaskGroupCard(
-        theme,
-        'Fitness',
-        4,
-        5,
-        Colors.teal.shade300,
-        Icons.fitness_center_rounded,
-      ),
-      _buildTaskGroupCard(
-        theme,
-        'Compras',
-        9,
-        12,
-        Colors.purple.shade200,
-        Icons.shopping_bag_rounded,
-      ),
-    ];
 
-    return SliverGrid(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        childAspectRatio: 1.0,
-      ),
-      delegate: SliverChildBuilderDelegate(
-        (context, index) => items[index],
-        childCount: items.length,
-      ),
-    );
-  }
-
-  Widget _buildTaskGroupCard(
-    ThemeData theme,
-    String title,
-    int completed,
-    int total,
-    Color color,
-    IconData icon,
-  ) {
-    final progress = total > 0 ? completed / total : 0.0;
-    return Card(
-      elevation: 0,
-      color: color.withAlpha(40),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: InkWell(
-        onTap: () {
-          // TODO: Navegar para a tela de detalhes do grupo
-        },
-        borderRadius: BorderRadius.circular(20),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: color.withAlpha(80),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Icon(icon, color: color.withAlpha(200), size: 28),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '$completed/$total tarefas',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  LinearProgressIndicator(
-                    value: progress,
-                    backgroundColor: color.withAlpha(60),
-                    color: color,
-                    minHeight: 6,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ],
-              ),
-            ],
-          ),
+    return Obx(
+      () => SliverGrid(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 1.0,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (context, index) => GroupCard(group: controller.groups[index]),
+          childCount: controller.groups.length,
         ),
       ),
     );

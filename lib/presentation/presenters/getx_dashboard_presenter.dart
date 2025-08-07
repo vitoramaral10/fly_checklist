@@ -17,6 +17,10 @@ class GetxDashboardPresenter extends GetxController
   final CreateTask createTask;
   final UpdateTask updateTask;
   final DeleteTask deleteTask;
+  final LoadGroups loadGroups;
+  final CreateGroup createGroup;
+  final UpdateGroup updateGroup;
+  final DeleteGroup deleteGroup;
 
   GetxDashboardPresenter({
     required this.getUser,
@@ -24,6 +28,10 @@ class GetxDashboardPresenter extends GetxController
     required this.createTask,
     required this.updateTask,
     required this.deleteTask,
+    required this.loadGroups,
+    required this.createGroup,
+    required this.updateGroup,
+    required this.deleteGroup,
   });
 
   final formNewTaskKey = GlobalKey<FormState>();
@@ -40,6 +48,7 @@ class GetxDashboardPresenter extends GetxController
   final _user = Rxn<UserEntity>();
   final _taskPriority = Rxn<int>(2);
   final _tasks = <TaskEntity>[].obs;
+  final _groups = <GroupEntity>[].obs;
   final _groupIcon = Icons.checklist.obs;
   final Rx<Color> _groupColor = Colors.blue.obs; // Color
   final _saveCheckState = true.obs;
@@ -54,6 +63,8 @@ class GetxDashboardPresenter extends GetxController
   int? get taskPriority => _taskPriority.value;
   @override
   List<TaskEntity> get tasks => _tasks;
+  @override
+  List<GroupEntity> get groups => _groups;
   @override
   IconData get groupIcon => _groupIcon.value;
   @override
@@ -98,6 +109,7 @@ class GetxDashboardPresenter extends GetxController
     try {
       await loadUser();
       await getAllTasks();
+      await getAllGroups();
     } on DomainError catch (e) {
       log(e.toString(), name: 'GetxDashboardPresenter.loadAllData');
       _hasError.value = UiError.unexpected.message;
@@ -148,7 +160,7 @@ class GetxDashboardPresenter extends GetxController
   }
 
   @override
-  Future<void> createNewTask() async {
+  Future<void> onCreateTask() async {
     try {
       await createTask.call(
         userId: user!.uid,
@@ -168,18 +180,23 @@ class GetxDashboardPresenter extends GetxController
       log(e.toString(), name: 'GetxDashboardPresenter.createNewTask');
       throw UiError.unexpected;
     } finally {
-      clearNewTaskFields();
+      clearFields();
       await getAllTasks();
     }
   }
 
   @override
-  void clearNewTaskFields() {
+  void clearFields() {
     taskTitleController.clear();
     taskDescriptionController.clear();
     taskDueDateController.clear();
     taskPriority = 2;
     formNewTaskKey.currentState?.reset();
+    _groupIcon.value = Icons.checklist;
+    _groupColor.value = Colors.blue; // Reset to default color
+    groupNameController.clear();
+    groupDescriptionController.clear();
+    formNewGroupKey.currentState?.reset();
   }
 
   @override
@@ -209,7 +226,7 @@ class GetxDashboardPresenter extends GetxController
 
       throw UiError.unexpected;
     } finally {
-      clearNewTaskFields();
+      clearFields();
       await getAllTasks();
     }
   }
@@ -225,5 +242,76 @@ class GetxDashboardPresenter extends GetxController
     } finally {
       await getAllTasks();
     }
+  }
+
+  @override
+  Future<void> getAllGroups() async {
+    try {
+      final groups = await loadGroups.call(user!.uid);
+
+      _groups.value = groups;
+    } on DomainError catch (e) {
+      log(e.toString(), name: 'GetxDashboardPresenter.loadGroups');
+      throw DomainError.unexpected;
+    }
+  }
+
+  @override
+  Future<void> onCreateGroup() async {
+    try {
+      await createGroup.call(
+        userId: user!.uid,
+        group: GroupEntity(
+          id: '',
+          name: groupNameController.text,
+          description: groupDescriptionController.text,
+          icon: _groupIcon.value,
+          color: _groupColor.value,
+          createdAt: DateTime.now(),
+          saveCheckState: _saveCheckState.value,
+        ),
+      );
+    } on DomainError catch (e) {
+      log(e.toString(), name: 'GetxDashboardPresenter.createNewGroup');
+      throw UiError.unexpected;
+    } finally {
+      clearFields();
+      await getAllGroups();
+    }
+  }
+
+  @override
+  Future<void> onUpdateGroup(GroupEntity group) async {
+    try {
+      await updateGroup.call(userId: user!.uid, group: group);
+    } on DomainError catch (e) {
+      log(e.toString(), name: 'GetxDashboardPresenter.onUpdateGroup');
+      throw UiError.unexpected;
+    } finally {
+      clearFields();
+      await getAllGroups();
+    }
+  }
+
+  @override
+  Future<void> onDeleteGroup(GroupEntity group) async {
+    try {
+      await deleteGroup.call(userId: user!.uid, group: group);
+    } on DomainError catch (e) {
+      log(e.toString(), name: 'GetxDashboardPresenter.onDeleteGroup');
+      throw UiError.unexpected;
+    } finally {
+      await getAllGroups();
+    }
+  }
+
+  @override
+  void onClose() {
+    taskTitleController.dispose();
+    taskDescriptionController.dispose();
+    taskDueDateController.dispose();
+    groupNameController.dispose();
+    groupDescriptionController.dispose();
+    super.onClose();
   }
 }

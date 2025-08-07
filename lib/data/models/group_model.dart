@@ -7,8 +7,7 @@ class GroupModel {
   final String id;
   final String name;
   final String? description;
-  final int iconCodePoint;
-  final String iconFontFamily;
+  final int icon;
   final int colorValue;
   final bool saveCheckState;
   final DateTime createdAt;
@@ -18,8 +17,7 @@ class GroupModel {
     required this.id,
     required this.name,
     this.description,
-    required this.iconCodePoint,
-    required this.iconFontFamily,
+    required this.icon,
     required this.colorValue,
     required this.saveCheckState,
     required this.createdAt,
@@ -31,8 +29,7 @@ class GroupModel {
       id: json['id'] as String,
       name: json['name'] as String,
       description: json['description'] as String?,
-      iconCodePoint: json['iconCodePoint'] as int,
-      iconFontFamily: json['iconFontFamily'] as String,
+      icon: json['icon'] as int,
       colorValue: json['colorValue'] as int,
       saveCheckState: json['saveCheckState'] as bool? ?? true,
       createdAt: (json['createdAt'] as Timestamp).toDate(),
@@ -47,7 +44,7 @@ class GroupModel {
       id: id,
       name: name,
       description: description,
-      icon: IconData(iconCodePoint, fontFamily: iconFontFamily),
+      icon: IconData(icon, fontFamily: 'MaterialIcons'),
       color: Color(colorValue),
       saveCheckState: saveCheckState,
       createdAt: createdAt,
@@ -59,8 +56,7 @@ class GroupModel {
     return {
       'name': name,
       'description': description,
-      'iconCodePoint': iconCodePoint,
-      'iconFontFamily': iconFontFamily,
+      'icon': icon,
       'colorValue': colorValue,
       'saveCheckState': saveCheckState,
       'createdAt': Timestamp.fromDate(createdAt),
@@ -73,8 +69,7 @@ class GroupModel {
       id: entity.id,
       name: entity.name,
       description: entity.description,
-      iconCodePoint: entity.icon.codePoint,
-      iconFontFamily: entity.icon.fontFamily ?? 'MaterialIcons',
+      icon: entity.icon.codePoint,
       colorValue: entity.color.toARGB32(),
       saveCheckState: entity.saveCheckState,
       createdAt: entity.createdAt,
