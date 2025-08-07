@@ -1,5 +1,8 @@
 abstract class FirestoreClient {
-  Future<List<Map<String, dynamic>>> loadTasks({required String userId});
+  Future<List<Map<String, dynamic>>> loadTasks({
+    required String userId,
+    String? groupId,
+  });
   Future<void> createTask({
     required String userId,
     required Map<String, dynamic> data,

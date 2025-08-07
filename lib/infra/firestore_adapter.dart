@@ -64,13 +64,27 @@ class FirestoreAdapter implements FirestoreClient {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> loadTasks({required String userId}) async {
+  Future<List<Map<String, dynamic>>> loadTasks({
+    required String userId,
+    String? groupId,
+  }) async {
     try {
-      final snapshot = await instance
-          .collection('users')
-          .doc(userId)
-          .collection('tasks')
-          .get();
+      QuerySnapshot<Map<String, dynamic>> snapshot;
+      if (groupId == null) {
+        snapshot = await instance
+            .collection('users')
+            .doc(userId)
+            .collection('tasks')
+            .where('groupId', isNull: true)
+            .get();
+      } else {
+        snapshot = await instance
+            .collection('users')
+            .doc(userId)
+            .collection('tasks')
+            .where('groupId', isEqualTo: groupId)
+            .get();
+      }
 
       return snapshot.docs.map((doc) {
         final data = doc.data();

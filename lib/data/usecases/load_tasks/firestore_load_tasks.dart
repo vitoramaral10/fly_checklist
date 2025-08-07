@@ -12,9 +12,15 @@ class FirestoreLoadTasks implements LoadTasks {
   FirestoreLoadTasks({required this.firestoreClient});
 
   @override
-  Future<List<TaskEntity>> call(String userId) async {
+  Future<List<TaskEntity>> call({
+    required String userId,
+    String? groupId,
+  }) async {
     try {
-      final result = await firestoreClient.loadTasks(userId: userId);
+      final result = await firestoreClient.loadTasks(
+        userId: userId,
+        groupId: groupId,
+      );
       return result.map((data) => TaskModel.fromJson(data).toEntity()).toList();
     } on FirestoreError catch (e) {
       log(e.toString(), name: 'FirestoreLoadTasks.call');

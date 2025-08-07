@@ -131,7 +131,7 @@ class GetxDashboardPresenter extends GetxController
   @override
   Future<void> getAllTasks() async {
     try {
-      final tasks = await loadTasks.call(user!.uid);
+      final tasks = await loadTasks.call(userId: user!.uid);
 
       tasks.sort((a, b) {
         // Tarefas concluídas sempre vão para o final

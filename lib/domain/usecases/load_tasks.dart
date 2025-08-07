@@ -1,5 +1,5 @@
 import '../entities/entities.dart';
 
 abstract class LoadTasks {
-  Future<List<TaskEntity>> call(String userId);
+  Future<List<TaskEntity>> call({required String userId, String? groupId});
 }
