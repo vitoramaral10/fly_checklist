@@ -31,11 +31,18 @@ class GetxDashboardPresenter extends GetxController
   final taskDescriptionController = TextEditingController();
   final taskDueDateController = TextEditingController();
 
+  final formNewGroupKey = GlobalKey<FormState>();
+  final groupNameController = TextEditingController();
+  final groupDescriptionController = TextEditingController();
+
   final _isLoading = true.obs;
   final _hasError = Rxn<String>();
   final _user = Rxn<UserEntity>();
   final _taskPriority = Rxn<int>(2);
   final _tasks = <TaskEntity>[].obs;
+  final _groupIcon = Icons.checklist.obs;
+  final Rx<Color> _groupColor = Colors.blue.obs; // Color
+  final _saveCheckState = true.obs;
 
   @override
   bool get isLoading => _isLoading.value;
@@ -47,6 +54,12 @@ class GetxDashboardPresenter extends GetxController
   int? get taskPriority => _taskPriority.value;
   @override
   List<TaskEntity> get tasks => _tasks;
+  @override
+  IconData get groupIcon => _groupIcon.value;
+  @override
+  Color get groupColor => _groupColor.value;
+  @override
+  bool get saveCheckState => _saveCheckState.value;
 
   @override
   set taskPriority(int? value) {
@@ -55,6 +68,21 @@ class GetxDashboardPresenter extends GetxController
     } else {
       _taskPriority.value = null;
     }
+  }
+
+  @override
+  set groupIcon(IconData value) {
+    _groupIcon.value = value;
+  }
+
+  @override
+  set groupColor(Color value) {
+    _groupColor.value = value;
+  }
+
+  @override
+  set saveCheckState(bool value) {
+    _saveCheckState.value = value;
   }
 
   @override

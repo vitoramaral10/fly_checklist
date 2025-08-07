@@ -75,7 +75,7 @@ class GroupModel {
       description: entity.description,
       iconCodePoint: entity.icon.codePoint,
       iconFontFamily: entity.icon.fontFamily ?? 'MaterialIcons',
-      colorValue: entity.color.value,
+      colorValue: entity.color.toARGB32(),
       saveCheckState: entity.saveCheckState,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,

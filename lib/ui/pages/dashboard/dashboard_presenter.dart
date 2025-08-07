@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../../../domain/entities/entities.dart';
 
 abstract class DashboardPresenter {
@@ -6,8 +8,14 @@ abstract class DashboardPresenter {
   UserEntity? get user;
   int? get taskPriority;
   List<TaskEntity> get tasks;
+  IconData get groupIcon;
+  Color get groupColor;
+  bool get saveCheckState;
 
   set taskPriority(int? value);
+  set groupIcon(IconData value);
+  set groupColor(Color value);
+  set saveCheckState(bool value);
 
   Future<void> loadAllData();
   Future<void> loadUser();

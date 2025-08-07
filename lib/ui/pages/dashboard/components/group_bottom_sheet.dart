@@ -29,14 +29,6 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Controladores para os campos do grupo
-    final nameController = TextEditingController();
-    final descriptionController = TextEditingController();
-    final selectedIcon = ValueNotifier<IconData>(Icons.checklist);
-    final selectedColor = ValueNotifier<Color>(colorScheme.primary);
-    final saveCheckState = ValueNotifier<bool>(true);
-    final formKey = GlobalKey<FormState>();
-
     // Cores predefinidas para seleção
     final availableColors = [
       colorScheme.primary,
@@ -72,11 +64,11 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
 
     // Preencher campos se estiver editando
     if (group != null) {
-      nameController.text = group!.name;
-      descriptionController.text = group!.description ?? '';
-      selectedIcon.value = group!.icon;
-      selectedColor.value = group!.color;
-      saveCheckState.value = group!.saveCheckState;
+      controller.groupNameController.text = group!.name;
+      controller.groupDescriptionController.text = group!.description ?? '';
+      controller.groupIcon = group!.icon;
+      controller.groupColor = group!.color;
+      controller.saveCheckState = group!.saveCheckState;
     }
 
     return Padding(
@@ -85,7 +77,7 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           child: Form(
-            key: formKey,
+            key: controller.formNewGroupKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -115,7 +107,7 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
 
                 // Campo Nome do Grupo
                 TextFormField(
-                  controller: nameController,
+                  controller: controller.groupNameController,
                   decoration: const InputDecoration(
                     labelText: 'Nome do Grupo',
                     prefixIcon: Icon(Icons.label_outline),
@@ -136,7 +128,7 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
 
                 // Campo Descrição (opcional)
                 TextFormField(
-                  controller: descriptionController,
+                  controller: controller.groupDescriptionController,
                   decoration: const InputDecoration(
                     labelText: 'Descrição (opcional)',
                     prefixIcon: Icon(Icons.description_outlined),
@@ -151,213 +143,204 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
                 const SizedBox(height: 16),
 
                 // Seletor de Cor
-                ValueListenableBuilder<Color>(
-                  valueListenable: selectedColor,
-                  builder: (context, color, _) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.palette_outlined,
-                              color: colorScheme.onSurface,
+                Obx(
+                  () => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.palette_outlined,
+                            color: colorScheme.onSurface,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Cor do Grupo',
+                            style: theme.textTheme.titleMedium,
+                          ),
+                          const Spacer(),
+                          Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: controller.groupColor,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: colorScheme.outline,
+                                width: 2,
+                              ),
                             ),
-                            const SizedBox(width: 12),
-                            Text(
-                              'Cor do Grupo',
-                              style: theme.textTheme.titleMedium,
-                            ),
-                            const Spacer(),
-                            Container(
-                              width: 24,
-                              height: 24,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
+                        children: availableColors.map((availableColor) {
+                          final isSelected =
+                              availableColor == controller.groupColor;
+                          return GestureDetector(
+                            onTap: () {
+                              controller.groupColor = availableColor;
+                            },
+                            child: Container(
+                              width: 40,
+                              height: 40,
                               decoration: BoxDecoration(
-                                color: color,
+                                color: availableColor,
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: colorScheme.outline,
-                                  width: 2,
+                                  color: isSelected
+                                      ? colorScheme.onSurface
+                                      : colorScheme.outline,
+                                  width: isSelected ? 3 : 1,
                                 ),
                               ),
+                              child: isSelected
+                                  ? Icon(
+                                      Icons.check,
+                                      color:
+                                          availableColor.computeLuminance() >
+                                              0.5
+                                          ? Colors.black
+                                          : Colors.white,
+                                      size: 20,
+                                    )
+                                  : null,
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Wrap(
-                          spacing: 12,
-                          runSpacing: 12,
-                          children: availableColors.map((availableColor) {
-                            final isSelected = availableColor == color;
-                            return GestureDetector(
-                              onTap: () {
-                                selectedColor.value = availableColor;
-                              },
-                              child: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: availableColor,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: isSelected
-                                        ? colorScheme.onSurface
-                                        : colorScheme.outline,
-                                    width: isSelected ? 3 : 1,
-                                  ),
-                                ),
-                                child: isSelected
-                                    ? Icon(
-                                        Icons.check,
-                                        color:
-                                            availableColor.computeLuminance() >
-                                                0.5
-                                            ? Colors.black
-                                            : Colors.white,
-                                        size: 20,
-                                      )
-                                    : null,
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    );
-                  },
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 24),
 
                 // Seletor de Ícone
-                ValueListenableBuilder<IconData>(
-                  valueListenable: selectedIcon,
-                  builder: (context, icon, _) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.apps_outlined,
-                              color: colorScheme.onSurface,
+                Obx(
+                  () => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.apps_outlined,
+                            color: colorScheme.onSurface,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Ícone do Grupo',
+                            style: theme.textTheme.titleMedium,
+                          ),
+                          const Spacer(),
+                          Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: controller.groupColor,
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                            const SizedBox(width: 12),
-                            Text(
-                              'Ícone do Grupo',
-                              style: theme.textTheme.titleMedium,
+                            child: Icon(
+                              controller.groupIcon,
+                              color:
+                                  controller.groupColor.computeLuminance() > 0.5
+                                  ? Colors.black
+                                  : Colors.white,
+                              size: 20,
                             ),
-                            const Spacer(),
-                            ValueListenableBuilder<Color>(
-                              valueListenable: selectedColor,
-                              builder: (context, color, _) {
-                                return Container(
-                                  width: 32,
-                                  height: 32,
-                                  decoration: BoxDecoration(
-                                    color: color,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Icon(
-                                    icon,
-                                    color: color.computeLuminance() > 0.5
-                                        ? Colors.black
-                                        : Colors.white,
-                                    size: 20,
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: availableIcons.map((availableIcon) {
-                            final isSelected = availableIcon == icon;
-                            return GestureDetector(
-                              onTap: () {
-                                selectedIcon.value = availableIcon;
-                              },
-                              child: Container(
-                                width: 48,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  color: isSelected
-                                      ? colorScheme.primaryContainer
-                                      : colorScheme.surface,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: isSelected
-                                        ? colorScheme.primary
-                                        : colorScheme.outline,
-                                    width: isSelected ? 2 : 1,
-                                  ),
-                                ),
-                                child: Icon(
-                                  availableIcon,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: availableIcons.map((availableIcon) {
+                          final isSelected =
+                              availableIcon == controller.groupIcon;
+                          return GestureDetector(
+                            onTap: () {
+                              controller.groupIcon = availableIcon;
+                            },
+                            child: Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? colorScheme.primaryContainer
+                                    : colorScheme.surface,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
                                   color: isSelected
                                       ? colorScheme.primary
-                                      : colorScheme.onSurface,
-                                  size: 24,
+                                      : colorScheme.outline,
+                                  width: isSelected ? 2 : 1,
                                 ),
                               ),
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    );
-                  },
+                              child: Icon(
+                                availableIcon,
+                                color: isSelected
+                                    ? colorScheme.primary
+                                    : colorScheme.onSurface,
+                                size: 24,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 24),
 
                 // Switch para salvar estado dos checks
-                ValueListenableBuilder<bool>(
-                  valueListenable: saveCheckState,
-                  builder: (context, save, _) {
-                    return Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: colorScheme.surfaceVariant.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: colorScheme.outline.withOpacity(0.3),
-                        ),
+                Obx(
+                  () => Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerHighest.withValues(
+                        alpha: 0.3,
                       ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.save_outlined, color: colorScheme.primary),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Salvar Estado dos Checks',
-                                  style: theme.textTheme.titleSmall,
-                                ),
-                                Text(
-                                  save
-                                      ? 'Os checks marcados serão mantidos entre sessões'
-                                      : 'Os checks serão resetados a cada nova sessão',
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: colorScheme.onSurface.withOpacity(
-                                      0.7,
-                                    ),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: colorScheme.outline.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.save_outlined, color: colorScheme.primary),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Salvar Estado dos Checks',
+                                style: theme.textTheme.titleSmall,
+                              ),
+                              Text(
+                                controller.saveCheckState
+                                    ? 'Os checks marcados serão mantidos entre sessões'
+                                    : 'Os checks serão resetados a cada nova sessão',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: colorScheme.onSurface.withValues(
+                                    alpha: 0.7,
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          Switch(
-                            value: save,
-                            onChanged: (value) {
-                              saveCheckState.value = value;
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                        ),
+                        Switch(
+                          value: controller.saveCheckState,
+                          onChanged: (value) {
+                            controller.saveCheckState = value;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 32),
 
@@ -366,7 +349,7 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
                   width: double.infinity,
                   child: FilledButton(
                     onPressed: () async {
-                      if (formKey.currentState!.validate()) {
+                      if (controller.formNewGroupKey.currentState!.validate()) {
                         try {
                           showLoadingDialog(context);
 
@@ -446,7 +429,7 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
 
                         if (isDelete) {
                           try {
-                            showLoadingDialog(context);
+                            if (context.mounted) showLoadingDialog(context);
                             // TODO: Implementar lógica de exclusão do grupo
                             // await controller.onDeleteGroup(group!);
                             if (context.mounted) Navigator.of(context).pop();
