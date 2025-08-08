@@ -12,6 +12,7 @@ Future<void> showGroupBottomSheet(
 }) async {
   await showAppBottomSheet(
     context,
+    isScrollControlled: true,
     builder: (context) => GroupBottomSheet(group: group),
   );
 }
@@ -68,375 +69,363 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
       controller.saveCheckState = group!.saveCheckState;
     }
 
-    return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 24,
-            right: 24,
-            top: 0,
-            bottom: 20,
-          ),
-          child: Form(
-            key: controller.formNewGroupKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Título do modal
-                Text(
-                  (group != null) ? 'Editar Grupo' : 'Novo Grupo',
-                  style: theme.textTheme.headlineSmall,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Configure os detalhes do seu grupo de tarefas.',
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 24),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 24, right: 24, top: 0, bottom: 20),
+        child: Form(
+          key: controller.formNewGroupKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Título do modal
+              Text(
+                (group != null) ? 'Editar Grupo' : 'Novo Grupo',
+                style: theme.textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Configure os detalhes do seu grupo de tarefas.',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 24),
 
-                // Campo Nome do Grupo
-                TextFormField(
-                  controller: controller.groupNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nome do Grupo',
-                    prefixIcon: Icon(Icons.label_outline),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                    ),
-                  ),
-                  keyboardType: TextInputType.text,
-                  textInputAction: TextInputAction.next,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Por favor, insira o nome do grupo.';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-
-                // Campo Descrição (opcional)
-                TextFormField(
-                  controller: controller.groupDescriptionController,
-                  decoration: const InputDecoration(
-                    labelText: 'Descrição (opcional)',
-                    prefixIcon: Icon(Icons.description_outlined),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                    ),
-                  ),
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 2,
-                  textInputAction: TextInputAction.done,
-                ),
-                const SizedBox(height: 16),
-
-                // Seletor de Cor
-                Obx(
-                  () => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.palette_outlined,
-                            color: colorScheme.onSurface,
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Cor do Grupo',
-                            style: theme.textTheme.titleMedium,
-                          ),
-                          const Spacer(),
-                          Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              color: controller.groupColor,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: colorScheme.outline,
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 12,
-                        runSpacing: 12,
-                        children: availableColors.map((availableColor) {
-                          final isSelected =
-                              availableColor == controller.groupColor;
-                          return GestureDetector(
-                            onTap: () {
-                              controller.groupColor = availableColor;
-                            },
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: availableColor,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isSelected
-                                      ? colorScheme.onSurface
-                                      : colorScheme.outline,
-                                  width: isSelected ? 3 : 1,
-                                ),
-                              ),
-                              child: isSelected
-                                  ? Icon(
-                                      Icons.check,
-                                      color:
-                                          availableColor.computeLuminance() >
-                                              0.5
-                                          ? Colors.black
-                                          : Colors.white,
-                                      size: 20,
-                                    )
-                                  : null,
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ],
+              // Campo Nome do Grupo
+              TextFormField(
+                controller: controller.groupNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nome do Grupo',
+                  prefixIcon: Icon(Icons.label_outline),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
                   ),
                 ),
-                const SizedBox(height: 24),
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Por favor, insira o nome do grupo.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
 
-                // Seletor de Ícone
-                Obx(
-                  () => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.apps_outlined,
-                            color: colorScheme.onSurface,
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Ícone do Grupo',
-                            style: theme.textTheme.titleMedium,
-                          ),
-                          const Spacer(),
-                          Container(
-                            width: 32,
-                            height: 32,
-                            decoration: BoxDecoration(
-                              color: controller.groupColor,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Icon(
-                              controller.groupIcon,
-                              color:
-                                  controller.groupColor.computeLuminance() > 0.5
-                                  ? Colors.black
-                                  : Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: availableIcons.map((availableIcon) {
-                          final isSelected =
-                              availableIcon == controller.groupIcon;
-                          return GestureDetector(
-                            onTap: () {
-                              controller.groupIcon = availableIcon;
-                            },
-                            child: Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? colorScheme.primaryContainer
-                                    : colorScheme.surface,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: isSelected
-                                      ? colorScheme.primary
-                                      : colorScheme.outline,
-                                  width: isSelected ? 2 : 1,
-                                ),
-                              ),
-                              child: Icon(
-                                availableIcon,
-                                color: isSelected
-                                    ? colorScheme.primary
-                                    : colorScheme.onSurface,
-                                size: 24,
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ],
+              // Campo Descrição (opcional)
+              TextFormField(
+                controller: controller.groupDescriptionController,
+                decoration: const InputDecoration(
+                  labelText: 'Descrição (opcional)',
+                  prefixIcon: Icon(Icons.description_outlined),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
                   ),
                 ),
-                const SizedBox(height: 24),
+                keyboardType: TextInputType.multiline,
+                maxLines: 2,
+                textInputAction: TextInputAction.done,
+              ),
+              const SizedBox(height: 16),
 
-                // Switch para salvar estado dos checks
-                Obx(
-                  () => Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerHighest.withValues(
-                        alpha: 0.3,
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: colorScheme.outline.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: Row(
+              // Seletor de Cor
+              Obx(
+                () => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        Icon(Icons.save_outlined, color: colorScheme.primary),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Salvar Estado dos Checks',
-                                style: theme.textTheme.titleSmall,
-                              ),
-                              Text(
-                                controller.saveCheckState
-                                    ? 'Os checks marcados serão mantidos entre sessões'
-                                    : 'Os checks serão resetados a cada nova sessão',
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: colorScheme.onSurface.withValues(
-                                    alpha: 0.7,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                        Icon(
+                          Icons.palette_outlined,
+                          color: colorScheme.onSurface,
                         ),
-                        Switch(
-                          value: controller.saveCheckState,
-                          onChanged: (value) {
-                            controller.saveCheckState = value;
-                          },
+                        const SizedBox(width: 12),
+                        Text(
+                          'Cor do Grupo',
+                          style: theme.textTheme.titleMedium,
+                        ),
+                        const Spacer(),
+                        Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: controller.groupColor,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: colorScheme.outline,
+                              width: 2,
+                            ),
+                          ),
                         ),
                       ],
                     ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      children: availableColors.map((availableColor) {
+                        final isSelected =
+                            availableColor == controller.groupColor;
+                        return GestureDetector(
+                          onTap: () {
+                            controller.groupColor = availableColor;
+                          },
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: availableColor,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: isSelected
+                                    ? colorScheme.onSurface
+                                    : colorScheme.outline,
+                                width: isSelected ? 3 : 1,
+                              ),
+                            ),
+                            child: isSelected
+                                ? Icon(
+                                    Icons.check,
+                                    color:
+                                        availableColor.computeLuminance() > 0.5
+                                        ? Colors.black
+                                        : Colors.white,
+                                    size: 20,
+                                  )
+                                : null,
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Seletor de Ícone
+              Obx(
+                () => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.apps_outlined, color: colorScheme.onSurface),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Ícone do Grupo',
+                          style: theme.textTheme.titleMedium,
+                        ),
+                        const Spacer(),
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: controller.groupColor,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            controller.groupIcon,
+                            color:
+                                controller.groupColor.computeLuminance() > 0.5
+                                ? Colors.black
+                                : Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: availableIcons.map((availableIcon) {
+                        final isSelected =
+                            availableIcon == controller.groupIcon;
+                        return GestureDetector(
+                          onTap: () {
+                            controller.groupIcon = availableIcon;
+                          },
+                          child: Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? colorScheme.primaryContainer
+                                  : colorScheme.surface,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: isSelected
+                                    ? colorScheme.primary
+                                    : colorScheme.outline,
+                                width: isSelected ? 2 : 1,
+                              ),
+                            ),
+                            child: Icon(
+                              availableIcon,
+                              color: isSelected
+                                  ? colorScheme.primary
+                                  : colorScheme.onSurface,
+                              size: 24,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Switch para salvar estado dos checks
+              Obx(
+                () => Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surfaceContainerHighest.withValues(
+                      alpha: 0.3,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: colorScheme.outline.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.save_outlined, color: colorScheme.primary),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Salvar Estado dos Checks',
+                              style: theme.textTheme.titleSmall,
+                            ),
+                            Text(
+                              controller.saveCheckState
+                                  ? 'Os checks marcados serão mantidos entre sessões'
+                                  : 'Os checks serão resetados a cada nova sessão',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: colorScheme.onSurface.withValues(
+                                  alpha: 0.7,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Switch(
+                        value: controller.saveCheckState,
+                        onChanged: (value) {
+                          controller.saveCheckState = value;
+                        },
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 32),
+              ),
+              const SizedBox(height: 32),
 
-                // Botão de Ação Principal
+              // Botão de Ação Principal
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () async {
+                    if (controller.formNewGroupKey.currentState!.validate()) {
+                      try {
+                        showLoadingDialog(context);
+
+                        if (group != null) {
+                          await controller.onUpdateGroup(
+                            group!.copyWith(
+                              name: controller.groupNameController.text,
+                              description:
+                                  controller.groupDescriptionController.text,
+                              icon: controller.groupIcon,
+                              color: controller.groupColor,
+                              saveCheckState: controller.saveCheckState,
+                            ),
+                          );
+                        } else {
+                          await controller.onCreateGroup();
+                        }
+
+                        if (context.mounted) Navigator.of(context).pop();
+                        if (context.mounted) Navigator.of(context).pop();
+
+                        if (context.mounted) {
+                          showSuccessSnackbar(
+                            message: (group != null)
+                                ? 'Grupo atualizado com sucesso!'
+                                : 'Grupo criado com sucesso!',
+                          );
+                        }
+                      } on UiError catch (e) {
+                        if (context.mounted) Navigator.of(context).pop();
+                        if (context.mounted) {
+                          showErrorDialog(context, e.message);
+                        }
+                      } catch (e) {
+                        if (context.mounted) Navigator.of(context).pop();
+                        if (context.mounted) {
+                          showErrorDialog(
+                            context,
+                            'Erro inesperado ao salvar grupo',
+                          );
+                        }
+                      }
+                    }
+                  },
+                  child: Text(
+                    (group != null) ? 'Atualizar Grupo' : 'Criar Grupo',
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // Botão de Exclusão (apenas para edição)
+              if (group != null)
                 SizedBox(
                   width: double.infinity,
-                  child: FilledButton(
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.delete_outline, color: Colors.red),
+                    label: const Text(
+                      'Excluir Grupo',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.red),
+                    ),
                     onPressed: () async {
-                      if (controller.formNewGroupKey.currentState!.validate()) {
+                      final isDelete = await showConfirmationDialog(
+                        context,
+                        title: 'Excluir Grupo',
+                        content:
+                            'Tem certeza que deseja excluir este grupo? Todas as tarefas associadas também serão removidas. Esta ação não pode ser desfeita.',
+                      );
+
+                      if (isDelete) {
                         try {
-                          showLoadingDialog(context);
-
-                          if (group != null) {
-                            await controller.onUpdateGroup(
-                              group!.copyWith(
-                                name: controller.groupNameController.text,
-                                description:
-                                    controller.groupDescriptionController.text,
-                                icon: controller.groupIcon,
-                                color: controller.groupColor,
-                                saveCheckState: controller.saveCheckState,
-                              ),
-                            );
-                          } else {
-                            await controller.onCreateGroup();
-                          }
-
+                          if (context.mounted) showLoadingDialog(context);
+                          // TODO: Implementar lógica de exclusão do grupo
+                          // await controller.onDeleteGroup(group!);
                           if (context.mounted) Navigator.of(context).pop();
                           if (context.mounted) Navigator.of(context).pop();
-
                           if (context.mounted) {
                             showSuccessSnackbar(
-                              message: (group != null)
-                                  ? 'Grupo atualizado com sucesso!'
-                                  : 'Grupo criado com sucesso!',
+                              message: 'Grupo excluído com sucesso!',
                             );
-                          }
-                        } on UiError catch (e) {
-                          if (context.mounted) Navigator.of(context).pop();
-                          if (context.mounted) {
-                            showErrorDialog(context, e.message);
                           }
                         } catch (e) {
                           if (context.mounted) Navigator.of(context).pop();
                           if (context.mounted) {
-                            showErrorDialog(
-                              context,
-                              'Erro inesperado ao salvar grupo',
-                            );
+                            showErrorDialog(context, 'Erro ao excluir grupo');
                           }
                         }
                       }
                     },
-                    child: Text(
-                      (group != null) ? 'Atualizar Grupo' : 'Criar Grupo',
-                    ),
                   ),
                 ),
-                const SizedBox(height: 12),
-
-                // Botão de Exclusão (apenas para edição)
-                if (group != null)
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      icon: const Icon(Icons.delete_outline, color: Colors.red),
-                      label: const Text(
-                        'Excluir Grupo',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.red),
-                      ),
-                      onPressed: () async {
-                        final isDelete = await showConfirmationDialog(
-                          context,
-                          title: 'Excluir Grupo',
-                          content:
-                              'Tem certeza que deseja excluir este grupo? Todas as tarefas associadas também serão removidas. Esta ação não pode ser desfeita.',
-                        );
-
-                        if (isDelete) {
-                          try {
-                            if (context.mounted) showLoadingDialog(context);
-                            // TODO: Implementar lógica de exclusão do grupo
-                            // await controller.onDeleteGroup(group!);
-                            if (context.mounted) Navigator.of(context).pop();
-                            if (context.mounted) Navigator.of(context).pop();
-                            if (context.mounted) {
-                              showSuccessSnackbar(
-                                message: 'Grupo excluído com sucesso!',
-                              );
-                            }
-                          } catch (e) {
-                            if (context.mounted) Navigator.of(context).pop();
-                            if (context.mounted) {
-                              showErrorDialog(context, 'Erro ao excluir grupo');
-                            }
-                          }
-                        }
-                      },
-                    ),
-                  ),
-              ],
-            ),
+            ],
           ),
         ),
       ),
