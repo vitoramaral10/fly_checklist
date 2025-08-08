@@ -13,7 +13,10 @@ class FirestoreUpdateGroup implements UpdateGroup {
   FirestoreUpdateGroup({required this.firestoreClient});
 
   @override
-  Future<void> call({required String userId, required GroupEntity group}) async {
+  Future<void> call({
+    required String userId,
+    required GroupEntity group,
+  }) async {
     try {
       await firestoreClient.updateGroup(
         userId: userId,

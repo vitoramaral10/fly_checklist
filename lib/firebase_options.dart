@@ -59,5 +59,4 @@ class DefaultFirebaseOptions {
     projectId: 'fly-checklist',
     storageBucket: 'fly-checklist.firebasestorage.app',
   );
-
 }

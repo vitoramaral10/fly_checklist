@@ -15,7 +15,9 @@ class FirestoreLoadGroups implements LoadGroups {
   Future<List<GroupEntity>> call(String userId) async {
     try {
       final result = await firestoreClient.loadGroups(userId: userId);
-      return result.map((data) => GroupModel.fromJson(data).toEntity()).toList();
+      return result
+          .map((data) => GroupModel.fromJson(data).toEntity())
+          .toList();
     } on FirestoreError catch (e) {
       log(e.toString(), name: 'FirestoreLoadGroups.call');
       throw DomainError.unexpected;

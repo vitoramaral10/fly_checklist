@@ -11,10 +11,7 @@ void showErrorDialog(
       return AlertDialog(
         icon: const Icon(Icons.error_outline),
         title: Text(title),
-        content: Text(
-          message,
-          textAlign: TextAlign.center,
-        ),
+        content: Text(message, textAlign: TextAlign.center),
         actionsAlignment: MainAxisAlignment.center,
         actions: <Widget>[
           FilledButton(
