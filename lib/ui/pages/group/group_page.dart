@@ -193,12 +193,12 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                              AddTaskButton(
-                                label: 'Nova tarefa',
-                                onPressed: () {
-                                  // TODO: Implementar criação de tarefa
-                                },
-                              ),
+                          AddTaskButton(
+                            label: 'Nova tarefa',
+                            onPressed: () {
+                              // TODO: Implementar criação de tarefa
+                            },
+                          ),
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -237,12 +237,12 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 16),
-                              AddTaskButton(
-                                onPressed: () {
-                                  // TODO: Implementar criação de tarefa
-                                },
-                                label: 'Adicionar tarefa',
-                              ),
+                          AddTaskButton(
+                            onPressed: () {
+                              // TODO: Implementar criação de tarefa
+                            },
+                            label: 'Adicionar tarefa',
+                          ),
                         ],
                       ),
                     ),

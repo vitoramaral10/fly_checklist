@@ -217,12 +217,11 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        IconButton(
-          icon: const Icon(Icons.add_circle_outline_rounded),
+        AddGroupButton(
+          label: 'Novo grupo',
           onPressed: () {
             showGroupBottomSheet(context);
           },
-          tooltip: 'Adicionar Grupo',
         ),
       ],
     );
