@@ -4,6 +4,9 @@ Future<bool> showConfirmationDialog(
   BuildContext context, {
   String title = 'Confirmação',
   String content = 'Você tem certeza que deseja continuar?',
+  String cancelLabel = 'Cancelar',
+  String confirmLabel = 'Confirmar',
+  bool destructive = false,
 }) {
   return showDialog<bool>(
     context: context,
@@ -13,11 +16,19 @@ Future<bool> showConfirmationDialog(
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Cancelar'),
+          child: Text(cancelLabel),
         ),
-        TextButton(
+        FilledButton.tonal(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('Confirmar'),
+          style: destructive
+              ? FilledButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                  foregroundColor: Theme.of(
+                    context,
+                  ).colorScheme.onErrorContainer,
+                )
+              : null,
+          child: Text(confirmLabel),
         ),
       ],
     ),

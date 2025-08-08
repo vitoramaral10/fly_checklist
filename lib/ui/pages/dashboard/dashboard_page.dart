@@ -116,24 +116,29 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
     // Os dados das tarefas rápidas devem vir do presenter
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.3,
+        maxHeight: controller.tasks.isEmpty
+            ? 300
+            : MediaQuery.of(context).size.height * 0.3,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            'Tarefas Rápidas',
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          const SectionHeader(title: 'Tarefas Rápidas'),
           const SizedBox(height: 16),
           controller.tasks.isEmpty
-              ? Text(
-                  'Nenhuma tarefa rápida disponível.',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
+              ? Expanded(
+                  child: Center(
+                    child: EmptyState(
+                      icon: Icons.flash_on_rounded,
+                      title: 'Nenhuma tarefa rápida',
+                      message: 'Crie uma nova tarefa para começar.',
+                      actionLabel: 'Adicionar tarefa',
+                      onAction: () {
+                        controller.clearFields();
+                        showTaskBottomSheet(context);
+                      },
+                    ),
                   ),
                 )
               : Flexible(

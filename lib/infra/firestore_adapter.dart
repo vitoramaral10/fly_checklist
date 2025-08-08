@@ -137,15 +137,27 @@ class FirestoreAdapter implements FirestoreClient {
     required String userId,
     required String groupId,
   }) {
+    // Usa WriteBatch e fraciona em blocos de até 500 operações, conforme limite do Firestore.
     return instance
         .collection('users')
         .doc(userId)
         .collection('tasks')
         .where('groupId', isEqualTo: groupId)
         .get()
-        .then((snapshot) {
-          for (var doc in snapshot.docs) {
-            doc.reference.delete();
+        .then((snapshot) async {
+          final docs = snapshot.docs;
+          if (docs.isEmpty) return;
+
+          const int batchLimit = 500; // Limite de writes por batch no Firestore
+          for (int i = 0; i < docs.length; i += batchLimit) {
+            final end = (i + batchLimit < docs.length)
+                ? i + batchLimit
+                : docs.length;
+            final batch = instance.batch();
+            for (int j = i; j < end; j++) {
+              batch.delete(docs[j].reference);
+            }
+            await batch.commit();
           }
         })
         .catchError((error) {

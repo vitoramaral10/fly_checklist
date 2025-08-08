@@ -10,12 +10,9 @@ Future<void> showGroupBottomSheet(
   BuildContext context, {
   GroupEntity? group,
 }) async {
-  await showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    builder: (context) {
-      return GroupBottomSheet(group: group);
-    },
+  await showAppBottomSheet(
+    context,
+    builder: (context) => GroupBottomSheet(group: group),
   );
 }
 
@@ -75,23 +72,17 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
       padding: MediaQuery.of(context).viewInsets,
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+          padding: const EdgeInsets.only(
+            left: 24,
+            right: 24,
+            top: 0,
+            bottom: 20,
+          ),
           child: Form(
             key: controller.formNewGroupKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Handle visual
-                Container(
-                  width: 32,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: colorScheme.onSurface.withAlpha(100),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
                 // Título do modal
                 Text(
                   (group != null) ? 'Editar Grupo' : 'Novo Grupo',
