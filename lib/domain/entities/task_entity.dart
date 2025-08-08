@@ -17,7 +17,15 @@ class TaskEntity {
     required this.priority,
     required this.isDone,
     required this.createdAt,
-  });
+  }) : assert(title.trim().isNotEmpty, 'TaskEntity.title must not be empty'),
+       assert(
+         priority >= 0 && priority <= 4,
+         'TaskEntity.priority must be between 0 and 4',
+       ),
+       assert(
+         dueDate == null || dueDate.isAfter(DateTime.now()),
+         'TaskEntity.dueDate must be in the future when provided',
+       );
 
   TaskEntity copyWith({
     String? title,

@@ -108,10 +108,21 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
                     lastDate: DateTime(2101),
                   );
                   if (selectedDate != null) {
-                    controller.taskDueDateController.text = DateFormat.yMd(
-                      'pt_BR',
-                    ).format(selectedDate);
+                    controller.taskDueDateController.text = DateFormat.yMd()
+                        .format(selectedDate);
                   }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) return null;
+                  try {
+                    final date = DateFormat.yMd().parseStrict(value);
+                    if (!date.isAfter(DateTime.now())) {
+                      return 'A data deve ser no futuro.';
+                    }
+                  } catch (_) {
+                    return 'Data inválida.';
+                  }
+                  return null;
                 },
               ),
               const SizedBox(height: 16),
@@ -126,6 +137,7 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
                     ),
                   ),
                   items: const [
+                    DropdownMenuItem(value: 0, child: Text('Sem prioridade')),
                     DropdownMenuItem(value: 1, child: Text('Baixa')),
                     DropdownMenuItem(value: 2, child: Text('Média')),
                     DropdownMenuItem(value: 3, child: Text('Alta')),
@@ -139,6 +151,9 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
                   validator: (value) {
                     if (value == null) {
                       return 'Por favor, selecione a prioridade da tarefa.';
+                    }
+                    if (value < 0 || value > 4) {
+                      return 'Prioridade deve estar entre 0 e 4.';
                     }
                     return null;
                   },
@@ -159,9 +174,15 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
                               title: controller.taskTitleController.text,
                               description:
                                   controller.taskDescriptionController.text,
-                              dueDate: DateTime.tryParse(
-                                controller.taskDueDateController.text,
-                              ),
+                              dueDate:
+                                  controller
+                                      .taskDueDateController
+                                      .text
+                                      .isNotEmpty
+                                  ? DateFormat.yMd().parse(
+                                      controller.taskDueDateController.text,
+                                    )
+                                  : null,
                               priority: controller.taskPriority ?? 2,
                             ),
                           );

@@ -23,7 +23,7 @@ class GroupEntity {
     this.updatedAt,
     this.completedTasks = 0,
     this.totalTasks = 0,
-  });
+  }) : assert(name.trim().isNotEmpty, 'GroupEntity.name must not be empty');
 
   GroupEntity copyWith({
     String? name,

@@ -74,7 +74,7 @@ class GetxDashboardPresenter extends GetxController
 
   @override
   set taskPriority(int? value) {
-    if (value != null && value >= 1 && value <= 5) {
+    if (value != null && value >= 0 && value <= 4) {
       _taskPriority.value = value;
     } else {
       _taskPriority.value = null;
@@ -169,7 +169,7 @@ class GetxDashboardPresenter extends GetxController
           title: taskTitleController.text,
           description: taskDescriptionController.text,
           dueDate: taskDueDateController.text.isNotEmpty
-              ? DateFormat.yMd().parse(taskDueDateController.text)
+              ? DateFormat.yMd('pt_BR').parse(taskDueDateController.text)
               : null,
           priority: taskPriority!,
           isDone: false,
