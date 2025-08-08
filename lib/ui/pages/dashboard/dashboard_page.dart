@@ -129,15 +129,22 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
           controller.tasks.isEmpty
               ? Expanded(
                   child: Center(
-                    child: EmptyState(
-                      icon: Icons.flash_on_rounded,
-                      title: 'Nenhuma tarefa rápida',
-                      message: 'Crie uma nova tarefa para começar.',
-                      actionLabel: 'Adicionar tarefa',
-                      onAction: () {
-                        controller.clearFields();
-                        showTaskBottomSheet(context);
-                      },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        EmptyState(
+                          icon: Icons.flash_on_rounded,
+                          title: 'Nenhuma tarefa rápida',
+                          message: 'Crie uma nova tarefa para começar.',
+                        ),
+                        const SizedBox(height: 8),
+                        AddTaskButton(
+                          onPressed: () {
+                            controller.clearFields();
+                            showTaskBottomSheet(context);
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 )

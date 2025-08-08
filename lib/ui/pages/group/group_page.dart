@@ -193,17 +193,12 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          FilledButton.icon(
-                            style: FilledButton.styleFrom(
-                              backgroundColor: colorScheme.secondaryContainer,
-                              foregroundColor: colorScheme.onSecondaryContainer,
-                            ),
-                            onPressed: () {
-                              // TODO: Implementar criação de tarefa
-                            },
-                            icon: const Icon(Icons.add_rounded),
-                            label: const Text('Nova tarefa'),
-                          ),
+                              AddTaskButton(
+                                label: 'Nova tarefa',
+                                onPressed: () {
+                                  // TODO: Implementar criação de tarefa
+                                },
+                              ),
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -242,13 +237,12 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 16),
-                          FilledButton.icon(
-                            onPressed: () {
-                              // TODO: Implementar criação de tarefa
-                            },
-                            icon: const Icon(Icons.add_rounded),
-                            label: const Text('Adicionar tarefa'),
-                          ),
+                              AddTaskButton(
+                                onPressed: () {
+                                  // TODO: Implementar criação de tarefa
+                                },
+                                label: 'Adicionar tarefa',
+                              ),
                         ],
                       ),
                     ),

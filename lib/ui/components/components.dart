@@ -1,5 +1,6 @@
 export 'dialogs/dialogs.dart';
 export 'app_bottom_sheet.dart';
+export 'add_task_button.dart';
 export 'empty_state.dart';
 export 'section_header.dart';
 export 'shimmer_container.dart';
