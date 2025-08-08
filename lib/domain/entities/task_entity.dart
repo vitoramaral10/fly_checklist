@@ -1,5 +1,6 @@
 class TaskEntity {
   final String id;
+  final String? groupId;
   final String title;
   final String description;
   final DateTime? dueDate;
@@ -9,6 +10,7 @@ class TaskEntity {
 
   TaskEntity({
     required this.id,
+    this.groupId,
     required this.title,
     required this.description,
     this.dueDate,
@@ -19,6 +21,7 @@ class TaskEntity {
 
   TaskEntity copyWith({
     String? title,
+    String? groupId,
     String? description,
     DateTime? dueDate,
     int? priority,
@@ -26,6 +29,7 @@ class TaskEntity {
   }) {
     return TaskEntity(
       id: id,
+      groupId: groupId ?? this.groupId,
       title: title ?? this.title,
       description: description ?? this.description,
       dueDate: dueDate ?? this.dueDate,

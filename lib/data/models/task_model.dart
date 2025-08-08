@@ -4,6 +4,7 @@ import '../../domain/entities/entities.dart';
 
 class TaskModel {
   final String id;
+  final String? groupId;
   final String title;
   final String description;
   final DateTime? dueDate;
@@ -13,6 +14,7 @@ class TaskModel {
 
   TaskModel({
     required this.id,
+    this.groupId,
     required this.title,
     required this.description,
     this.dueDate,
@@ -24,6 +26,7 @@ class TaskModel {
   factory TaskModel.fromJson(Map<String, dynamic> json) {
     return TaskModel(
       id: json['id'] as String,
+      groupId: json['groupId'] as String?,
       title: json['title'] as String,
       description: json['description'] as String,
       dueDate: json['dueDate'] != null
@@ -38,6 +41,7 @@ class TaskModel {
   TaskEntity toEntity() {
     return TaskEntity(
       id: id,
+      groupId: groupId,
       title: title,
       description: description,
       dueDate: dueDate,
@@ -55,6 +59,7 @@ class TaskModel {
       'priority': priority,
       'isDone': isDone,
       'createdAt': Timestamp.fromDate(createdAt),
+      'groupId': groupId,
     };
   }
 
@@ -66,6 +71,7 @@ class TaskModel {
       dueDate: entity.dueDate,
       priority: entity.priority,
       isDone: entity.isDone,
+      groupId: entity.groupId,
       createdAt: entity.createdAt,
     );
   }
