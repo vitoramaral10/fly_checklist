@@ -60,22 +60,10 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
                           onTap: () {
                             Get.toNamed(Routes.settings);
                           },
-                          child: (controller.user?.photoUrl == null)
-                              ? CircleAvatar(
-                                  radius: 32,
-                                  backgroundColor: theme.colorScheme.secondary,
-                                  child: Icon(
-                                    Icons.person_rounded,
-                                    color: theme.colorScheme.onSecondary,
-                                    size: 32,
-                                  ),
-                                )
-                              : CircleAvatar(
-                                  radius: 32,
-                                  backgroundImage: NetworkImage(
-                                    controller.user!.photoUrl!,
-                                  ),
-                                ),
+                          child: AvatarWithShimmer(
+                            imageUrl: controller.user?.photoUrl,
+                            size: 64,
+                          ),
                         ),
                       ],
                     ),

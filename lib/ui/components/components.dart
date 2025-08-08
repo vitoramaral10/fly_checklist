@@ -6,5 +6,6 @@ export 'empty_state.dart';
 export 'google_button.dart';
 export 'section_header.dart';
 export 'shimmer_container.dart';
+export 'avatar_with_shimmer.dart';
 export 'snackbars/snackbars.dart';
 export 'task_item.dart';

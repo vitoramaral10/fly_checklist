@@ -92,20 +92,7 @@ class SettingsPage extends GetView<GetxSettingsPresenter> {
   Widget _buildUserProfile(ThemeData theme) {
     return Column(
       children: [
-        (controller.user?.photoUrl == null)
-            ? CircleAvatar(
-                radius: 52,
-                backgroundColor: theme.colorScheme.secondary,
-                child: Icon(
-                  Icons.person_rounded,
-                  color: theme.colorScheme.onSecondary,
-                  size: 52,
-                ),
-              )
-            : CircleAvatar(
-                radius: 52,
-                backgroundImage: NetworkImage(controller.user!.photoUrl!),
-              ),
+        AvatarWithShimmer(imageUrl: controller.user?.photoUrl, size: 104),
         const SizedBox(height: 16),
         Text(
           controller.user?.name ?? 'Usuário',

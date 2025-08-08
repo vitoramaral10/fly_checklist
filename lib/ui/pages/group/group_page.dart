@@ -15,7 +15,7 @@ class GroupPage extends GetView<GetxGroupPresenter> {
     return Scaffold(
       body: Obx(() {
         if (controller.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const _GroupLoadingPage();
         }
 
         if (controller.hasError != null) {
@@ -270,6 +270,58 @@ class GroupPage extends GetView<GetxGroupPresenter> {
           ),
         );
       }),
+    );
+  }
+}
+
+class _GroupLoadingPage extends StatelessWidget {
+  const _GroupLoadingPage();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar.large(
+          pinned: true,
+          title: ShimmerContainer(width: 160, height: 28, borderRadius: 8),
+          flexibleSpace: FlexibleSpaceBar(
+            background: Container(
+              color: colorScheme.surfaceContainerHighest.withAlpha(20),
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                ShimmerContainer(
+                  width: double.infinity,
+                  height: 80,
+                  borderRadius: 16,
+                ),
+                SizedBox(height: 16),
+                ShimmerContainer(width: 140, height: 28),
+                SizedBox(height: 8),
+              ],
+            ),
+          ),
+        ),
+        SliverList.builder(
+          itemCount: 6,
+          itemBuilder: (context, index) => const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 6),
+            child: ShimmerContainer(
+              width: double.infinity,
+              height: 64,
+              borderRadius: 12,
+            ),
+          ),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 24)),
+      ],
     );
   }
 }
