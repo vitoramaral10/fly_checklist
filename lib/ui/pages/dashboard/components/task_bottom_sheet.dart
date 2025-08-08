@@ -25,7 +25,6 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     if (task != null) {
       controller.taskTitleController.text = task!.title;
