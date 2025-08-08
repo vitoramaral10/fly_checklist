@@ -184,7 +184,7 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
-                FilledButton.icon(
+                GoogleButton(
                   onPressed: () async {
                     try {
                       showLoadingDialog(context);
@@ -197,20 +197,6 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                       if (context.mounted) showErrorDialog(context, e.message);
                     }
                   },
-                  style: FilledButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: colorScheme.onSurface,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                      side: BorderSide(color: colorScheme.outline),
-                    ),
-                  ),
-                  icon: Image.asset(
-                    'assets/images/google.png',
-                    height: 24,
-                    width: 24,
-                  ),
-                  label: const Text('Continuar com Google'),
                 ),
               ],
             ),

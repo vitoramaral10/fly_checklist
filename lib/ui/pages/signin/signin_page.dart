@@ -163,7 +163,7 @@ class SignInPage extends GetView<GetxSignInPresenter> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                FilledButton.icon(
+                GoogleButton(
                   onPressed: () async {
                     try {
                       showLoadingDialog(context);
@@ -176,21 +176,6 @@ class SignInPage extends GetView<GetxSignInPresenter> {
                       if (context.mounted) showErrorDialog(context, e.message);
                     }
                   },
-                  icon: Image.asset('assets/images/google.png', height: 24),
-                  label: const Text(
-                    'Entrar com Google',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: colorScheme.surface,
-                    foregroundColor: colorScheme.onSurface,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                      side: BorderSide(
-                        color: colorScheme.outline.withAlpha(100),
-                      ),
-                    ),
-                  ),
                 ),
                 const SizedBox(height: 16),
                 TextButton(
