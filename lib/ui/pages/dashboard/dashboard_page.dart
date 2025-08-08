@@ -139,6 +139,7 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
                         ),
                         const SizedBox(height: 8),
                         AddTaskButton(
+                          tonal: false,
                           onPressed: () {
                             controller.clearFields();
                             showTaskBottomSheet(context);

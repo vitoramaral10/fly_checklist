@@ -238,6 +238,7 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                           ),
                           const SizedBox(height: 16),
                           AddTaskButton(
+                            tonal: false,
                             onPressed: () {
                               // TODO: Implementar criação de tarefa
                             },
