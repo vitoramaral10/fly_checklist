@@ -109,28 +109,28 @@ class SignInPage extends GetView<GetxSignInPresenter> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                FilledButton(
-                  onPressed: controller.isLoading
-                      ? null
-                      : () async {
-                          try {
-                            showLoadingDialog(context);
-                            final type = await controller.signIn();
-                            if (context.mounted) Navigator.of(context).pop();
-                            if (type == "email") {
-                              Get.offAndToNamed(Routes.emailVerification);
-                            } else {
-                              Get.offAllNamed(Routes.dashboard);
+                Obx(
+                  () => FilledButton(
+                    onPressed: controller.isLoading
+                        ? null
+                        : () async {
+                            try {
+                              showLoadingDialog(context);
+                              final type = await controller.signIn();
+                              if (context.mounted) Navigator.of(context).pop();
+                              if (type == "email") {
+                                Get.offAndToNamed(Routes.emailVerification);
+                              } else {
+                                Get.offAllNamed(Routes.dashboard);
+                              }
+                            } on UiError catch (e) {
+                              if (context.mounted) Navigator.of(context).pop();
+                              if (context.mounted) {
+                                showErrorDialog(context, e.message);
+                              }
                             }
-                          } on UiError catch (e) {
-                            if (context.mounted) Navigator.of(context).pop();
-                            if (context.mounted) {
-                              showErrorDialog(context, e.message);
-                            }
-                          }
-                        },
-                  child: Obx(
-                    () => Text(
+                          },
+                    child: Text(
                       controller.isLoading ? 'Carregando...' : 'Entrar',
                       style: const TextStyle(fontSize: 16),
                     ),
@@ -163,19 +163,25 @@ class SignInPage extends GetView<GetxSignInPresenter> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                GoogleButton(
-                  onPressed: () async {
-                    try {
-                      showLoadingDialog(context);
-                      await controller.signInWithGoogle();
-                      if (context.mounted) Navigator.of(context).pop();
+                Obx(
+                  () => GoogleButton(
+                    onPressed: controller.isLoading
+                        ? null
+                        : () async {
+                            try {
+                              showLoadingDialog(context);
+                              await controller.signInWithGoogle();
+                              if (context.mounted) Navigator.of(context).pop();
 
-                      Get.offAllNamed(Routes.dashboard);
-                    } on UiError catch (e) {
-                      if (context.mounted) Navigator.of(context).pop();
-                      if (context.mounted) showErrorDialog(context, e.message);
-                    }
-                  },
+                              Get.offAllNamed(Routes.dashboard);
+                            } on UiError catch (e) {
+                              if (context.mounted) Navigator.of(context).pop();
+                              if (e != UiError.cancelled && context.mounted) {
+                                showErrorDialog(context, e.message);
+                              }
+                            }
+                          },
+                  ),
                 ),
                 const SizedBox(height: 16),
                 TextButton(

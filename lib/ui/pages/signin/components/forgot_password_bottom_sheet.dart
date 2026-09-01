@@ -79,8 +79,13 @@ class ForgotPasswordBottomSheet extends GetView<GetxSignInPresenter> {
                     onPressed: () async {
                       try {
                         showLoadingDialog(context);
-                        await controller.recoverPassword();
+                        final sent = await controller.recoverPassword();
                         if (context.mounted) Navigator.of(context).pop();
+
+                        // Formulário inválido: mantém o bottom sheet aberto
+                        // com o que já foi digitado.
+                        if (!sent) return;
+
                         if (context.mounted) Navigator.of(context).pop();
 
                         if (context.mounted) {

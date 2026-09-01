@@ -148,19 +148,27 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                   ),
                 ),
                 const SizedBox(height: 32),
-                FilledButton(
-                  onPressed: () async {
-                    try {
-                      showLoadingDialog(context);
-                      await controller.signUp();
-                      if (context.mounted) Navigator.of(context).pop();
-                      Get.offAllNamed(Routes.emailVerification);
-                    } on UiError catch (e) {
-                      if (context.mounted) Navigator.of(context).pop();
-                      if (context.mounted) showErrorDialog(context, e.message);
-                    }
-                  },
-                  child: const Text('CRIAR CONTA'),
+                Obx(
+                  () => FilledButton(
+                    onPressed: controller.isLoading
+                        ? null
+                        : () async {
+                            try {
+                              showLoadingDialog(context);
+                              await controller.signUp();
+                              if (context.mounted) Navigator.of(context).pop();
+                              Get.offAllNamed(Routes.emailVerification);
+                            } on UiError catch (e) {
+                              if (context.mounted) Navigator.of(context).pop();
+                              if (context.mounted) {
+                                showErrorDialog(context, e.message);
+                              }
+                            }
+                          },
+                    child: Text(
+                      controller.isLoading ? 'Criando...' : 'CRIAR CONTA',
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 TextButton(
@@ -184,19 +192,25 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
-                GoogleButton(
-                  onPressed: () async {
-                    try {
-                      showLoadingDialog(context);
-                      await controller.signUpWithGoogle();
-                      if (context.mounted) Navigator.of(context).pop();
+                Obx(
+                  () => GoogleButton(
+                    onPressed: controller.isLoading
+                        ? null
+                        : () async {
+                            try {
+                              showLoadingDialog(context);
+                              await controller.signUpWithGoogle();
+                              if (context.mounted) Navigator.of(context).pop();
 
-                      Get.offAllNamed(Routes.dashboard);
-                    } on UiError catch (e) {
-                      if (context.mounted) Navigator.of(context).pop();
-                      if (context.mounted) showErrorDialog(context, e.message);
-                    }
-                  },
+                              Get.offAllNamed(Routes.dashboard);
+                            } on UiError catch (e) {
+                              if (context.mounted) Navigator.of(context).pop();
+                              if (e != UiError.cancelled && context.mounted) {
+                                showErrorDialog(context, e.message);
+                              }
+                            }
+                          },
+                  ),
                 ),
               ],
             ),

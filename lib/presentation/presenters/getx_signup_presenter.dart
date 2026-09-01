@@ -8,7 +8,7 @@ import '../../domain/usecases/usecases.dart';
 import '../../ui/helpers/helpers.dart';
 import '../../ui/pages/pages.dart';
 
-class GetxSignUpPresenter implements SignUpPresenter {
+class GetxSignUpPresenter extends GetxController implements SignUpPresenter {
   final RegisterWithEmail registerWithEmail;
   final RegisterWithGoogle registerWithGoogle;
   final SendVerificationEmail sendVerificationEmail;
@@ -27,11 +27,14 @@ class GetxSignUpPresenter implements SignUpPresenter {
 
   final _obscurePassword = true.obs;
   final _obscureConfirmPassword = true.obs;
+  final _isLoading = false.obs;
 
   @override
   bool get obscurePassword => _obscurePassword.value;
   @override
   bool get obscureConfirmPassword => _obscureConfirmPassword.value;
+  @override
+  bool get isLoading => _isLoading.value;
 
   @override
   void togglePasswordVisibility() => _obscurePassword.toggle();
@@ -42,6 +45,7 @@ class GetxSignUpPresenter implements SignUpPresenter {
   @override
   Future<void> signUp() async {
     if (formKey.currentState!.validate() == true) {
+      _isLoading.value = true;
       try {
         await registerWithEmail.call(
           name: nameController.text,
@@ -67,18 +71,37 @@ class GetxSignUpPresenter implements SignUpPresenter {
         log(e.toString(), name: 'GetxSignUpPresenter.signUp.unexpected');
 
         throw UiError.unexpected;
+      } finally {
+        _isLoading.value = false;
       }
     }
   }
 
   @override
   Future<void> signUpWithGoogle() async {
+    _isLoading.value = true;
     try {
       await registerWithGoogle.call();
     } on DomainError catch (e) {
       log(e.toString(), name: 'GetxSignUpPresenter.signUpWithGoogle');
 
-      throw UiError.unexpected;
+      switch (e) {
+        case DomainError.cancelled:
+          throw UiError.cancelled;
+        default:
+          throw UiError.unexpected;
+      }
+    } finally {
+      _isLoading.value = false;
     }
+  }
+
+  @override
+  void onClose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.onClose();
   }
 }

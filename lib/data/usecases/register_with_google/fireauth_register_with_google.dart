@@ -30,6 +30,9 @@ class FireauthRegisterWithGoogle implements RegisterWithGoogle {
         e.toString(),
         name: 'FireauthRegisterWithGoogle.call.googleSignInError',
       );
+      if (e == GoogleSignInError.userCancelled) {
+        throw DomainError.cancelled;
+      }
       throw DomainError.unexpected;
     } catch (e) {
       log(e.toString(), name: 'FireauthRegisterWithGoogle.call.unexpected');

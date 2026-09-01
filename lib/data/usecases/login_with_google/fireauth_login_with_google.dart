@@ -27,6 +27,9 @@ class FireauthLoginWithGoogle implements LoginWithGoogle {
       throw DomainError.unexpected;
     } on GoogleSignInError catch (e) {
       log(e.toString(), name: 'FireauthLoginWithGoogle.call.googleSignInError');
+      if (e == GoogleSignInError.userCancelled) {
+        throw DomainError.cancelled;
+      }
       throw DomainError.unexpected;
     } catch (e) {
       log(e.toString(), name: 'FireauthLoginWithGoogle.call.unexpected');

@@ -5,5 +5,5 @@ abstract class SignInPresenter {
   void togglePasswordVisibility();
   Future<String?> signIn();
   Future<void> signInWithGoogle();
-  Future<void> recoverPassword();
+  Future<bool> recoverPassword();
 }

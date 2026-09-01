@@ -77,22 +77,30 @@ class GetxSignInPresenter extends GetxController implements SignInPresenter {
 
   @override
   Future<void> signInWithGoogle() async {
+    _isLoading.value = true;
     try {
       await loginWithGoogle.call();
     } on DomainError catch (e) {
       log(e.toString(), name: 'GetxSignInPresenter.signInWithGoogle');
 
-      throw UiError.unexpected;
+      switch (e) {
+        case DomainError.cancelled:
+          throw UiError.cancelled;
+        default:
+          throw UiError.unexpected;
+      }
+    } finally {
+      _isLoading.value = false;
     }
   }
 
   @override
-  Future<void> recoverPassword() async {
+  Future<bool> recoverPassword() async {
     if (formRecoverKey.currentState?.validate() ?? false) {
       _isLoading.value = true;
       try {
-        // Assuming a method exists in the use case to handle password recovery
-        return recoveryPassword.call(email: emailRecoveryController.text);
+        await recoveryPassword.call(email: emailRecoveryController.text);
+        return true;
       } on DomainError catch (e) {
         log(e.toString(), name: 'GetxSignInPresenter.recoverPassword');
 
@@ -109,5 +117,6 @@ class GetxSignInPresenter extends GetxController implements SignInPresenter {
         _isLoading.value = false;
       }
     }
+    return false;
   }
 }
