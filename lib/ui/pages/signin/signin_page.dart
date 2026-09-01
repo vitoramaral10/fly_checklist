@@ -81,6 +81,9 @@ class SignInPage extends GetView<GetxSignInPresenter> {
                               ? Icons.visibility_off_rounded
                               : Icons.visibility_rounded,
                         ),
+                        tooltip: controller.obscurePassword
+                            ? l10n.passwordShowTooltip
+                            : l10n.passwordHideTooltip,
                         onPressed: controller.togglePasswordVisibility,
                       ),
                       border: const OutlineInputBorder(

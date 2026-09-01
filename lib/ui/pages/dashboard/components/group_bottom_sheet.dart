@@ -9,6 +9,44 @@ import '../../../helpers/helpers.dart';
 import '../../../helpers/ui_error_translation.dart';
 import '../../group_form_presenter.dart';
 
+/// Nome acessível de uma cor do seletor. [themeColor] é `colorScheme.primary`
+/// — o primeiro swatch da paleta, o único que muda com o tema — e por isso
+/// entra na comparação antes dos tons fixos do Material.
+String _groupColorLabel(AppLocalizations l10n, Color color, Color themeColor) {
+  if (color == themeColor) return l10n.groupColorThemeName;
+  if (color == Colors.red) return l10n.groupColorRed;
+  if (color == Colors.green) return l10n.groupColorGreen;
+  if (color == Colors.blue) return l10n.groupColorBlue;
+  if (color == Colors.orange) return l10n.groupColorOrange;
+  if (color == Colors.purple) return l10n.groupColorPurple;
+  if (color == Colors.teal) return l10n.groupColorTeal;
+  if (color == Colors.pink) return l10n.groupColorPink;
+  if (color == Colors.indigo) return l10n.groupColorIndigo;
+  if (color == Colors.brown) return l10n.groupColorBrown;
+  return l10n.groupColorThemeName;
+}
+
+/// Nome acessível de um ícone do catálogo em [groupIcons]. Cai no rótulo do
+/// ícone padrão se algum dia o catálogo ganhar uma entrada sem tradução.
+String _groupIconLabel(AppLocalizations l10n, IconData icon) {
+  if (icon == Icons.checklist_rounded) return l10n.groupIconChecklist;
+  if (icon == Icons.list_alt_rounded) return l10n.groupIconList;
+  if (icon == Icons.task_alt_rounded) return l10n.groupIconTask;
+  if (icon == Icons.assignment_rounded) return l10n.groupIconAssignment;
+  if (icon == Icons.work_rounded) return l10n.groupIconWork;
+  if (icon == Icons.home_rounded) return l10n.groupIconHome;
+  if (icon == Icons.school_rounded) return l10n.groupIconSchool;
+  if (icon == Icons.fitness_center_rounded) return l10n.groupIconFitness;
+  if (icon == Icons.shopping_cart_rounded) return l10n.groupIconShopping;
+  if (icon == Icons.restaurant_rounded) return l10n.groupIconRestaurant;
+  if (icon == Icons.car_repair_rounded) return l10n.groupIconCarRepair;
+  if (icon == Icons.flight_rounded) return l10n.groupIconFlight;
+  if (icon == Icons.medical_services_rounded) return l10n.groupIconMedical;
+  if (icon == Icons.pets_rounded) return l10n.groupIconPets;
+  if (icon == Icons.sports_soccer_rounded) return l10n.groupIconSports;
+  return l10n.groupIconChecklist;
+}
+
 Future<void> showGroupBottomSheet(
   BuildContext context, {
   GroupEntity? group,
@@ -199,33 +237,54 @@ class _GroupBottomSheetState extends State<GroupBottomSheet> {
                       children: availableColors.map((availableColor) {
                         final isSelected =
                             availableColor == controller.groupColor;
-                        return GestureDetector(
-                          onTap: () {
-                            controller.groupColor = availableColor;
-                          },
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: availableColor,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: isSelected
-                                    ? colorScheme.onSurface
-                                    : colorScheme.outline,
-                                width: isSelected ? 3 : 1,
+                        final colorLabel = _groupColorLabel(
+                          l10n,
+                          availableColor,
+                          colorScheme.primary,
+                        );
+                        return Semantics(
+                          button: true,
+                          selected: isSelected,
+                          label: colorLabel,
+                          child: GestureDetector(
+                            onTap: () {
+                              controller.groupColor = availableColor;
+                            },
+                            // 48x48 é a área mínima de toque recomendada pelo
+                            // Material; o círculo colorido em si continua com
+                            // 40dp de diâmetro, centralizado no espaço extra.
+                            child: SizedBox(
+                              width: 48,
+                              height: 48,
+                              child: Center(
+                                child: Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: availableColor,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? colorScheme.onSurface
+                                          : colorScheme.outline,
+                                      width: isSelected ? 3 : 1,
+                                    ),
+                                  ),
+                                  child: isSelected
+                                      ? Icon(
+                                          Icons.check,
+                                          color:
+                                              availableColor
+                                                      .computeLuminance() >
+                                                  0.5
+                                              ? Colors.black
+                                              : Colors.white,
+                                          size: 20,
+                                        )
+                                      : null,
+                                ),
                               ),
                             ),
-                            child: isSelected
-                                ? Icon(
-                                    Icons.check,
-                                    color:
-                                        availableColor.computeLuminance() > 0.5
-                                        ? Colors.black
-                                        : Colors.white,
-                                    size: 20,
-                                  )
-                                : null,
                           ),
                         );
                       }).toList(),
@@ -274,31 +333,36 @@ class _GroupBottomSheetState extends State<GroupBottomSheet> {
                       children: groupIcons.map((availableIcon) {
                         final isSelected =
                             availableIcon == controller.groupIcon;
-                        return GestureDetector(
-                          onTap: () {
-                            controller.groupIcon = availableIcon;
-                          },
-                          child: Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? colorScheme.primaryContainer
-                                  : colorScheme.surface,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
+                        return Semantics(
+                          button: true,
+                          selected: isSelected,
+                          label: _groupIconLabel(l10n, availableIcon),
+                          child: GestureDetector(
+                            onTap: () {
+                              controller.groupIcon = availableIcon;
+                            },
+                            child: Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? colorScheme.primaryContainer
+                                    : colorScheme.surface,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? colorScheme.primary
+                                      : colorScheme.outline,
+                                  width: isSelected ? 2 : 1,
+                                ),
+                              ),
+                              child: Icon(
+                                availableIcon,
                                 color: isSelected
                                     ? colorScheme.primary
-                                    : colorScheme.outline,
-                                width: isSelected ? 2 : 1,
+                                    : colorScheme.onSurface,
+                                size: 24,
                               ),
-                            ),
-                            child: Icon(
-                              availableIcon,
-                              color: isSelected
-                                  ? colorScheme.primary
-                                  : colorScheme.onSurface,
-                              size: 24,
                             ),
                           ),
                         );
@@ -347,11 +411,14 @@ class _GroupBottomSheetState extends State<GroupBottomSheet> {
                           ],
                         ),
                       ),
-                      Switch(
-                        value: controller.saveCheckState,
-                        onChanged: (value) {
-                          controller.saveCheckState = value;
-                        },
+                      Semantics(
+                        label: l10n.groupSaveCheckStateTitle,
+                        child: Switch(
+                          value: controller.saveCheckState,
+                          onChanged: (value) {
+                            controller.saveCheckState = value;
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -411,13 +478,13 @@ class _GroupBottomSheetState extends State<GroupBottomSheet> {
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
-                    icon: const Icon(Icons.delete_outline, color: Colors.red),
+                    icon: Icon(Icons.delete_outline, color: colorScheme.error),
                     label: Text(
                       l10n.groupDelete,
-                      style: const TextStyle(color: Colors.red),
+                      style: TextStyle(color: colorScheme.error),
                     ),
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.red),
+                      side: BorderSide(color: colorScheme.error),
                     ),
                     onPressed: () async {
                       final isDelete = await showConfirmationDialog(

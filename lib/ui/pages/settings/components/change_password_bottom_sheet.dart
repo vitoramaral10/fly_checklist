@@ -70,6 +70,9 @@ class _ChangePasswordBottomSheetContent extends GetView<GetxSettingsPresenter> {
                               ? Icons.visibility
                               : Icons.visibility_off,
                         ),
+                        tooltip: controller.showCurrentPassword
+                            ? l10n.passwordHideTooltip
+                            : l10n.passwordShowTooltip,
                         onPressed: () {
                           controller.toggleShowCurrentPassword();
                         },
@@ -103,6 +106,9 @@ class _ChangePasswordBottomSheetContent extends GetView<GetxSettingsPresenter> {
                               ? Icons.visibility
                               : Icons.visibility_off,
                         ),
+                        tooltip: controller.showNewPassword
+                            ? l10n.passwordHideTooltip
+                            : l10n.passwordShowTooltip,
                         onPressed: () {
                           controller.toggleShowNewPassword();
                         },
@@ -135,6 +141,9 @@ class _ChangePasswordBottomSheetContent extends GetView<GetxSettingsPresenter> {
                               ? Icons.visibility
                               : Icons.visibility_off,
                         ),
+                        tooltip: controller.showConfirmNewPassword
+                            ? l10n.passwordHideTooltip
+                            : l10n.passwordShowTooltip,
                         onPressed: () {
                           controller.toggleShowConfirmNewPassword();
                         },

@@ -301,13 +301,16 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
-                    icon: const Icon(Icons.delete_outline, color: Colors.red),
+                    icon: Icon(
+                      Icons.delete_outline,
+                      color: theme.colorScheme.error,
+                    ),
                     label: Text(
                       l10n.commonDelete,
-                      style: const TextStyle(color: Colors.red),
+                      style: TextStyle(color: theme.colorScheme.error),
                     ),
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.red),
+                      side: BorderSide(color: theme.colorScheme.error),
                     ),
                     onPressed: () async {
                       final isDelete = await showConfirmationDialog(

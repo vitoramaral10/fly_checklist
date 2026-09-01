@@ -43,6 +43,9 @@
   "fieldNewPasswordLabel": "Nova Senha",
   "fieldConfirmNewPasswordLabel": "Confirmar Nova Senha",
 
+  "passwordShowTooltip": "Mostrar senha",
+  "passwordHideTooltip": "Ocultar senha",
+
   "validatorEmailRequired": "Por favor, insira seu e-mail.",
   "validatorEmailInvalid": "Por favor, insira um e-mail válido.",
   "validatorEmailInvalidShort": "E-mail inválido.",
@@ -127,6 +130,27 @@
   "taskPriorityMedium": "Média",
   "taskPriorityHigh": "Alta",
   "taskPriorityCritical": "Crítica",
+  "taskPrioritySemanticLabel": "Prioridade: {priority}",
+  "@taskPrioritySemanticLabel": {
+    "description": "Rótulo de acessibilidade do ícone de prioridade no item da tarefa",
+    "placeholders": {
+      "priority": { "type": "String" }
+    }
+  },
+  "taskCheckboxLabelDone": "{title}, concluída",
+  "@taskCheckboxLabelDone": {
+    "description": "Rótulo de acessibilidade do checkbox de uma tarefa concluída",
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "taskCheckboxLabelPending": "{title}, pendente",
+  "@taskCheckboxLabelPending": {
+    "description": "Rótulo de acessibilidade do checkbox de uma tarefa pendente",
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
   "taskCreatedSuccess": "Tarefa criada com sucesso!",
   "taskUpdatedSuccess": "Tarefa atualizada com sucesso!",
   "taskDeletedSuccess": "Tarefa excluída com sucesso!",
@@ -151,6 +175,36 @@
   "groupFieldDescriptionLabel": "Descrição (opcional)",
   "groupColorLabel": "Cor do Grupo",
   "groupIconLabel": "Ícone do Grupo",
+
+  "groupColorThemeName": "Cor do tema",
+  "groupColorRed": "Vermelho",
+  "groupColorGreen": "Verde",
+  "groupColorBlue": "Azul",
+  "groupColorOrange": "Laranja",
+  "groupColorPurple": "Roxo",
+  "groupColorTeal": "Verde-azulado",
+  "groupColorPink": "Rosa",
+  "groupColorIndigo": "Índigo",
+  "groupColorBrown": "Marrom",
+
+  "groupIconChecklist": "Checklist",
+  "groupIconList": "Lista",
+  "groupIconTask": "Tarefa concluída",
+  "groupIconAssignment": "Formulário",
+  "groupIconWork": "Trabalho",
+  "groupIconHome": "Casa",
+  "groupIconSchool": "Escola",
+  "groupIconFitness": "Academia",
+  "groupIconShopping": "Compras",
+  "groupIconRestaurant": "Restaurante",
+  "groupIconCarRepair": "Manutenção automotiva",
+  "groupIconFlight": "Viagem",
+  "groupIconMedical": "Saúde",
+  "groupIconPets": "Pets",
+  "groupIconSports": "Esportes",
+
+  "groupMenuTooltip": "Mais opções do grupo",
+
   "groupSaveCheckStateTitle": "Salvar Estado dos Checks",
   "groupSaveCheckStateOn": "Os checks marcados serão mantidos entre sessões",
   "groupSaveCheckStateOff": "Os checks serão resetados a cada nova sessão",

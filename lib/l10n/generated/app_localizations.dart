@@ -304,6 +304,18 @@ abstract class AppLocalizations {
   /// **'Confirmar Nova Senha'**
   String get fieldConfirmNewPasswordLabel;
 
+  /// No description provided for @passwordShowTooltip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mostrar senha'**
+  String get passwordShowTooltip;
+
+  /// No description provided for @passwordHideTooltip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocultar senha'**
+  String get passwordHideTooltip;
+
   /// No description provided for @validatorEmailRequired.
   ///
   /// In pt, this message translates to:
@@ -712,6 +724,24 @@ abstract class AppLocalizations {
   /// **'Crítica'**
   String get taskPriorityCritical;
 
+  /// Rótulo de acessibilidade do ícone de prioridade no item da tarefa
+  ///
+  /// In pt, this message translates to:
+  /// **'Prioridade: {priority}'**
+  String taskPrioritySemanticLabel(String priority);
+
+  /// Rótulo de acessibilidade do checkbox de uma tarefa concluída
+  ///
+  /// In pt, this message translates to:
+  /// **'{title}, concluída'**
+  String taskCheckboxLabelDone(String title);
+
+  /// Rótulo de acessibilidade do checkbox de uma tarefa pendente
+  ///
+  /// In pt, this message translates to:
+  /// **'{title}, pendente'**
+  String taskCheckboxLabelPending(String title);
+
   /// No description provided for @taskCreatedSuccess.
   ///
   /// In pt, this message translates to:
@@ -819,6 +849,162 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Ícone do Grupo'**
   String get groupIconLabel;
+
+  /// No description provided for @groupColorThemeName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cor do tema'**
+  String get groupColorThemeName;
+
+  /// No description provided for @groupColorRed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vermelho'**
+  String get groupColorRed;
+
+  /// No description provided for @groupColorGreen.
+  ///
+  /// In pt, this message translates to:
+  /// **'Verde'**
+  String get groupColorGreen;
+
+  /// No description provided for @groupColorBlue.
+  ///
+  /// In pt, this message translates to:
+  /// **'Azul'**
+  String get groupColorBlue;
+
+  /// No description provided for @groupColorOrange.
+  ///
+  /// In pt, this message translates to:
+  /// **'Laranja'**
+  String get groupColorOrange;
+
+  /// No description provided for @groupColorPurple.
+  ///
+  /// In pt, this message translates to:
+  /// **'Roxo'**
+  String get groupColorPurple;
+
+  /// No description provided for @groupColorTeal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Verde-azulado'**
+  String get groupColorTeal;
+
+  /// No description provided for @groupColorPink.
+  ///
+  /// In pt, this message translates to:
+  /// **'Rosa'**
+  String get groupColorPink;
+
+  /// No description provided for @groupColorIndigo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Índigo'**
+  String get groupColorIndigo;
+
+  /// No description provided for @groupColorBrown.
+  ///
+  /// In pt, this message translates to:
+  /// **'Marrom'**
+  String get groupColorBrown;
+
+  /// No description provided for @groupIconChecklist.
+  ///
+  /// In pt, this message translates to:
+  /// **'Checklist'**
+  String get groupIconChecklist;
+
+  /// No description provided for @groupIconList.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista'**
+  String get groupIconList;
+
+  /// No description provided for @groupIconTask.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tarefa concluída'**
+  String get groupIconTask;
+
+  /// No description provided for @groupIconAssignment.
+  ///
+  /// In pt, this message translates to:
+  /// **'Formulário'**
+  String get groupIconAssignment;
+
+  /// No description provided for @groupIconWork.
+  ///
+  /// In pt, this message translates to:
+  /// **'Trabalho'**
+  String get groupIconWork;
+
+  /// No description provided for @groupIconHome.
+  ///
+  /// In pt, this message translates to:
+  /// **'Casa'**
+  String get groupIconHome;
+
+  /// No description provided for @groupIconSchool.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escola'**
+  String get groupIconSchool;
+
+  /// No description provided for @groupIconFitness.
+  ///
+  /// In pt, this message translates to:
+  /// **'Academia'**
+  String get groupIconFitness;
+
+  /// No description provided for @groupIconShopping.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compras'**
+  String get groupIconShopping;
+
+  /// No description provided for @groupIconRestaurant.
+  ///
+  /// In pt, this message translates to:
+  /// **'Restaurante'**
+  String get groupIconRestaurant;
+
+  /// No description provided for @groupIconCarRepair.
+  ///
+  /// In pt, this message translates to:
+  /// **'Manutenção automotiva'**
+  String get groupIconCarRepair;
+
+  /// No description provided for @groupIconFlight.
+  ///
+  /// In pt, this message translates to:
+  /// **'Viagem'**
+  String get groupIconFlight;
+
+  /// No description provided for @groupIconMedical.
+  ///
+  /// In pt, this message translates to:
+  /// **'Saúde'**
+  String get groupIconMedical;
+
+  /// No description provided for @groupIconPets.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pets'**
+  String get groupIconPets;
+
+  /// No description provided for @groupIconSports.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esportes'**
+  String get groupIconSports;
+
+  /// No description provided for @groupMenuTooltip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais opções do grupo'**
+  String get groupMenuTooltip;
 
   /// No description provided for @groupSaveCheckStateTitle.
   ///

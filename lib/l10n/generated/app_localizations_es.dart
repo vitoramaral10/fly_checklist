@@ -117,6 +117,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get fieldConfirmNewPasswordLabel => 'Confirmar contraseña nueva';
 
   @override
+  String get passwordShowTooltip => 'Mostrar contraseña';
+
+  @override
+  String get passwordHideTooltip => 'Ocultar contraseña';
+
+  @override
   String get validatorEmailRequired => 'Introduce tu correo electrónico.';
 
   @override
@@ -335,6 +341,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get taskPriorityCritical => 'Crítica';
 
   @override
+  String taskPrioritySemanticLabel(String priority) {
+    return 'Prioridad: $priority';
+  }
+
+  @override
+  String taskCheckboxLabelDone(String title) {
+    return '$title, completada';
+  }
+
+  @override
+  String taskCheckboxLabelPending(String title) {
+    return '$title, pendiente';
+  }
+
+  @override
   String get taskCreatedSuccess => 'Tarea creada.';
 
   @override
@@ -392,6 +413,84 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get groupIconLabel => 'Icono del grupo';
+
+  @override
+  String get groupColorThemeName => 'Color del tema';
+
+  @override
+  String get groupColorRed => 'Rojo';
+
+  @override
+  String get groupColorGreen => 'Verde';
+
+  @override
+  String get groupColorBlue => 'Azul';
+
+  @override
+  String get groupColorOrange => 'Naranja';
+
+  @override
+  String get groupColorPurple => 'Morado';
+
+  @override
+  String get groupColorTeal => 'Verde azulado';
+
+  @override
+  String get groupColorPink => 'Rosa';
+
+  @override
+  String get groupColorIndigo => 'Índigo';
+
+  @override
+  String get groupColorBrown => 'Marrón';
+
+  @override
+  String get groupIconChecklist => 'Lista de verificación';
+
+  @override
+  String get groupIconList => 'Lista';
+
+  @override
+  String get groupIconTask => 'Tarea completada';
+
+  @override
+  String get groupIconAssignment => 'Formulario';
+
+  @override
+  String get groupIconWork => 'Trabajo';
+
+  @override
+  String get groupIconHome => 'Casa';
+
+  @override
+  String get groupIconSchool => 'Escuela';
+
+  @override
+  String get groupIconFitness => 'Gimnasio';
+
+  @override
+  String get groupIconShopping => 'Compras';
+
+  @override
+  String get groupIconRestaurant => 'Restaurante';
+
+  @override
+  String get groupIconCarRepair => 'Mantenimiento del auto';
+
+  @override
+  String get groupIconFlight => 'Viaje';
+
+  @override
+  String get groupIconMedical => 'Salud';
+
+  @override
+  String get groupIconPets => 'Mascotas';
+
+  @override
+  String get groupIconSports => 'Deportes';
+
+  @override
+  String get groupMenuTooltip => 'Opciones del grupo';
 
   @override
   String get groupSaveCheckStateTitle => 'Guardar el estado de las marcas';

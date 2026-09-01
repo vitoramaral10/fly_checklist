@@ -99,6 +99,9 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                               ? Icons.visibility_off_rounded
                               : Icons.visibility_rounded,
                         ),
+                        tooltip: controller.obscurePassword
+                            ? l10n.passwordShowTooltip
+                            : l10n.passwordHideTooltip,
                         onPressed: controller.togglePasswordVisibility,
                       ),
                       border: const OutlineInputBorder(
@@ -131,6 +134,9 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                               ? Icons.visibility_off_rounded
                               : Icons.visibility_rounded,
                         ),
+                        tooltip: controller.obscureConfirmPassword
+                            ? l10n.passwordShowTooltip
+                            : l10n.passwordHideTooltip,
                         onPressed: controller.toggleConfirmPasswordVisibility,
                       ),
                       border: const OutlineInputBorder(

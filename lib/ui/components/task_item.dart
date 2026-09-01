@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fly_checklist/domain/entities/entities.dart';
 
+import '../../l10n/generated/app_localizations.dart';
 import '../helpers/helpers.dart';
 
 class TaskItem extends StatelessWidget {
@@ -19,31 +20,52 @@ class TaskItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
+    // Tons fixos, mas escolhidos aos pares (escuro no claro, claro no
+    // escuro) para manter contraste suficiente com o fundo do Card nos dois
+    // brightness — a cor em si não muda de acordo com o tema, só o tom.
+    final isDark = theme.brightness == Brightness.dark;
+
     IconData priorityIcon;
     Color priorityColor;
+    String priorityLabel;
     switch (task.priority) {
       case 4:
         priorityIcon = Icons.priority_high_rounded;
-        priorityColor = Colors.red;
+        priorityColor = isDark ? Colors.red.shade300 : Colors.red.shade700;
+        priorityLabel = l10n.taskPriorityCritical;
         break;
       case 3:
         priorityIcon = Icons.arrow_upward_rounded;
-        priorityColor = Colors.orange;
+        priorityColor = isDark
+            ? Colors.orange.shade300
+            : Colors.orange.shade800;
+        priorityLabel = l10n.taskPriorityHigh;
         break;
       case 2:
         priorityIcon = Icons.drag_handle_rounded;
-        priorityColor = Colors.amber;
+        priorityColor = isDark
+            ? Colors.amber.shade300
+            : Colors.amber.shade800;
+        priorityLabel = l10n.taskPriorityMedium;
         break;
       case 1:
         priorityIcon = Icons.arrow_downward_rounded;
-        priorityColor = Colors.green;
+        priorityColor = isDark
+            ? Colors.green.shade300
+            : Colors.green.shade700;
+        priorityLabel = l10n.taskPriorityLow;
         break;
       default:
         priorityIcon = Icons.low_priority_rounded;
-        priorityColor = Colors.grey;
+        priorityColor = theme.colorScheme.onSurfaceVariant;
+        priorityLabel = l10n.taskPriorityNone;
     }
 
-    final theme = Theme.of(context);
+    final checkboxLabel = task.isDone
+        ? l10n.taskCheckboxLabelDone(task.title)
+        : l10n.taskCheckboxLabelPending(task.title);
 
     return Dismissible(
       key: ValueKey(task.id),
@@ -76,7 +98,11 @@ class TaskItem extends StatelessWidget {
         ),
         child: ListTile(
           dense: true,
-          leading: Icon(priorityIcon, color: priorityColor),
+          leading: Icon(
+            priorityIcon,
+            color: priorityColor,
+            semanticLabel: l10n.taskPrioritySemanticLabel(priorityLabel),
+          ),
           title: Text(
             task.title,
             style: theme.textTheme.bodyLarge?.copyWith(
@@ -96,7 +122,12 @@ class TaskItem extends StatelessWidget {
                   ),
                 )
               : null,
-          trailing: Checkbox(value: task.isDone, onChanged: onCheckboxChanged),
+          // O rótulo repõe o título e o estado (perdidos pelo leitor de tela
+          // no tachado visual) junto do papel/estado nativos do Checkbox.
+          trailing: Semantics(
+            label: checkboxLabel,
+            child: Checkbox(value: task.isDone, onChanged: onCheckboxChanged),
+          ),
           onTap: onTap,
         ),
       ),

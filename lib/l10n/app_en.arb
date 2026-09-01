@@ -40,6 +40,9 @@
   "fieldNewPasswordLabel": "New password",
   "fieldConfirmNewPasswordLabel": "Confirm new password",
 
+  "passwordShowTooltip": "Show password",
+  "passwordHideTooltip": "Hide password",
+
   "validatorEmailRequired": "Please enter your email.",
   "validatorEmailInvalid": "Please enter a valid email.",
   "validatorEmailInvalidShort": "Invalid email.",
@@ -123,6 +126,24 @@
   "taskPriorityMedium": "Medium",
   "taskPriorityHigh": "High",
   "taskPriorityCritical": "Critical",
+  "taskPrioritySemanticLabel": "Priority: {priority}",
+  "@taskPrioritySemanticLabel": {
+    "placeholders": {
+      "priority": { "type": "String" }
+    }
+  },
+  "taskCheckboxLabelDone": "{title}, done",
+  "@taskCheckboxLabelDone": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "taskCheckboxLabelPending": "{title}, pending",
+  "@taskCheckboxLabelPending": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
   "taskCreatedSuccess": "Task created.",
   "taskUpdatedSuccess": "Task updated.",
   "taskDeletedSuccess": "Task deleted.",
@@ -147,6 +168,36 @@
   "groupFieldDescriptionLabel": "Description (optional)",
   "groupColorLabel": "Group color",
   "groupIconLabel": "Group icon",
+
+  "groupColorThemeName": "Theme color",
+  "groupColorRed": "Red",
+  "groupColorGreen": "Green",
+  "groupColorBlue": "Blue",
+  "groupColorOrange": "Orange",
+  "groupColorPurple": "Purple",
+  "groupColorTeal": "Teal",
+  "groupColorPink": "Pink",
+  "groupColorIndigo": "Indigo",
+  "groupColorBrown": "Brown",
+
+  "groupIconChecklist": "Checklist",
+  "groupIconList": "List",
+  "groupIconTask": "Completed task",
+  "groupIconAssignment": "Form",
+  "groupIconWork": "Work",
+  "groupIconHome": "Home",
+  "groupIconSchool": "School",
+  "groupIconFitness": "Fitness",
+  "groupIconShopping": "Shopping",
+  "groupIconRestaurant": "Restaurant",
+  "groupIconCarRepair": "Car maintenance",
+  "groupIconFlight": "Travel",
+  "groupIconMedical": "Health",
+  "groupIconPets": "Pets",
+  "groupIconSports": "Sports",
+
+  "groupMenuTooltip": "Group options",
+
   "groupSaveCheckStateTitle": "Keep checked items",
   "groupSaveCheckStateOn": "Checked items stay checked between sessions",
   "groupSaveCheckStateOff": "Checked items reset on every new session",

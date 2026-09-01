@@ -40,6 +40,9 @@
   "fieldNewPasswordLabel": "Contraseña nueva",
   "fieldConfirmNewPasswordLabel": "Confirmar contraseña nueva",
 
+  "passwordShowTooltip": "Mostrar contraseña",
+  "passwordHideTooltip": "Ocultar contraseña",
+
   "validatorEmailRequired": "Introduce tu correo electrónico.",
   "validatorEmailInvalid": "Introduce un correo electrónico válido.",
   "validatorEmailInvalidShort": "Correo no válido.",
@@ -123,6 +126,24 @@
   "taskPriorityMedium": "Media",
   "taskPriorityHigh": "Alta",
   "taskPriorityCritical": "Crítica",
+  "taskPrioritySemanticLabel": "Prioridad: {priority}",
+  "@taskPrioritySemanticLabel": {
+    "placeholders": {
+      "priority": { "type": "String" }
+    }
+  },
+  "taskCheckboxLabelDone": "{title}, completada",
+  "@taskCheckboxLabelDone": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "taskCheckboxLabelPending": "{title}, pendiente",
+  "@taskCheckboxLabelPending": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
   "taskCreatedSuccess": "Tarea creada.",
   "taskUpdatedSuccess": "Tarea actualizada.",
   "taskDeletedSuccess": "Tarea eliminada.",
@@ -147,6 +168,36 @@
   "groupFieldDescriptionLabel": "Descripción (opcional)",
   "groupColorLabel": "Color del grupo",
   "groupIconLabel": "Icono del grupo",
+
+  "groupColorThemeName": "Color del tema",
+  "groupColorRed": "Rojo",
+  "groupColorGreen": "Verde",
+  "groupColorBlue": "Azul",
+  "groupColorOrange": "Naranja",
+  "groupColorPurple": "Morado",
+  "groupColorTeal": "Verde azulado",
+  "groupColorPink": "Rosa",
+  "groupColorIndigo": "Índigo",
+  "groupColorBrown": "Marrón",
+
+  "groupIconChecklist": "Lista de verificación",
+  "groupIconList": "Lista",
+  "groupIconTask": "Tarea completada",
+  "groupIconAssignment": "Formulario",
+  "groupIconWork": "Trabajo",
+  "groupIconHome": "Casa",
+  "groupIconSchool": "Escuela",
+  "groupIconFitness": "Gimnasio",
+  "groupIconShopping": "Compras",
+  "groupIconRestaurant": "Restaurante",
+  "groupIconCarRepair": "Mantenimiento del auto",
+  "groupIconFlight": "Viaje",
+  "groupIconMedical": "Salud",
+  "groupIconPets": "Mascotas",
+  "groupIconSports": "Deportes",
+
+  "groupMenuTooltip": "Opciones del grupo",
+
   "groupSaveCheckStateTitle": "Guardar el estado de las marcas",
   "groupSaveCheckStateOn": "Las marcas se mantienen entre sesiones",
   "groupSaveCheckStateOff": "Las marcas se reinician en cada sesión",

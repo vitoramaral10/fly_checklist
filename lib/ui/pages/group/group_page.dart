@@ -52,6 +52,7 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                 actions: [
                   PopupMenuButton<String>(
                     icon: const Icon(Icons.more_vert_rounded),
+                    tooltip: l10n.groupMenuTooltip,
                     onSelected: (value) {
                       switch (value) {
                         case 'reset':
