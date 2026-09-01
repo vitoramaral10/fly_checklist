@@ -4,12 +4,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
+import 'domain/entities/entities.dart';
 import 'firebase_options.dart';
+import 'main/factories/factories.dart';
 import 'main/routes.dart';
+import 'ui/helpers/helpers.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting(appDateLocale);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
@@ -19,13 +24,15 @@ Future<void> main() async {
     return true;
   };
 
-  // Initialize de intl
+  final initialThemeMode = await makeLocalGetThemeMode().call();
 
-  runApp(const MyApp());
+  runApp(MyApp(initialThemeMode: initialThemeMode));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final AppThemeMode initialThemeMode;
+
+  const MyApp({super.key, required this.initialThemeMode});
 
   // This widget is the root of your application.
   @override
@@ -40,7 +47,7 @@ class MyApp extends StatelessWidget {
 
     return GetMaterialApp(
       title: 'Fly Checklist',
-      themeMode: ThemeMode.light,
+      themeMode: _toFlutterThemeMode(initialThemeMode),
       theme: _buildTheme(lightScheme),
       darkTheme: _buildTheme(darkScheme),
       initialRoute: Routes.home,
@@ -57,6 +64,17 @@ class MyApp extends StatelessWidget {
         const Locale('pt', 'BR'), // Portuguese (Brazil)
       ],
     );
+  }
+}
+
+ThemeMode _toFlutterThemeMode(AppThemeMode themeMode) {
+  switch (themeMode) {
+    case AppThemeMode.light:
+      return ThemeMode.light;
+    case AppThemeMode.dark:
+      return ThemeMode.dark;
+    case AppThemeMode.system:
+      return ThemeMode.system;
   }
 }
 

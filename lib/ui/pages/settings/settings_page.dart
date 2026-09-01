@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../domain/entities/entities.dart';
+import '../../../main/routes.dart';
 import '../../../presentation/presenters/presenters.dart';
 import '../../components/components.dart';
 import '../../helpers/helpers.dart';
@@ -21,6 +23,11 @@ class SettingsPage extends GetView<GetxSettingsPresenter> {
         if (controller.isLoading) {
           return const SettingsLoadingPage();
         }
+
+        if (controller.hasError != null || controller.user == null) {
+          return _buildErrorState();
+        }
+
         return ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
           children: [
@@ -48,7 +55,7 @@ class SettingsPage extends GetView<GetxSettingsPresenter> {
             _buildSectionTitle(theme, 'Preferências'),
             const SizedBox(height: 8),
             _buildSettingsCard(theme, [
-              _buildThemeSwitch(theme),
+              _buildThemeSelector(theme),
               _buildSettingsItem(
                 theme: theme,
                 icon: Icons.notifications_outlined,
@@ -86,6 +93,27 @@ class SettingsPage extends GetView<GetxSettingsPresenter> {
           ],
         );
       }),
+    );
+  }
+
+  Widget _buildErrorState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          EmptyState(
+            icon: Icons.cloud_off_rounded,
+            title: 'Não foi possível carregar suas configurações',
+            message: controller.hasError ?? UiError.unexpected.message,
+          ),
+          const SizedBox(height: 16),
+          FilledButton.icon(
+            onPressed: () => controller.loadAllData(),
+            icon: const Icon(Icons.refresh_rounded),
+            label: const Text('Tentar novamente'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -155,20 +183,52 @@ class SettingsPage extends GetView<GetxSettingsPresenter> {
     );
   }
 
-  Widget _buildThemeSwitch(ThemeData theme) {
-    // TODO: Lógica para trocar o tema
-    final isDarkMode = theme.brightness == Brightness.dark;
-    return SwitchListTile(
-      title: Text('Tema Escuro', style: theme.textTheme.bodyLarge),
-      value: isDarkMode,
-      onChanged: (value) {
-        // TODO: Implementar a troca de tema
-      },
-      secondary: Icon(
-        isDarkMode ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
-        color: theme.colorScheme.onSurfaceVariant,
+  Widget _buildThemeSelector(ThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        children: [
+          Icon(
+            _themeModeIcon(controller.themeMode),
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: 16),
+          Expanded(child: Text('Tema', style: theme.textTheme.bodyLarge)),
+          SegmentedButton<AppThemeMode>(
+            segments: const [
+              ButtonSegment(
+                value: AppThemeMode.light,
+                icon: Icon(Icons.light_mode_outlined),
+              ),
+              ButtonSegment(
+                value: AppThemeMode.dark,
+                icon: Icon(Icons.dark_mode_outlined),
+              ),
+              ButtonSegment(
+                value: AppThemeMode.system,
+                icon: Icon(Icons.brightness_auto_outlined),
+              ),
+            ],
+            selected: {controller.themeMode},
+            showSelectedIcon: false,
+            onSelectionChanged: (selection) {
+              controller.setThemeMode(selection.first);
+            },
+          ),
+        ],
       ),
     );
+  }
+
+  IconData _themeModeIcon(AppThemeMode themeMode) {
+    switch (themeMode) {
+      case AppThemeMode.light:
+        return Icons.light_mode_outlined;
+      case AppThemeMode.dark:
+        return Icons.dark_mode_outlined;
+      case AppThemeMode.system:
+        return Icons.brightness_auto_outlined;
+    }
   }
 
   Widget _buildLogoutButton(ThemeData theme, BuildContext context) {
@@ -178,6 +238,7 @@ class SettingsPage extends GetView<GetxSettingsPresenter> {
       onPressed: () async {
         try {
           await controller.logout();
+          Get.offAllNamed(Routes.home);
         } on UiError catch (e) {
           log(e.toString(), name: 'SettingsPage._buildLogoutButton');
 

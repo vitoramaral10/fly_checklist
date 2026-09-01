@@ -14,6 +14,8 @@ class _SettingsBinding extends Bindings {
         logoutAccount: makeFireauthLogoutAccount(),
         loginWithEmail: makeFireauthLoginWithEmail(),
         changePassword: makeFireauthChangePassword(),
+        getThemeMode: makeLocalGetThemeMode(),
+        saveThemeMode: makeLocalSaveThemeMode(),
       ),
     );
   }

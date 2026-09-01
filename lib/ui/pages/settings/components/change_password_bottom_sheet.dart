@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:fly_checklist/ui/components/components.dart';
 import 'package:get/get.dart';
 
+import '../../../../main/routes.dart';
 import '../../../../presentation/presenters/presenters.dart';
 import '../../../helpers/helpers.dart';
 
 void showChangePasswordBottomSheet(BuildContext context) {
   if (!context.mounted) return;
+  Get.find<GetxSettingsPresenter>().clearChangePasswordFields();
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -153,17 +155,28 @@ class _ChangePasswordBottomSheetContent extends GetView<GetxSettingsPresenter> {
                       onPressed: () async {
                         try {
                           showLoadingDialog(context);
-                          await controller.changePasswordAction();
+                          final changed = await controller
+                              .changePasswordAction();
                           if (!context.mounted) return;
-                          Navigator.of(
-                            context,
-                          ).pop(); // Fecha o diálogo de loading
+                          // Fecha o diálogo de loading
+                          Navigator.of(context).pop();
+
+                          // Formulário inválido: mantém o bottom sheet aberto
+                          // com o que já foi digitado.
+                          if (!changed) return;
+
                           Navigator.of(context).pop(); // Fecha o bottom sheet
                           showSuccessSnackbar(
                             message: 'Senha alterada com sucesso!',
                           );
+                          Get.offAllNamed(Routes.home);
                         } on UiError catch (e) {
-                          showErrorDialog(context, e.message);
+                          // Fecha o loading antes de exibir o erro, senão o
+                          // diálogo (barrierDismissible: false) fica preso.
+                          if (context.mounted) Navigator.of(context).pop();
+                          if (context.mounted) {
+                            showErrorDialog(context, e.message);
+                          }
                         }
                       },
                       child: const Text('Salvar Alterações'),

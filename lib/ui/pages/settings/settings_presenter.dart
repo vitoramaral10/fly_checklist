@@ -7,6 +7,7 @@ abstract class SettingsPresenter {
   bool get showCurrentPassword;
   bool get showNewPassword;
   bool get showConfirmNewPassword;
+  AppThemeMode get themeMode;
 
   Future<void> loadAllData();
   Future<void> loadUserData();
@@ -14,5 +15,7 @@ abstract class SettingsPresenter {
   void toggleShowCurrentPassword();
   void toggleShowNewPassword();
   void toggleShowConfirmNewPassword();
-  Future<void> changePasswordAction();
+  Future<bool> changePasswordAction();
+  void clearChangePasswordFields();
+  Future<void> setThemeMode(AppThemeMode themeMode);
 }
