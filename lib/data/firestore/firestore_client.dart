@@ -1,4 +1,6 @@
 abstract class FirestoreClient {
+  /// Sem [groupId] retorna todas as tarefas do usuário; com ele, apenas as do
+  /// grupo informado.
   Future<List<Map<String, dynamic>>> loadTasks({
     required String userId,
     String? groupId,

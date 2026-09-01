@@ -161,9 +161,9 @@ class FireauthAdapter implements FireauthClient {
   }
 
   @override
-  Future<void> logout() {
+  Future<void> logout() async {
     try {
-      return FirebaseAuth.instance.signOut();
+      await FirebaseAuth.instance.signOut();
     } catch (e) {
       log(e.toString(), name: 'FireauthAdapter.logout.unexpected');
       throw FireauthError.unexpected;
@@ -171,9 +171,9 @@ class FireauthAdapter implements FireauthClient {
   }
 
   @override
-  Future<void> sendEmailVerification() {
+  Future<void> sendEmailVerification() async {
     try {
-      return FirebaseAuth.instance.currentUser!.sendEmailVerification();
+      await FirebaseAuth.instance.currentUser!.sendEmailVerification();
     } catch (e) {
       log(
         e.toString(),

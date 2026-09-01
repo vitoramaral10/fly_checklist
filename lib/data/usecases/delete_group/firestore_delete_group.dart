@@ -17,11 +17,14 @@ class FirestoreDeleteGroup implements DeleteGroup {
     required GroupEntity group,
   }) async {
     try {
-      await firestoreClient.deleteGroup(userId: userId, groupId: group.id);
+      // As tarefas são removidas antes do grupo: se a exclusão falhar no meio,
+      // o grupo continua existindo e a operação pode ser repetida sem deixar
+      // tarefas órfãs.
       await firestoreClient.deleteTasksByGroupId(
         userId: userId,
         groupId: group.id,
       );
+      await firestoreClient.deleteGroup(userId: userId, groupId: group.id);
     } on FirestoreError catch (e) {
       log(e.toString(), name: 'FirestoreDeleteGroup.call');
       throw DomainError.unexpected;

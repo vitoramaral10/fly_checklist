@@ -69,13 +69,12 @@ class FirestoreAdapter implements FirestoreClient {
     String? groupId,
   }) async {
     try {
-      QuerySnapshot<Map<String, dynamic>> snapshot;
+      final QuerySnapshot<Map<String, dynamic>> snapshot;
       if (groupId == null) {
         snapshot = await instance
             .collection('users')
             .doc(userId)
             .collection('tasks')
-            .where('groupId', isNull: true)
             .get();
       } else {
         snapshot = await instance
@@ -193,9 +192,9 @@ class FirestoreAdapter implements FirestoreClient {
     required String userId,
     required String groupId,
     required Map<String, dynamic> data,
-  }) {
+  }) async {
     try {
-      return instance
+      await instance
           .collection('users')
           .doc(userId)
           .collection('groups')
@@ -211,24 +210,24 @@ class FirestoreAdapter implements FirestoreClient {
   Future<Map<String, dynamic>> getGroup({
     required String userId,
     required String groupId,
-  }) {
+  }) async {
     try {
-      return instance
+      final doc = await instance
           .collection('users')
           .doc(userId)
           .collection('groups')
           .doc(groupId)
-          .get()
-          .then((doc) {
-            if (doc.exists) {
-              var data = doc.data();
-              data!['id'] = doc.id;
+          .get();
 
-              return data;
-            } else {
-              throw FirestoreError.notFound;
-            }
-          });
+      final data = doc.data();
+
+      if (!doc.exists || data == null) {
+        throw FirestoreError.notFound;
+      }
+
+      data['id'] = doc.id;
+
+      return data;
     } on FirebaseException catch (e) {
       log(e.toString(), name: 'FirestoreAdapter.getGroup');
       throw FirestoreError.unexpected;
