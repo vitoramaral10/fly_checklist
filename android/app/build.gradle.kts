@@ -25,6 +25,9 @@ android {
     ndkVersion = "27.0.12077973"
 
     compileOptions {
+        // Exigido pelo flutter_local_notifications para agendar notificações
+        // com as APIs de data/hora do Java 8 em versões antigas do Android.
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -63,6 +66,10 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
     }
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
 
 flutter {

@@ -12,9 +12,12 @@ class FirestoreCreateTask implements CreateTask {
   FirestoreCreateTask({required this.firestoreClient});
 
   @override
-  Future<void> call({required String userId, required TaskEntity task}) async {
+  Future<String> call({
+    required String userId,
+    required TaskEntity task,
+  }) async {
     try {
-      await firestoreClient.createTask(
+      return await firestoreClient.createTask(
         userId: userId,
         data: TaskModel.fromEntity(task).toJson(),
       );

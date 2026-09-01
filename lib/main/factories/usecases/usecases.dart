@@ -1,3 +1,4 @@
+export 'cancel_task_reminder_factory.dart';
 export 'change_password_factory.dart';
 export 'create_group_factory.dart';
 export 'create_task_factory.dart';
@@ -15,6 +16,7 @@ export 'recovery_password_factory.dart';
 export 'register_with_email_factory.dart';
 export 'register_with_google_factory.dart';
 export 'reset_group_tasks_factory.dart';
+export 'schedule_task_reminder_factory.dart';
 export 'save_theme_mode_factory.dart';
 export 'send_verification_email_factory.dart';
 export 'update_group_factory.dart';

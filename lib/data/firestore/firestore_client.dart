@@ -5,7 +5,8 @@ abstract class FirestoreClient {
     required String userId,
     String? groupId,
   });
-  Future<void> createTask({
+  /// Devolve o id do documento criado.
+  Future<String> createTask({
     required String userId,
     required Map<String, dynamic> data,
   });

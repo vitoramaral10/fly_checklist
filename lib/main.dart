@@ -24,6 +24,10 @@ Future<void> main() async {
     return true;
   };
 
+  // Prepara o canal de notificações antes da primeira tela. Falhar aqui só
+  // custa os lembretes: o adapter tenta de novo no primeiro agendamento.
+  await makeLocalNotificationsAdapter().initialize();
+
   final initialThemeMode = await makeLocalGetThemeMode().call();
 
   runApp(MyApp(initialThemeMode: initialThemeMode));

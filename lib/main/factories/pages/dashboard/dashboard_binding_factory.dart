@@ -15,6 +15,8 @@ class _DashboardBinding extends Bindings {
         createTask: makeFirestoreCreateTask(),
         updateTask: makeFirestoreUpdateTask(),
         deleteTask: makeFirestoreDeleteTask(),
+        scheduleTaskReminder: makeLocalScheduleTaskReminder(),
+        cancelTaskReminder: makeLocalCancelTaskReminder(),
         loadGroups: makeFirestoreLoadGroups(),
         createGroup: makeFirestoreCreateGroup(),
         updateGroup: makeFirestoreUpdateGroup(),

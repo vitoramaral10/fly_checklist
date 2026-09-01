@@ -21,6 +21,10 @@ class GetxDashboardPresenter extends GetxController
   final UpdateTask updateTask;
   @override
   final DeleteTask deleteTask;
+  @override
+  final ScheduleTaskReminder scheduleTaskReminder;
+  @override
+  final CancelTaskReminder cancelTaskReminder;
   final LoadGroups loadGroups;
   final CreateGroup createGroup;
   @override
@@ -34,6 +38,8 @@ class GetxDashboardPresenter extends GetxController
     required this.createTask,
     required this.updateTask,
     required this.deleteTask,
+    required this.scheduleTaskReminder,
+    required this.cancelTaskReminder,
     required this.loadGroups,
     required this.createGroup,
     required this.updateGroup,
@@ -54,6 +60,11 @@ class GetxDashboardPresenter extends GetxController
   List<TaskEntity> get tasks => _tasks;
   @override
   List<GroupEntity> get groups => _groups;
+
+  /// A dashboard exibe só as tarefas sem grupo, mas carrega todas — e são
+  /// todas que importam para manter os lembretes em dia.
+  @override
+  Iterable<TaskEntity> get allKnownTasks => _allTasks;
 
   @override
   Future<void> onInit() async {

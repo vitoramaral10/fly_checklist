@@ -1,4 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Necessária para o flutter_local_notifications reagendar os lembretes
+         depois de o aparelho reiniciar. POST_NOTIFICATIONS e VIBRATE já vêm
+         declaradas pelo próprio plugin. Alarme exato (SCHEDULE_EXACT_ALARM /
+         USE_EXACT_ALARM) fica de fora de propósito: o app agenda em modo
+         inexato. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <application
         android:label="Fly Checklist"
         android:name="${applicationName}"
@@ -30,6 +36,21 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- flutter_local_notifications: entrega as notificações agendadas e
+             as reprograma depois de um reboot ou de uma atualização do app. -->
+        <receiver
+            android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+        <receiver
+            android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

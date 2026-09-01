@@ -13,8 +13,20 @@ mixin TaskManager on GetxController, UserManager {
   CreateTask get createTask;
   UpdateTask get updateTask;
   DeleteTask get deleteTask;
+  ScheduleTaskReminder get scheduleTaskReminder;
+  CancelTaskReminder get cancelTaskReminder;
 
   List<TaskEntity> get tasks;
+
+  /// Grupos visíveis para o presenter, usados para nomear o grupo no lembrete.
+  List<GroupEntity> get groups;
+
+  /// Todas as tarefas que o presenter conhece, não só as que ele exibe.
+  ///
+  /// A dashboard mostra apenas as tarefas sem grupo, mas carrega todas; quem
+  /// precisa varrer as tarefas de um grupo (para cancelar lembretes, por
+  /// exemplo) usa esta lista.
+  Iterable<TaskEntity> get allKnownTasks => tasks;
 
   Future<void> refreshTasks();
 
@@ -52,19 +64,24 @@ mixin TaskManager on GetxController, UserManager {
     }
 
     try {
-      await createTask.call(
-        userId: currentUserId,
-        task: TaskEntity(
-          id: '',
-          groupId: taskGroupId,
-          title: taskTitleController.text,
-          description: taskDescriptionController.text,
-          dueDate: dueDate,
-          priority: taskPriority!,
-          isDone: false,
-          createdAt: DateTime.now(),
-        ),
+      final task = TaskEntity(
+        id: '',
+        groupId: taskGroupId,
+        title: taskTitleController.text,
+        description: taskDescriptionController.text,
+        dueDate: dueDate,
+        priority: taskPriority!,
+        isDone: false,
+        createdAt: DateTime.now(),
       );
+
+      final createdId = await createTask.call(
+        userId: currentUserId,
+        task: task,
+      );
+
+      // O lembrete é chaveado pelo id, que só existe depois de gravar.
+      await syncTaskReminder(_withId(task, createdId));
     } on DomainError catch (e) {
       log(e.toString(), name: '$runtimeType.onCreateTask');
       throw UiError.unexpected;
@@ -81,6 +98,10 @@ mixin TaskManager on GetxController, UserManager {
 
     try {
       await updateTask.call(userId: currentUserId, task: task);
+
+      // Cobre os três casos de uma edição: data nova agenda, data removida
+      // cancela, data mantida reagenda por cima do lembrete anterior.
+      await syncTaskReminder(task);
     } on DomainError catch (e) {
       log(e.toString(), name: '$runtimeType.onUpdateTask');
       throw UiError.unexpected;
@@ -93,6 +114,8 @@ mixin TaskManager on GetxController, UserManager {
   Future<void> onDeleteTask(TaskEntity task) async {
     try {
       await deleteTask.call(userId: currentUserId, task: task);
+
+      await cancelTaskReminderFor(task.id);
     } on DomainError catch (e) {
       log(e.toString(), name: '$runtimeType.onDeleteTask');
       throw UiError.unexpected;
@@ -112,6 +135,10 @@ mixin TaskManager on GetxController, UserManager {
       }
 
       await updateTask.call(userId: currentUserId, task: updatedTask);
+
+      // Concluir cancela o lembrete; reabrir reagenda, desde que a data ainda
+      // esteja no futuro.
+      await syncTaskReminder(updatedTask);
     } on DomainError catch (e) {
       log(e.toString(), name: '$runtimeType.toggleTaskCompletion');
 
@@ -121,6 +148,42 @@ mixin TaskManager on GetxController, UserManager {
       throw UiError.unexpected;
     } finally {
       await refreshTasks();
+    }
+  }
+
+  /// Põe o lembrete da tarefa em dia com o estado dela.
+  ///
+  /// Nunca propaga erro: lembrete é acessório, e falhar em agendar não pode
+  /// derrubar o salvamento que já aconteceu no repositório.
+  Future<void> syncTaskReminder(TaskEntity task) async {
+    try {
+      await scheduleTaskReminder.call(
+        task: task,
+        groupName: _groupNameOf(task.groupId),
+      );
+    } catch (e) {
+      log(e.toString(), name: '$runtimeType.syncTaskReminder');
+    }
+  }
+
+  Future<void> syncTaskReminders(Iterable<TaskEntity> tasks) async {
+    for (final task in tasks) {
+      await syncTaskReminder(task);
+    }
+  }
+
+  /// Cancela o lembrete de uma tarefa que deixou de existir, em silêncio.
+  Future<void> cancelTaskReminderFor(String taskId) async {
+    try {
+      await cancelTaskReminder.call(taskId: taskId);
+    } catch (e) {
+      log(e.toString(), name: '$runtimeType.cancelTaskReminderFor');
+    }
+  }
+
+  Future<void> cancelTaskRemindersFor(Iterable<String> taskIds) async {
+    for (final taskId in taskIds) {
+      await cancelTaskReminderFor(taskId);
     }
   }
 
@@ -155,6 +218,29 @@ mixin TaskManager on GetxController, UserManager {
     taskDescriptionController.dispose();
     taskDueDateController.dispose();
   }
+
+  String? _groupNameOf(String? groupId) {
+    if (groupId == null) return null;
+
+    for (final group in groups) {
+      if (group.id == groupId) return group.name;
+    }
+    return null;
+  }
+
+  /// Recria a tarefa com o id devolvido pela gravação.
+  ///
+  /// `copyWith` preserva o id de propósito, então a cópia é explícita.
+  TaskEntity _withId(TaskEntity task, String id) => TaskEntity(
+    id: id,
+    groupId: task.groupId,
+    title: task.title,
+    description: task.description,
+    dueDate: task.dueDate,
+    priority: task.priority,
+    isDone: task.isDone,
+    createdAt: task.createdAt,
+  );
 
   DateTime? _parseDueDate(String value) {
     if (value.trim().isEmpty) return null;

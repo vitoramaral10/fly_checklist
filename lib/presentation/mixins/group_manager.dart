@@ -55,8 +55,17 @@ mixin GroupManager on GetxController, UserManager, TaskManager {
   }
 
   Future<void> onDeleteGroup(GroupEntity group) async {
+    // As tarefas do grupo somem junto com ele, então os lembretes delas
+    // precisam ser recolhidos antes de perdermos a lista.
+    final taskIds = allKnownTasks
+        .where((task) => task.groupId == group.id)
+        .map((task) => task.id)
+        .toList();
+
     try {
       await deleteGroup.call(userId: currentUserId, group: group);
+
+      await cancelTaskRemindersFor(taskIds);
     } on DomainError catch (e) {
       log(e.toString(), name: '$runtimeType.onDeleteGroup');
       throw UiError.unexpected;

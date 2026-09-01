@@ -16,6 +16,8 @@ class _GroupBinding extends Bindings {
         createTask: makeFirestoreCreateTask(),
         updateTask: makeFirestoreUpdateTask(),
         deleteTask: makeFirestoreDeleteTask(),
+        scheduleTaskReminder: makeLocalScheduleTaskReminder(),
+        cancelTaskReminder: makeLocalCancelTaskReminder(),
         updateGroup: makeFirestoreUpdateGroup(),
         deleteGroup: makeFirestoreDeleteGroup(),
         resetGroupTasks: makeFirestoreResetGroupTasks(),

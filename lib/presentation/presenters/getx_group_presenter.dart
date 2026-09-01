@@ -23,6 +23,10 @@ class GetxGroupPresenter extends GetxController
   @override
   final DeleteTask deleteTask;
   @override
+  final ScheduleTaskReminder scheduleTaskReminder;
+  @override
+  final CancelTaskReminder cancelTaskReminder;
+  @override
   final UpdateGroup updateGroup;
   @override
   final DeleteGroup deleteGroup;
@@ -35,6 +39,8 @@ class GetxGroupPresenter extends GetxController
     required this.createTask,
     required this.updateTask,
     required this.deleteTask,
+    required this.scheduleTaskReminder,
+    required this.cancelTaskReminder,
     required this.updateGroup,
     required this.deleteGroup,
     required this.resetGroupTasks,
@@ -75,8 +81,12 @@ class GetxGroupPresenter extends GetxController
     try {
       await loadUser();
       await loadGroup();
-      await _resetChecklistIfNeeded();
+      final didReset = await _resetChecklistIfNeeded();
       await getAllTasks();
+
+      // O reset desmarca tarefas sem passar por toggleTaskCompletion, então
+      // os lembretes das que ainda vencem no futuro precisam voltar.
+      if (didReset) await syncTaskReminders(_tasks);
     } catch (e) {
       log(e.toString(), name: 'GetxGroupPresenter.loadAllData');
       _hasError.value = UiError.unexpected.message;
@@ -132,18 +142,22 @@ class GetxGroupPresenter extends GetxController
   /// Falha aqui não derruba a página: o grupo continua sendo exibido com os
   /// checks antigos e a tentativa se repete na próxima abertura, já que
   /// `lastResetAt` só avança quando o reset conclui.
-  Future<void> _resetChecklistIfNeeded() async {
+  /// Devolve se o reset chegou a acontecer, para que quem chamou saiba que o
+  /// estado das tarefas mudou por fora dos fluxos normais.
+  Future<bool> _resetChecklistIfNeeded() async {
     final group = _group.value;
 
-    if (group == null || !group.needsDailyReset()) return;
+    if (group == null || !group.needsDailyReset()) return false;
 
     try {
       _group.value = await resetGroupTasks.call(
         userId: currentUserId,
         group: group,
       );
+      return true;
     } catch (e) {
       log(e.toString(), name: 'GetxGroupPresenter._resetChecklistIfNeeded');
+      return false;
     }
   }
 
@@ -163,6 +177,9 @@ class GetxGroupPresenter extends GetxController
       throw UiError.unexpected;
     } finally {
       await refreshTasks();
+      // O reset desmarca todas as tarefas do grupo; as que ainda vencem no
+      // futuro voltam a merecer lembrete.
+      await syncTaskReminders(_tasks);
     }
   }
 
