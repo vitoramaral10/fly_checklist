@@ -5,4 +5,8 @@ enum DomainError {
   operationNotAllowed,
   weakPassword,
   invalidCredential,
+  invalidTitle,
+  invalidPriority,
+  invalidName,
+  cancelled,
 }

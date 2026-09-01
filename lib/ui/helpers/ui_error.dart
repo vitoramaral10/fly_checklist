@@ -5,6 +5,8 @@ enum UiError {
   weakPassword,
   invalidCredential,
   emailNotVerified,
+  invalidDueDate,
+  cancelled,
 }
 
 extension UiErrorExtension on UiError {
@@ -22,6 +24,10 @@ extension UiErrorExtension on UiError {
         return 'As credenciais informadas são inválidas. Por favor, verifique e tente novamente.';
       case UiError.emailNotVerified:
         return 'Seu e-mail ainda não foi verificado. Por favor, verifique sua caixa de entrada e siga as instruções para ativar sua conta.';
+      case UiError.invalidDueDate:
+        return 'A data de vencimento não pode ser anterior a hoje.';
+      case UiError.cancelled:
+        return 'Operação cancelada.';
     }
   }
 }

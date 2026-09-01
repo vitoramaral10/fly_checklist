@@ -1,4 +1,11 @@
+import '../helpers/helpers.dart';
+
 class TaskEntity {
+  static const Object _unset = Object();
+
+  static const int minPriority = 0;
+  static const int maxPriority = 4;
+
   final String id;
   final String? groupId;
   final String title;
@@ -17,30 +24,31 @@ class TaskEntity {
     required this.priority,
     required this.isDone,
     required this.createdAt,
-  }) : assert(title.trim().isNotEmpty, 'TaskEntity.title must not be empty'),
-       assert(
-         priority >= 0 && priority <= 4,
-         'TaskEntity.priority must be between 0 and 4',
-       ),
-       assert(
-         dueDate == null || dueDate.isAfter(DateTime.now()),
-         'TaskEntity.dueDate must be in the future when provided',
-       );
+  }) {
+    if (title.trim().isEmpty) {
+      throw DomainError.invalidTitle;
+    }
+    if (priority < minPriority || priority > maxPriority) {
+      throw DomainError.invalidPriority;
+    }
+  }
 
   TaskEntity copyWith({
     String? title,
-    String? groupId,
+    Object? groupId = _unset,
     String? description,
-    DateTime? dueDate,
+    Object? dueDate = _unset,
     int? priority,
     bool? isDone,
   }) {
     return TaskEntity(
       id: id,
-      groupId: groupId ?? this.groupId,
+      groupId: identical(groupId, _unset) ? this.groupId : groupId as String?,
       title: title ?? this.title,
       description: description ?? this.description,
-      dueDate: dueDate ?? this.dueDate,
+      dueDate: identical(dueDate, _unset)
+          ? this.dueDate
+          : dueDate as DateTime?,
       priority: priority ?? this.priority,
       isDone: isDone ?? this.isDone,
       createdAt: createdAt,

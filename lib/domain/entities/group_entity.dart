@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../helpers/helpers.dart';
+
 class GroupEntity {
   final String id;
   final String name;
@@ -23,7 +25,11 @@ class GroupEntity {
     this.updatedAt,
     this.completedTasks = 0,
     this.totalTasks = 0,
-  }) : assert(name.trim().isNotEmpty, 'GroupEntity.name must not be empty');
+  }) {
+    if (name.trim().isEmpty) {
+      throw DomainError.invalidName;
+    }
+  }
 
   GroupEntity copyWith({
     String? name,
@@ -32,6 +38,8 @@ class GroupEntity {
     Color? color,
     bool? saveCheckState,
     DateTime? updatedAt,
+    int? completedTasks,
+    int? totalTasks,
   }) {
     return GroupEntity(
       id: id,
@@ -42,6 +50,8 @@ class GroupEntity {
       saveCheckState: saveCheckState ?? this.saveCheckState,
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
+      completedTasks: completedTasks ?? this.completedTasks,
+      totalTasks: totalTasks ?? this.totalTasks,
     );
   }
 }
