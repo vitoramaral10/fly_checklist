@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 import '../../../../domain/entities/entities.dart';
-import '../../../../main/routes.dart';
 
 class GroupCard extends StatelessWidget {
   final GroupEntity group;
+  final VoidCallback onTap;
 
-  const GroupCard({super.key, required this.group});
+  const GroupCard({super.key, required this.group, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +20,7 @@ class GroupCard extends StatelessWidget {
       color: group.color.withAlpha(40),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: InkWell(
-        onTap: () {
-          Get.toNamed(Routes.group.replaceAll(':id', group.id));
-        },
+        onTap: onTap,
         borderRadius: BorderRadius.circular(20),
         child: Padding(
           padding: const EdgeInsets.all(16.0),

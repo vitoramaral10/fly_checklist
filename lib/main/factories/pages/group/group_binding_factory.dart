@@ -13,6 +13,11 @@ class _GroupBinding extends Bindings {
         getUser: makeFireauthGetUser(),
         getGroup: makeFirestoreGetGroup(),
         loadTasks: makeFirestoreLoadTasks(),
+        createTask: makeFirestoreCreateTask(),
+        updateTask: makeFirestoreUpdateTask(),
+        deleteTask: makeFirestoreDeleteTask(),
+        updateGroup: makeFirestoreUpdateGroup(),
+        deleteGroup: makeFirestoreDeleteGroup(),
       ),
     );
   }

@@ -1,39 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:fly_checklist/domain/entities/task_entity.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../presentation/presenters/presenters.dart';
 import '../../../components/components.dart';
 import '../../../helpers/helpers.dart';
+import '../../task_form_presenter.dart';
 
 Future<void> showTaskBottomSheet(
   BuildContext context, {
   TaskEntity? task,
+  TaskFormPresenter? presenter,
+  String? groupId,
 }) async {
   await showAppBottomSheet(
     context,
-    builder: (context) => TaskBottomSheet(task: task),
+    builder: (context) =>
+        TaskBottomSheet(task: task, presenter: presenter, groupId: groupId),
   );
 }
 
-class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
+class TaskBottomSheet extends StatefulWidget {
   final TaskEntity? task;
+  final TaskFormPresenter? presenter;
+  final String? groupId;
 
-  const TaskBottomSheet({super.key, this.task});
+  const TaskBottomSheet({super.key, this.task, this.presenter, this.groupId});
+
+  @override
+  State<TaskBottomSheet> createState() => _TaskBottomSheetState();
+}
+
+class _TaskBottomSheetState extends State<TaskBottomSheet> {
+  late final TaskFormPresenter controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = widget.presenter ?? Get.find<GetxDashboardPresenter>();
+
+    final task = widget.task;
+    if (task != null) {
+      controller.taskTitleController.text = task.title;
+      controller.taskDescriptionController.text = task.description;
+      controller.taskDueDateController.text = task.dueDate != null
+          ? appDateFormat.format(task.dueDate!)
+          : '';
+      controller.taskPriority = task.priority;
+    }
+
+    final groupId = task?.groupId ?? widget.groupId;
+    controller.taskGroupId =
+        controller.groups.any((group) => group.id == groupId) ? groupId : null;
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    if (task != null) {
-      controller.taskTitleController.text = task!.title;
-      controller.taskDescriptionController.text = task!.description;
-      controller.taskDueDateController.text = (task!.dueDate != null)
-          ? DateFormat.yMd().format(task!.dueDate!)
-          : '';
-      controller.taskPriority = task!.priority;
-    }
+    final task = widget.task;
 
     return SingleChildScrollView(
       child: Padding(
@@ -67,7 +92,7 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
                 textInputAction: TextInputAction.next,
 
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.trim().isEmpty) {
                     return 'Por favor, insira o título da tarefa.';
                   }
                   return null;
@@ -108,18 +133,18 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
                     lastDate: DateTime(2101),
                   );
                   if (selectedDate != null) {
-                    controller.taskDueDateController.text = DateFormat.yMd()
+                    controller.taskDueDateController.text = appDateFormat
                         .format(selectedDate);
                   }
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) return null;
                   try {
-                    final date = DateFormat.yMd().parseStrict(value);
-                    if (!date.isAfter(DateTime.now())) {
-                      return 'A data deve ser no futuro.';
+                    final date = appDateFormat.parseStrict(value);
+                    if (isDateInPast(date)) {
+                      return 'A data não pode ser anterior a hoje.';
                     }
-                  } catch (_) {
+                  } on FormatException {
                     return 'Data inválida.';
                   }
                   return null;
@@ -127,8 +152,49 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
               ),
               const SizedBox(height: 16),
               Obx(
+                () => DropdownButtonFormField<String?>(
+                  initialValue: controller.taskGroupId,
+                  isExpanded: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Grupo (opcional)',
+                    prefixIcon: Icon(Icons.folder_outlined),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                    ),
+                  ),
+                  items: [
+                    const DropdownMenuItem<String?>(
+                      value: null,
+                      child: Text('Sem grupo'),
+                    ),
+                    ...controller.groups.map(
+                      (group) => DropdownMenuItem<String?>(
+                        value: group.id,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(group.icon, size: 18, color: group.color),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                group.name,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    controller.taskGroupId = value;
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+              Obx(
                 () => DropdownButtonFormField<int>(
-                  value: controller.taskPriority,
+                  initialValue: controller.taskPriority,
                   decoration: const InputDecoration(
                     labelText: 'Prioridade',
                     prefixIcon: Icon(Icons.priority_high_outlined),
@@ -169,19 +235,16 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
                       try {
                         showLoadingDialog(context);
                         if (task != null) {
+                          final dueDateText =
+                              controller.taskDueDateController.text;
                           await controller.onUpdateTask(
-                            task!.copyWith(
+                            task.copyWith(
                               title: controller.taskTitleController.text,
                               description:
                                   controller.taskDescriptionController.text,
-                              dueDate:
-                                  controller
-                                      .taskDueDateController
-                                      .text
-                                      .isNotEmpty
-                                  ? DateFormat.yMd().parse(
-                                      controller.taskDueDateController.text,
-                                    )
+                              groupId: controller.taskGroupId,
+                              dueDate: dueDateText.isNotEmpty
+                                  ? appDateFormat.parse(dueDateText)
                                   : null,
                               priority: controller.taskPriority ?? 2,
                             ),
@@ -229,11 +292,27 @@ class TaskBottomSheet extends GetView<GetxDashboardPresenter> {
                         title: 'Excluir Tarefa',
                         content:
                             'Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.',
+                        destructive: true,
                       );
 
-                      if (isDelete) {
-                        await controller.onDeleteTask(task!);
+                      if (!isDelete) return;
+
+                      try {
+                        if (context.mounted) showLoadingDialog(context);
+                        await controller.onDeleteTask(task);
                         if (context.mounted) Navigator.of(context).pop();
+                        if (context.mounted) Navigator.of(context).pop();
+
+                        if (context.mounted) {
+                          showSuccessSnackbar(
+                            message: 'Tarefa excluída com sucesso!',
+                          );
+                        }
+                      } on UiError catch (e) {
+                        if (context.mounted) Navigator.of(context).pop();
+                        if (context.mounted) {
+                          showErrorDialog(context, e.message);
+                        }
                       }
                     },
                   ),

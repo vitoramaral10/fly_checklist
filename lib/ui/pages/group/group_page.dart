@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../domain/entities/entities.dart';
 import '../../../presentation/presenters/presenters.dart';
 import '../../components/components.dart';
+import '../../helpers/helpers.dart';
+import '../dashboard/components/components.dart';
 
 class GroupPage extends GetView<GetxGroupPresenter> {
   const GroupPage({super.key});
@@ -35,7 +38,7 @@ class GroupPage extends GetView<GetxGroupPresenter> {
 
         return RefreshIndicator(
           onRefresh: () async {
-            await controller.getAllTasks();
+            await controller.loadAllData();
           },
           child: CustomScrollView(
             slivers: [
@@ -48,13 +51,10 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                     onSelected: (value) {
                       switch (value) {
                         case 'edit':
-                          // TODO: Implementar edição do grupo
-                          break;
-                        case 'share':
-                          // TODO: Implementar compartilhamento do grupo
+                          _editGroup(context, group);
                           break;
                         case 'delete':
-                          // TODO: Implementar exclusão do grupo
+                          _deleteGroup(context, group);
                           break;
                       }
                     },
@@ -64,14 +64,6 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                         child: ListTile(
                           leading: Icon(Icons.edit_rounded),
                           title: Text('Editar grupo'),
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'share',
-                        child: ListTile(
-                          leading: Icon(Icons.ios_share_rounded),
-                          title: Text('Compartilhar'),
                           contentPadding: EdgeInsets.zero,
                         ),
                       ),
@@ -195,9 +187,7 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                           ),
                           AddTaskButton(
                             label: 'Nova tarefa',
-                            onPressed: () {
-                              // TODO: Implementar criação de tarefa
-                            },
+                            onPressed: () => _createTask(context, group),
                           ),
                         ],
                       ),
@@ -239,9 +229,7 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                           const SizedBox(height: 16),
                           AddTaskButton(
                             tonal: false,
-                            onPressed: () {
-                              // TODO: Implementar criação de tarefa
-                            },
+                            onPressed: () => _createTask(context, group),
                             label: 'Adicionar tarefa',
                           ),
                         ],
@@ -257,8 +245,25 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: TaskItem(
                         task: task,
-                        onCheckboxChanged: (value) {
-                          // TODO: Implementar atualização da tarefa
+                        onTap: () {
+                          controller.clearFields();
+                          showTaskBottomSheet(
+                            context,
+                            task: task,
+                            presenter: controller,
+                          );
+                        },
+                        confirmDismiss: (direction) =>
+                            _deleteTask(context, task),
+                        onCheckboxChanged: (value) async {
+                          try {
+                            await controller.toggleTaskCompletion(task);
+                          } catch (e) {
+                            showErrorSnackbar(
+                              'Erro ao atualizar tarefa',
+                              'Não foi possível atualizar o status da tarefa. Tente novamente mais tarde.',
+                            );
+                          }
                         },
                       ),
                     );
@@ -271,6 +276,81 @@ class GroupPage extends GetView<GetxGroupPresenter> {
         );
       }),
     );
+  }
+
+  void _createTask(BuildContext context, GroupEntity group) {
+    controller.clearFields();
+    showTaskBottomSheet(context, presenter: controller, groupId: group.id);
+  }
+
+  void _editGroup(BuildContext context, GroupEntity group) {
+    controller.clearFields();
+    showGroupBottomSheet(
+      context,
+      group: group,
+      presenter: controller,
+      onDeleted: () => Get.back(),
+    );
+  }
+
+  Future<bool> _deleteTask(BuildContext context, TaskEntity task) async {
+    final isDelete = await showConfirmationDialog(
+      context,
+      title: 'Excluir Tarefa',
+      content:
+          'Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.',
+      destructive: true,
+    );
+
+    if (!isDelete || !context.mounted) return false;
+
+    showLoadingDialog(context);
+
+    try {
+      await controller.onDeleteTask(task);
+      if (context.mounted) Navigator.of(context).pop();
+      showSuccessSnackbar(
+        title: 'Tarefa excluída',
+        message: 'A tarefa "${task.title}" foi excluída com sucesso.',
+      );
+      return true;
+    } catch (e) {
+      if (context.mounted) Navigator.of(context).pop();
+      showErrorSnackbar(
+        'Erro ao excluir tarefa',
+        'Não foi possível excluir a tarefa. Tente novamente mais tarde.',
+      );
+      return false;
+    }
+  }
+
+  Future<void> _deleteGroup(BuildContext context, GroupEntity group) async {
+    final isDelete = await showConfirmationDialog(
+      context,
+      title: 'Excluir grupo',
+      content:
+          'Tem certeza que deseja excluir este grupo? Todas as tarefas associadas também serão removidas. Esta ação não pode ser desfeita.',
+      confirmLabel: 'Excluir',
+      destructive: true,
+    );
+
+    if (!isDelete || !context.mounted) return;
+
+    try {
+      showLoadingDialog(context);
+      await controller.onDeleteGroup(group);
+      if (context.mounted) Navigator.of(context).pop();
+      Get.back();
+      showSuccessSnackbar(message: 'Grupo excluído com sucesso!');
+    } on UiError catch (e) {
+      if (context.mounted) Navigator.of(context).pop();
+      if (context.mounted) showErrorDialog(context, e.message);
+    } catch (e) {
+      if (context.mounted) Navigator.of(context).pop();
+      if (context.mounted) {
+        showErrorDialog(context, UiError.unexpected.message);
+      }
+    }
   }
 }
 

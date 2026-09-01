@@ -1,31 +1,88 @@
 import 'package:flutter/material.dart';
-import 'package:fly_checklist/domain/entities/group_entity.dart';
+import 'package:fly_checklist/domain/entities/entities.dart';
 import 'package:get/get.dart';
 
 import '../../../../presentation/presenters/presenters.dart';
 import '../../../components/components.dart';
 import '../../../helpers/helpers.dart';
+import '../../group_form_presenter.dart';
 
 Future<void> showGroupBottomSheet(
   BuildContext context, {
   GroupEntity? group,
+  GroupFormPresenter? presenter,
+  VoidCallback? onDeleted,
 }) async {
   await showAppBottomSheet(
     context,
     isScrollControlled: true,
-    builder: (context) => GroupBottomSheet(group: group),
+    builder: (context) => GroupBottomSheet(
+      group: group,
+      presenter: presenter,
+      onDeleted: onDeleted,
+    ),
   );
 }
 
-class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
+class GroupBottomSheet extends StatefulWidget {
   final GroupEntity? group;
+  final GroupFormPresenter? presenter;
+  final VoidCallback? onDeleted;
 
-  const GroupBottomSheet({super.key, this.group});
+  const GroupBottomSheet({
+    super.key,
+    this.group,
+    this.presenter,
+    this.onDeleted,
+  });
+
+  @override
+  State<GroupBottomSheet> createState() => _GroupBottomSheetState();
+}
+
+class _GroupBottomSheetState extends State<GroupBottomSheet> {
+  late final GroupFormPresenter controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = widget.presenter ?? Get.find<GetxDashboardPresenter>();
+
+    // Preencher campos se estiver editando
+    final group = widget.group;
+    if (group != null) {
+      controller.groupNameController.text = group.name;
+      controller.groupDescriptionController.text = group.description ?? '';
+      controller.groupIcon = group.icon;
+      controller.groupColor = group.color;
+      controller.saveCheckState = group.saveCheckState;
+    }
+  }
+
+  /// Grupos só são criados a partir do dashboard; as demais páginas abrem este
+  /// formulário apenas em modo de edição.
+  Future<void> _saveGroup(GroupEntity? group) {
+    if (group == null) {
+      return Get.find<GetxDashboardPresenter>().onCreateGroup();
+    }
+
+    return controller.onUpdateGroup(
+      group.copyWith(
+        name: controller.groupNameController.text,
+        description: controller.groupDescriptionController.text,
+        icon: controller.groupIcon,
+        color: controller.groupColor,
+        saveCheckState: controller.saveCheckState,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final group = widget.group;
 
     // Cores predefinidas para seleção
     final availableColors = [
@@ -40,34 +97,6 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
       Colors.indigo,
       Colors.brown,
     ];
-
-    // Ícones predefinidos para seleção
-    final availableIcons = [
-      Icons.checklist_rounded,
-      Icons.list_alt_rounded,
-      Icons.task_alt_rounded,
-      Icons.assignment_rounded,
-      Icons.work_rounded,
-      Icons.home_rounded,
-      Icons.school_rounded,
-      Icons.fitness_center_rounded,
-      Icons.shopping_cart_rounded,
-      Icons.restaurant_rounded,
-      Icons.car_repair_rounded,
-      Icons.flight_rounded,
-      Icons.medical_services_rounded,
-      Icons.pets_rounded,
-      Icons.sports_soccer_rounded,
-    ];
-
-    // Preencher campos se estiver editando
-    if (group != null) {
-      controller.groupNameController.text = group!.name;
-      controller.groupDescriptionController.text = group!.description ?? '';
-      controller.groupIcon = group!.icon;
-      controller.groupColor = group!.color;
-      controller.saveCheckState = group!.saveCheckState;
-    }
 
     return SingleChildScrollView(
       child: Padding(
@@ -237,7 +266,7 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
-                      children: availableIcons.map((availableIcon) {
+                      children: groupIcons.map((availableIcon) {
                         final isSelected =
                             availableIcon == controller.groupIcon;
                         return GestureDetector(
@@ -334,20 +363,7 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
                       try {
                         showLoadingDialog(context);
 
-                        if (group != null) {
-                          await controller.onUpdateGroup(
-                            group!.copyWith(
-                              name: controller.groupNameController.text,
-                              description:
-                                  controller.groupDescriptionController.text,
-                              icon: controller.groupIcon,
-                              color: controller.groupColor,
-                              saveCheckState: controller.saveCheckState,
-                            ),
-                          );
-                        } else {
-                          await controller.onCreateGroup();
-                        }
+                        await _saveGroup(group);
 
                         if (context.mounted) Navigator.of(context).pop();
                         if (context.mounted) Navigator.of(context).pop();
@@ -401,19 +417,25 @@ class GroupBottomSheet extends GetView<GetxDashboardPresenter> {
                         title: 'Excluir Grupo',
                         content:
                             'Tem certeza que deseja excluir este grupo? Todas as tarefas associadas também serão removidas. Esta ação não pode ser desfeita.',
+                        destructive: true,
                       );
 
                       if (isDelete) {
                         try {
                           if (context.mounted) showLoadingDialog(context);
-                          // TODO: Implementar lógica de exclusão do grupo
-                          // await controller.onDeleteGroup(group!);
+                          await controller.onDeleteGroup(group);
                           if (context.mounted) Navigator.of(context).pop();
                           if (context.mounted) Navigator.of(context).pop();
+                          widget.onDeleted?.call();
                           if (context.mounted) {
                             showSuccessSnackbar(
                               message: 'Grupo excluído com sucesso!',
                             );
+                          }
+                        } on UiError catch (e) {
+                          if (context.mounted) Navigator.of(context).pop();
+                          if (context.mounted) {
+                            showErrorDialog(context, e.message);
                           }
                         } catch (e) {
                           if (context.mounted) Navigator.of(context).pop();

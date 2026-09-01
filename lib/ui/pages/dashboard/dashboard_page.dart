@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../domain/entities/entities.dart';
 import '../../../main/routes.dart';
 import '../../../presentation/presenters/presenters.dart';
 import '../../components/components.dart';
+import '../../helpers/helpers.dart';
 import '../pages.dart';
 
 class DashboardPage extends GetView<GetxDashboardPresenter> {
@@ -14,6 +16,12 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
     return Obx(() {
       if (controller.isLoading) {
         return const DashboardLoadingPage();
+      }
+
+      final user = controller.user;
+
+      if (controller.hasError != null || user == null) {
+        return _buildErrorState(context);
       }
 
       final theme = Theme.of(context);
@@ -48,7 +56,7 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
                               ),
                             ),
                             Text(
-                              controller.user!.name.split(' ')[0],
+                              user.name.split(' ')[0],
                               style: theme.textTheme.headlineMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: theme.colorScheme.onSurface,
@@ -61,7 +69,7 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
                             Get.toNamed(Routes.settings);
                           },
                           child: AvatarWithShimmer(
-                            imageUrl: controller.user?.photoUrl,
+                            imageUrl: user.photoUrl,
                             size: 64,
                           ),
                         ),
@@ -98,6 +106,32 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
         ),
       );
     });
+  }
+
+  Widget _buildErrorState(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              EmptyState(
+                icon: Icons.cloud_off_rounded,
+                title: 'Não foi possível carregar seus dados',
+                message:
+                    controller.hasError ?? UiError.unexpected.message,
+              ),
+              const SizedBox(height: 16),
+              FilledButton.icon(
+                onPressed: () => controller.loadAllData(),
+                icon: const Icon(Icons.refresh_rounded),
+                label: const Text('Tentar novamente'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildQuickTasks(BuildContext context, ThemeData theme) {
@@ -147,36 +181,8 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
                           controller.clearFields();
                           showTaskBottomSheet(Get.context!, task: task);
                         },
-                        confirmDismiss: (direction) async {
-                          try {
-                            final isDelete = await showConfirmationDialog(
-                              context,
-                              title: 'Excluir Tarefa',
-                              content:
-                                  'Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.',
-                            );
-
-                            if (isDelete) {
-                              if (context.mounted) showLoadingDialog(context);
-                              await controller.onDeleteTask(task);
-                              if (context.mounted) Navigator.of(context).pop();
-                              showSuccessSnackbar(
-                                title: 'Tarefa excluída',
-                                message:
-                                    'A tarefa "${task.title}" foi excluída com sucesso.',
-                              );
-                              return true;
-                            } else {
-                              return false;
-                            }
-                          } catch (e) {
-                            showErrorSnackbar(
-                              'Erro ao excluir tarefa',
-                              'Não foi possível excluir a tarefa. Tente novamente mais tarde.',
-                            );
-                            return false;
-                          }
-                        },
+                        confirmDismiss: (direction) =>
+                            _confirmDeleteTask(context, task),
                         onCheckboxChanged: (value) async {
                           try {
                             await controller.toggleTaskCompletion(task);
@@ -196,6 +202,37 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
     );
   }
 
+  Future<bool> _confirmDeleteTask(BuildContext context, TaskEntity task) async {
+    final isDelete = await showConfirmationDialog(
+      context,
+      title: 'Excluir Tarefa',
+      content:
+          'Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.',
+      destructive: true,
+    );
+
+    if (!isDelete || !context.mounted) return false;
+
+    showLoadingDialog(context);
+
+    try {
+      await controller.onDeleteTask(task);
+      if (context.mounted) Navigator.of(context).pop();
+      showSuccessSnackbar(
+        title: 'Tarefa excluída',
+        message: 'A tarefa "${task.title}" foi excluída com sucesso.',
+      );
+      return true;
+    } catch (e) {
+      if (context.mounted) Navigator.of(context).pop();
+      showErrorSnackbar(
+        'Erro ao excluir tarefa',
+        'Não foi possível excluir a tarefa. Tente novamente mais tarde.',
+      );
+      return false;
+    }
+  }
+
   Widget _buildTaskGroupsHeader(BuildContext context, ThemeData theme) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -209,6 +246,7 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
         AddGroupButton(
           label: 'Novo grupo',
           onPressed: () {
+            controller.clearFields();
             showGroupBottomSheet(context);
           },
         ),
@@ -232,10 +270,16 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
           mainAxisSpacing: 16,
           childAspectRatio: 1.0,
         ),
-        delegate: SliverChildBuilderDelegate(
-          (context, index) => GroupCard(group: controller.groups[index]),
-          childCount: controller.groups.length,
-        ),
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final group = controller.groups[index];
+          return GroupCard(
+            group: group,
+            onTap: () async {
+              await Get.toNamed(Routes.group.replaceAll(':id', group.id));
+              await controller.loadAllData();
+            },
+          );
+        }, childCount: controller.groups.length),
       ),
     );
   }
