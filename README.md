@@ -43,4 +43,20 @@ Para executar o projeto, siga os passos abaixo:
 3. Instale as dependências: `flutter pub get`
 4. Execute o aplicativo: `flutter run`
 
+## Segurança / Firestore Rules
+
+As regras de segurança do Firestore ficam versionadas no arquivo `firestore.rules`,
+na raiz do projeto, e referenciadas em `firebase.json`. Elas negam acesso por padrão
+e liberam leitura/escrita em `users/{uid}/**` apenas para o próprio usuário autenticado
+(`request.auth.uid == uid`).
+
+Para publicar as regras no projeto Firebase, use a [Firebase CLI](https://firebase.google.com/docs/cli):
+
+```
+firebase deploy --only firestore:rules
+```
+
+**Importante:** as regras ativas no console do Firebase podem estar desatualizadas ou
+divergentes deste arquivo. Sempre faça o deploy a partir de `firestore.rules` para que
+o ambiente em produção reflita as regras versionadas aqui.
 

@@ -1,0 +1,35 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Nega tudo por padrão; cada subcoleção liberada explicitamente abaixo.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    match /users/{userId} {
+      function isOwner() {
+        return request.auth != null && request.auth.uid == userId;
+      }
+
+      allow read, write: if isOwner();
+
+      match /tasks/{taskId} {
+        allow read, delete: if isOwner();
+
+        allow create, update: if isOwner()
+          && request.resource.data.title is string
+          && request.resource.data.title.size() > 0;
+      }
+
+      match /groups/{groupId} {
+        allow read, delete: if isOwner();
+
+        allow create, update: if isOwner()
+          && request.resource.data.name is string
+          && request.resource.data.name.size() > 0;
+      }
+    }
+  }
+}
