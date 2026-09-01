@@ -44,7 +44,7 @@ class GroupModel {
       id: id,
       name: name,
       description: description,
-      icon: IconData(icon, fontFamily: 'MaterialIcons'),
+      icon: groupIconFromCodePoint(icon),
       color: Color(colorValue),
       saveCheckState: saveCheckState,
       createdAt: createdAt,
