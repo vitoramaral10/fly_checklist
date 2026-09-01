@@ -18,6 +18,7 @@ class _GroupBinding extends Bindings {
         deleteTask: makeFirestoreDeleteTask(),
         updateGroup: makeFirestoreUpdateGroup(),
         deleteGroup: makeFirestoreDeleteGroup(),
+        resetGroupTasks: makeFirestoreResetGroupTasks(),
       ),
     );
   }

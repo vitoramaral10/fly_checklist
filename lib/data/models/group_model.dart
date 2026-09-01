@@ -12,6 +12,7 @@ class GroupModel {
   final bool saveCheckState;
   final DateTime createdAt;
   final DateTime? updatedAt;
+  final DateTime? lastResetAt;
 
   GroupModel({
     required this.id,
@@ -22,6 +23,7 @@ class GroupModel {
     required this.saveCheckState,
     required this.createdAt,
     this.updatedAt,
+    this.lastResetAt,
   });
 
   factory GroupModel.fromJson(Map<String, dynamic> json) {
@@ -36,6 +38,9 @@ class GroupModel {
       updatedAt: json['updatedAt'] != null
           ? (json['updatedAt'] as Timestamp).toDate()
           : null,
+      lastResetAt: json['lastResetAt'] != null
+          ? (json['lastResetAt'] as Timestamp).toDate()
+          : null,
     );
   }
 
@@ -49,6 +54,7 @@ class GroupModel {
       saveCheckState: saveCheckState,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      lastResetAt: lastResetAt,
     );
   }
 
@@ -61,6 +67,9 @@ class GroupModel {
       'saveCheckState': saveCheckState,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': updatedAt != null ? Timestamp.fromDate(updatedAt!) : null,
+      'lastResetAt': lastResetAt != null
+          ? Timestamp.fromDate(lastResetAt!)
+          : null,
     };
   }
 
@@ -74,6 +83,7 @@ class GroupModel {
       saveCheckState: entity.saveCheckState,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
+      lastResetAt: entity.lastResetAt,
     );
   }
 }

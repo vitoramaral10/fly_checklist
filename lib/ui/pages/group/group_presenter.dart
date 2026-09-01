@@ -2,8 +2,7 @@ import '../../../domain/entities/entities.dart';
 import '../group_form_presenter.dart';
 import '../task_form_presenter.dart';
 
-abstract class GroupPresenter
-    implements TaskFormPresenter, GroupFormPresenter {
+abstract class GroupPresenter implements TaskFormPresenter, GroupFormPresenter {
   GroupEntity? get group;
   bool get isLoading;
   String? get hasError;
@@ -14,4 +13,7 @@ abstract class GroupPresenter
   Future<void> loadUser();
   Future<void> loadGroup();
   Future<void> getAllTasks();
+
+  /// Desmarca todas as tarefas do grupo aberto, a pedido do usuário.
+  Future<void> onResetGroupTasks();
 }

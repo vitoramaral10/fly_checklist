@@ -11,6 +11,13 @@ class GroupEntity {
   final bool saveCheckState;
   final DateTime createdAt;
   final DateTime? updatedAt;
+
+  /// Momento em que os checks do grupo foram desmarcados pela última vez.
+  ///
+  /// Só faz sentido para checklists reutilizáveis ([saveCheckState] falso) e é
+  /// o que evita reiniciar o mesmo grupo mais de uma vez no mesmo dia.
+  final DateTime? lastResetAt;
+
   final int completedTasks;
   final int totalTasks;
 
@@ -23,6 +30,7 @@ class GroupEntity {
     required this.saveCheckState,
     required this.createdAt,
     this.updatedAt,
+    this.lastResetAt,
     this.completedTasks = 0,
     this.totalTasks = 0,
   }) {
@@ -31,6 +39,28 @@ class GroupEntity {
     }
   }
 
+  /// Grupo que se comporta como um checklist de voo: os checks não são para
+  /// durar, o checklist é refeito a cada uso.
+  bool get isReusableChecklist => !saveCheckState;
+
+  /// Indica se os checks do grupo precisam ser desmarcados por virada de dia.
+  ///
+  /// Grupos que salvam o estado dos checks nunca são reiniciados
+  /// automaticamente. Sem [lastResetAt], a data de criação serve de
+  /// referência, para que um grupo criado hoje não nasça pedindo reset.
+  ///
+  /// [now] existe para os testes; em produção usa o relógio local, o mesmo
+  /// fuso em que o usuário enxerga a virada do dia.
+  bool needsDailyReset({DateTime? now}) {
+    if (saveCheckState) return false;
+
+    final reference = lastResetAt ?? createdAt;
+    return _dateOnly(reference).isBefore(_dateOnly(now ?? DateTime.now()));
+  }
+
+  static DateTime _dateOnly(DateTime date) =>
+      DateTime(date.year, date.month, date.day);
+
   GroupEntity copyWith({
     String? name,
     String? description,
@@ -38,6 +68,7 @@ class GroupEntity {
     Color? color,
     bool? saveCheckState,
     DateTime? updatedAt,
+    DateTime? lastResetAt,
     int? completedTasks,
     int? totalTasks,
   }) {
@@ -50,6 +81,7 @@ class GroupEntity {
       saveCheckState: saveCheckState ?? this.saveCheckState,
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
+      lastResetAt: lastResetAt ?? this.lastResetAt,
       completedTasks: completedTasks ?? this.completedTasks,
       totalTasks: totalTasks ?? this.totalTasks,
     );

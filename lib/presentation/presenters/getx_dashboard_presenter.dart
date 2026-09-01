@@ -110,12 +110,19 @@ class GetxDashboardPresenter extends GetxController
 
   /// Deriva o progresso de cada grupo das tarefas já carregadas, evitando uma
   /// consulta por grupo.
+  ///
+  /// Checklist reutilizável que já virou o dia aparece como zerado: o reset de
+  /// fato acontece ao abrir o grupo, e mostrar aqui o progresso de ontem só
+  /// contaria uma história que a próxima tela vai desmentir.
   void _updateGroupsProgress() {
     _groups.value = _groups.map((group) {
       final groupTasks = _allTasks.where((task) => task.groupId == group.id);
+      final completed = group.needsDailyReset()
+          ? 0
+          : groupTasks.where((task) => task.isDone).length;
       return group.copyWith(
         totalTasks: groupTasks.length,
-        completedTasks: groupTasks.where((task) => task.isDone).length,
+        completedTasks: completed,
       );
     }).toList();
   }

@@ -26,6 +26,7 @@ class GetxGroupPresenter extends GetxController
   final UpdateGroup updateGroup;
   @override
   final DeleteGroup deleteGroup;
+  final ResetGroupTasks resetGroupTasks;
 
   GetxGroupPresenter({
     required this.getUser,
@@ -36,6 +37,7 @@ class GetxGroupPresenter extends GetxController
     required this.deleteTask,
     required this.updateGroup,
     required this.deleteGroup,
+    required this.resetGroupTasks,
   });
 
   final _isLoading = true.obs;
@@ -73,6 +75,7 @@ class GetxGroupPresenter extends GetxController
     try {
       await loadUser();
       await loadGroup();
+      await _resetChecklistIfNeeded();
       await getAllTasks();
     } catch (e) {
       log(e.toString(), name: 'GetxGroupPresenter.loadAllData');
@@ -120,6 +123,46 @@ class GetxGroupPresenter extends GetxController
     } on DomainError catch (e) {
       log(e.toString(), name: 'GetxGroupPresenter.getAllTasks');
       throw DomainError.unexpected;
+    }
+  }
+
+  /// Reset por virada de dia: um checklist reutilizável aberto num dia
+  /// posterior ao último uso volta todo desmarcado antes de aparecer na tela.
+  ///
+  /// Falha aqui não derruba a página: o grupo continua sendo exibido com os
+  /// checks antigos e a tentativa se repete na próxima abertura, já que
+  /// `lastResetAt` só avança quando o reset conclui.
+  Future<void> _resetChecklistIfNeeded() async {
+    final group = _group.value;
+
+    if (group == null || !group.needsDailyReset()) return;
+
+    try {
+      _group.value = await resetGroupTasks.call(
+        userId: currentUserId,
+        group: group,
+      );
+    } catch (e) {
+      log(e.toString(), name: 'GetxGroupPresenter._resetChecklistIfNeeded');
+    }
+  }
+
+  @override
+  Future<void> onResetGroupTasks() async {
+    final group = _group.value;
+
+    if (group == null) return;
+
+    try {
+      _group.value = await resetGroupTasks.call(
+        userId: currentUserId,
+        group: group,
+      );
+    } on DomainError catch (e) {
+      log(e.toString(), name: 'GetxGroupPresenter.onResetGroupTasks');
+      throw UiError.unexpected;
+    } finally {
+      await refreshTasks();
     }
   }
 

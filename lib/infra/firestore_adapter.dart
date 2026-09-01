@@ -166,6 +166,44 @@ class FirestoreAdapter implements FirestoreClient {
   }
 
   @override
+  Future<void> resetTasksByGroupId({
+    required String userId,
+    required String groupId,
+  }) async {
+    try {
+      final snapshot = await instance
+          .collection('users')
+          .doc(userId)
+          .collection('tasks')
+          .where('groupId', isEqualTo: groupId)
+          .get();
+
+      // O filtro por `isDone` fica em memória de propósito: uma consulta com
+      // duas igualdades funcionaria, mas assim não dependemos de índice e
+      // ainda escrevemos só nas tarefas que estão marcadas.
+      final docs = snapshot.docs
+          .where((doc) => doc.data()['isDone'] == true)
+          .toList();
+      if (docs.isEmpty) return;
+
+      const int batchLimit = 500; // Limite de writes por batch no Firestore
+      for (int i = 0; i < docs.length; i += batchLimit) {
+        final end = (i + batchLimit < docs.length)
+            ? i + batchLimit
+            : docs.length;
+        final batch = instance.batch();
+        for (int j = i; j < end; j++) {
+          batch.update(docs[j].reference, {'isDone': false});
+        }
+        await batch.commit();
+      }
+    } on FirebaseException catch (e) {
+      log(e.toString(), name: 'FirestoreAdapter.resetTasksByGroupId');
+      throw FirestoreError.unexpected;
+    }
+  }
+
+  @override
   Future<List<Map<String, dynamic>>> loadGroups({
     required String userId,
   }) async {

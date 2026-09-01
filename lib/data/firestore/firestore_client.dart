@@ -31,6 +31,12 @@ abstract class FirestoreClient {
     required String userId,
     required String groupId,
   });
+
+  /// Desmarca (`isDone: false`) todas as tarefas do grupo numa única passada.
+  Future<void> resetTasksByGroupId({
+    required String userId,
+    required String groupId,
+  });
   Future<Map<String, dynamic>> getGroup({
     required String userId,
     required String groupId,

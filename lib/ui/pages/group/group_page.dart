@@ -50,6 +50,9 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                     icon: const Icon(Icons.more_vert_rounded),
                     onSelected: (value) {
                       switch (value) {
+                        case 'reset':
+                          _resetChecklist(context, group);
+                          break;
                         case 'edit':
                           _editGroup(context, group);
                           break;
@@ -59,6 +62,20 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                       }
                     },
                     itemBuilder: (context) => [
+                      // Reiniciar só faz sentido em grupo que não salva o
+                      // estado dos checks; nos demais o usuário pediu
+                      // explicitamente para os checks durarem.
+                      if (group.isReusableChecklist) ...[
+                        const PopupMenuItem(
+                          value: 'reset',
+                          child: ListTile(
+                            leading: Icon(Icons.restart_alt_rounded),
+                            title: Text('Reiniciar checklist'),
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                        const PopupMenuDivider(),
+                      ],
                       const PopupMenuItem(
                         value: 'edit',
                         child: ListTile(
@@ -135,6 +152,10 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if (group.isReusableChecklist) ...[
+                        _ReusableChecklistBadge(color: group.color),
+                        const SizedBox(height: 16),
+                      ],
                       if (group.description != null &&
                           group.description!.isNotEmpty)
                         Card(
@@ -324,6 +345,34 @@ class GroupPage extends GetView<GetxGroupPresenter> {
     }
   }
 
+  Future<void> _resetChecklist(BuildContext context, GroupEntity group) async {
+    final isReset = await showConfirmationDialog(
+      context,
+      title: 'Reiniciar checklist',
+      content:
+          'Todas as tarefas de "${group.name}" voltarão a ficar desmarcadas. As tarefas em si não são excluídas.',
+      confirmLabel: 'Reiniciar',
+    );
+
+    if (!isReset || !context.mounted) return;
+
+    try {
+      showLoadingDialog(context);
+      await controller.onResetGroupTasks();
+      if (context.mounted) Navigator.of(context).pop();
+      showSuccessSnackbar(
+        title: 'Checklist reiniciado',
+        message: 'As tarefas de "${group.name}" foram desmarcadas.',
+      );
+    } catch (e) {
+      if (context.mounted) Navigator.of(context).pop();
+      showErrorSnackbar(
+        'Erro ao reiniciar checklist',
+        'Não foi possível desmarcar as tarefas. Tente novamente mais tarde.',
+      );
+    }
+  }
+
   Future<void> _deleteGroup(BuildContext context, GroupEntity group) async {
     final isDelete = await showConfirmationDialog(
       context,
@@ -351,6 +400,44 @@ class GroupPage extends GetView<GetxGroupPresenter> {
         showErrorDialog(context, UiError.unexpected.message);
       }
     }
+  }
+}
+
+/// Deixa explícito que o grupo é um checklist reutilizável: os checks não
+/// duram de um dia para o outro.
+class _ReusableChecklistBadge extends StatelessWidget {
+  final Color color;
+
+  const _ReusableChecklistBadge({required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.30)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.restart_alt_rounded, size: 18, color: color),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              'Checklist reutilizável: os checks são reiniciados a cada dia.',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
