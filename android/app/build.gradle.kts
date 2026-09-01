@@ -38,29 +38,36 @@ android {
         applicationId = "br.dev.vitormelo.fly_checklist"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 23
+        minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
     signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
-            storePassword = keystoreProperties["storePassword"] as String
+        // key.properties is not checked in, so only wire up the release keystore
+        // when it is actually present (CI and release machines).
+        if (keystorePropertiesFile.exists()) {
+            create("release") {
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                storeFile = keystoreProperties["storeFile"]?.let { file(it) }
+                storePassword = keystoreProperties["storePassword"] as String
+            }
         }
     }
 
     buildTypes {
+        // Falls back to the debug keys when there is no keystore, so a fresh
+        // clone can still build without key.properties.
+        val appSigningConfig =
+            signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
+
         debug {
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = appSigningConfig
         }
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = appSigningConfig
         }
     }
 }
