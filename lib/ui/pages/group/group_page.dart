@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../domain/entities/entities.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../presentation/presenters/presenters.dart';
 import '../../components/components.dart';
 import '../../helpers/helpers.dart';
+import '../../helpers/ui_error_translation.dart';
 import '../dashboard/components/components.dart';
 
 class GroupPage extends GetView<GetxGroupPresenter> {
@@ -12,6 +14,7 @@ class GroupPage extends GetView<GetxGroupPresenter> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -21,10 +24,11 @@ class GroupPage extends GetView<GetxGroupPresenter> {
           return const _GroupLoadingPage();
         }
 
-        if (controller.hasError != null) {
+        final error = controller.hasError;
+        if (error != null) {
           return Center(
             child: Text(
-              'Erro ao carregar o grupo: ${controller.hasError}',
+              l10n.groupLoadError(error.message(context)),
               style: textTheme.bodyLarge?.copyWith(color: colorScheme.error),
             ),
           );
@@ -33,7 +37,7 @@ class GroupPage extends GetView<GetxGroupPresenter> {
         final group = controller.group;
 
         if (group == null) {
-          return const Center(child: Text('Grupo não encontrado.'));
+          return Center(child: Text(l10n.groupNotFound));
         }
 
         return RefreshIndicator(
@@ -66,21 +70,21 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                       // estado dos checks; nos demais o usuário pediu
                       // explicitamente para os checks durarem.
                       if (group.isReusableChecklist) ...[
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'reset',
                           child: ListTile(
-                            leading: Icon(Icons.restart_alt_rounded),
-                            title: Text('Reiniciar checklist'),
+                            leading: const Icon(Icons.restart_alt_rounded),
+                            title: Text(l10n.groupResetChecklist),
                             contentPadding: EdgeInsets.zero,
                           ),
                         ),
                         const PopupMenuDivider(),
                       ],
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'edit',
                         child: ListTile(
-                          leading: Icon(Icons.edit_rounded),
-                          title: Text('Editar grupo'),
+                          leading: const Icon(Icons.edit_rounded),
+                          title: Text(l10n.groupEdit),
                           contentPadding: EdgeInsets.zero,
                         ),
                       ),
@@ -93,7 +97,7 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                             color: colorScheme.error,
                           ),
                           title: Text(
-                            'Excluir grupo',
+                            l10n.groupDelete,
                             style: TextStyle(color: colorScheme.error),
                           ),
                           contentPadding: EdgeInsets.zero,
@@ -177,7 +181,7 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                               color: colorScheme.onSurfaceVariant,
                             ),
                             title: Text(
-                              'Descrição',
+                              l10n.groupDescriptionLabel,
                               style: textTheme.titleSmall?.copyWith(
                                 color: colorScheme.onSurfaceVariant,
                                 fontWeight: FontWeight.w600,
@@ -201,13 +205,13 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Tarefas',
+                            l10n.groupTasksTitle,
                             style: textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           AddTaskButton(
-                            label: 'Nova tarefa',
+                            label: l10n.groupNewTask,
                             onPressed: () => _createTask(context, group),
                           ),
                         ],
@@ -235,13 +239,13 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Sem tarefas por aqui',
+                            l10n.groupNoTasksTitle,
                             style: textTheme.titleMedium,
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Comece adicionando a primeira tarefa para este grupo.',
+                            l10n.groupNoTasksMessage,
                             style: textTheme.bodyMedium?.copyWith(
                               color: colorScheme.onSurfaceVariant,
                             ),
@@ -251,7 +255,7 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                           AddTaskButton(
                             tonal: false,
                             onPressed: () => _createTask(context, group),
-                            label: 'Adicionar tarefa',
+                            label: l10n.addTaskButtonLabel,
                           ),
                         ],
                       ),
@@ -281,8 +285,8 @@ class GroupPage extends GetView<GetxGroupPresenter> {
                             await controller.toggleTaskCompletion(task);
                           } catch (e) {
                             showErrorSnackbar(
-                              'Erro ao atualizar tarefa',
-                              'Não foi possível atualizar o status da tarefa. Tente novamente mais tarde.',
+                              l10n.taskUpdateErrorTitle,
+                              l10n.taskUpdateErrorMessage,
                             );
                           }
                         },
@@ -315,11 +319,12 @@ class GroupPage extends GetView<GetxGroupPresenter> {
   }
 
   Future<bool> _deleteTask(BuildContext context, TaskEntity task) async {
+    final l10n = AppLocalizations.of(context);
+
     final isDelete = await showConfirmationDialog(
       context,
-      title: 'Excluir Tarefa',
-      content:
-          'Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.',
+      title: l10n.taskDeleteConfirmTitle,
+      content: l10n.taskDeleteConfirmContent,
       destructive: true,
     );
 
@@ -330,28 +335,29 @@ class GroupPage extends GetView<GetxGroupPresenter> {
     try {
       await controller.onDeleteTask(task);
       if (context.mounted) Navigator.of(context).pop();
-      showSuccessSnackbar(
-        title: 'Tarefa excluída',
-        message: 'A tarefa "${task.title}" foi excluída com sucesso.',
-      );
+      if (context.mounted) {
+        showSuccessSnackbar(
+          context,
+          title: l10n.taskDeletedSnackbarTitle,
+          message: l10n.taskDeletedSnackbarMessage(task.title),
+        );
+      }
       return true;
     } catch (e) {
       if (context.mounted) Navigator.of(context).pop();
-      showErrorSnackbar(
-        'Erro ao excluir tarefa',
-        'Não foi possível excluir a tarefa. Tente novamente mais tarde.',
-      );
+      showErrorSnackbar(l10n.taskDeleteErrorTitle, l10n.taskDeleteErrorMessage);
       return false;
     }
   }
 
   Future<void> _resetChecklist(BuildContext context, GroupEntity group) async {
+    final l10n = AppLocalizations.of(context);
+
     final isReset = await showConfirmationDialog(
       context,
-      title: 'Reiniciar checklist',
-      content:
-          'Todas as tarefas de "${group.name}" voltarão a ficar desmarcadas. As tarefas em si não são excluídas.',
-      confirmLabel: 'Reiniciar',
+      title: l10n.groupResetChecklist,
+      content: l10n.groupResetConfirmContent(group.name),
+      confirmLabel: l10n.groupResetConfirmAction,
     );
 
     if (!isReset || !context.mounted) return;
@@ -360,26 +366,30 @@ class GroupPage extends GetView<GetxGroupPresenter> {
       showLoadingDialog(context);
       await controller.onResetGroupTasks();
       if (context.mounted) Navigator.of(context).pop();
-      showSuccessSnackbar(
-        title: 'Checklist reiniciado',
-        message: 'As tarefas de "${group.name}" foram desmarcadas.',
-      );
+      if (context.mounted) {
+        showSuccessSnackbar(
+          context,
+          title: l10n.groupResetSuccessTitle,
+          message: l10n.groupResetSuccessMessage(group.name),
+        );
+      }
     } catch (e) {
       if (context.mounted) Navigator.of(context).pop();
       showErrorSnackbar(
-        'Erro ao reiniciar checklist',
-        'Não foi possível desmarcar as tarefas. Tente novamente mais tarde.',
+        l10n.groupResetErrorTitle,
+        l10n.groupResetErrorMessage,
       );
     }
   }
 
   Future<void> _deleteGroup(BuildContext context, GroupEntity group) async {
+    final l10n = AppLocalizations.of(context);
+
     final isDelete = await showConfirmationDialog(
       context,
-      title: 'Excluir grupo',
-      content:
-          'Tem certeza que deseja excluir este grupo? Todas as tarefas associadas também serão removidas. Esta ação não pode ser desfeita.',
-      confirmLabel: 'Excluir',
+      title: l10n.groupDelete,
+      content: l10n.groupDeleteConfirmContent,
+      confirmLabel: l10n.commonDelete,
       destructive: true,
     );
 
@@ -390,14 +400,16 @@ class GroupPage extends GetView<GetxGroupPresenter> {
       await controller.onDeleteGroup(group);
       if (context.mounted) Navigator.of(context).pop();
       Get.back();
-      showSuccessSnackbar(message: 'Grupo excluído com sucesso!');
+      if (context.mounted) {
+        showSuccessSnackbar(context, message: l10n.groupDeletedSuccess);
+      }
     } on UiError catch (e) {
       if (context.mounted) Navigator.of(context).pop();
-      if (context.mounted) showErrorDialog(context, e.message);
+      if (context.mounted) showErrorDialog(context, e.message(context));
     } catch (e) {
       if (context.mounted) Navigator.of(context).pop();
       if (context.mounted) {
-        showErrorDialog(context, UiError.unexpected.message);
+        showErrorDialog(context, UiError.unexpected.message(context));
       }
     }
   }
@@ -429,7 +441,7 @@ class _ReusableChecklistBadge extends StatelessWidget {
           const SizedBox(width: 8),
           Flexible(
             child: Text(
-              'Checklist reutilizável: os checks são reiniciados a cada dia.',
+              AppLocalizations.of(context).groupReusableChecklistBadge,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),

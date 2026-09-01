@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../main/routes.dart';
 import '../../../presentation/presenters/presenters.dart';
 import '../../components/components.dart';
 import '../../helpers/helpers.dart';
+import '../../helpers/ui_error_translation.dart';
 
 class SignUpPage extends GetView<GetxSignUpPresenter> {
   const SignUpPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Criar conta'), centerTitle: true),
+      appBar: AppBar(title: Text(l10n.signUpAppBarTitle), centerTitle: true),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
@@ -26,7 +29,7 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
               children: [
                 const SizedBox(height: 24),
                 Text(
-                  'Bem-vindo(a)!',
+                  l10n.signUpWelcomeTitle,
                   style: textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: colorScheme.onSurface,
@@ -35,7 +38,7 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Preencha os campos abaixo para criar sua conta.',
+                  l10n.signUpWelcomeSubtitle,
                   style: textTheme.titleMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -44,10 +47,10 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                 const SizedBox(height: 48),
                 TextFormField(
                   controller: controller.nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nome completo',
-                    prefixIcon: Icon(Icons.person_outline_rounded),
-                    border: OutlineInputBorder(
+                  decoration: InputDecoration(
+                    labelText: l10n.fieldFullNameLabel,
+                    prefixIcon: const Icon(Icons.person_outline_rounded),
+                    border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
                   ),
@@ -56,7 +59,7 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                   textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, insira seu nome completo';
+                      return l10n.validatorFullNameRequired;
                     }
                     return null;
                   },
@@ -64,10 +67,10 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: controller.emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'E-mail',
-                    prefixIcon: Icon(Icons.alternate_email_rounded),
-                    border: OutlineInputBorder(
+                  decoration: InputDecoration(
+                    labelText: l10n.fieldEmailLabel,
+                    prefixIcon: const Icon(Icons.alternate_email_rounded),
+                    border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
                   ),
@@ -75,10 +78,10 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                   textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, insira seu e-mail';
+                      return l10n.validatorEmailRequired;
                     }
                     if (!GetUtils.isEmail(value)) {
-                      return 'E-mail inválido';
+                      return l10n.validatorEmailInvalidShort;
                     }
                     return null;
                   },
@@ -88,7 +91,7 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                   () => TextFormField(
                     controller: controller.passwordController,
                     decoration: InputDecoration(
-                      labelText: 'Senha',
+                      labelText: l10n.fieldPasswordLabel,
                       prefixIcon: const Icon(Icons.lock_outline_rounded),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -106,10 +109,10 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                     textInputAction: TextInputAction.next,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor, insira sua senha';
+                        return l10n.validatorPasswordRequired;
                       }
                       if (value.length < 6) {
-                        return 'A senha deve ter pelo menos 6 caracteres';
+                        return l10n.validatorPasswordMinLength;
                       }
                       return null;
                     },
@@ -120,8 +123,8 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                   () => TextFormField(
                     controller: controller.confirmPasswordController,
                     decoration: InputDecoration(
-                      labelText: 'Confirme sua senha',
-                      prefixIcon: Icon(Icons.lock_outline_rounded),
+                      labelText: l10n.fieldConfirmPasswordLabel,
+                      prefixIcon: const Icon(Icons.lock_outline_rounded),
                       suffixIcon: IconButton(
                         icon: Icon(
                           controller.obscureConfirmPassword
@@ -130,7 +133,7 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                         ),
                         onPressed: controller.toggleConfirmPasswordVisibility,
                       ),
-                      border: OutlineInputBorder(
+                      border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
                     ),
@@ -138,10 +141,10 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                     textInputAction: TextInputAction.done,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor, confirme sua senha';
+                        return l10n.validatorConfirmPasswordRequired;
                       }
                       if (value != controller.passwordController.text) {
-                        return 'As senhas não coincidem';
+                        return l10n.validatorPasswordsDoNotMatch;
                       }
                       return null;
                     },
@@ -161,12 +164,14 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                             } on UiError catch (e) {
                               if (context.mounted) Navigator.of(context).pop();
                               if (context.mounted) {
-                                showErrorDialog(context, e.message);
+                                showErrorDialog(context, e.message(context));
                               }
                             }
                           },
                     child: Text(
-                      controller.isLoading ? 'Criando...' : 'CRIAR CONTA',
+                      controller.isLoading
+                          ? l10n.signUpSubmitLoading
+                          : l10n.signUpSubmit,
                     ),
                   ),
                 ),
@@ -176,7 +181,7 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                     Get.offAllNamed(Routes.signIn);
                   },
                   child: Text(
-                    'Já tem uma conta? Faça login',
+                    l10n.signUpGoToSignIn,
                     style: textTheme.bodyMedium?.copyWith(
                       color: colorScheme.primary,
                     ),
@@ -185,7 +190,7 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                 // Google Sign-In Button
                 const SizedBox(height: 16),
                 Text(
-                  'Ou continue com',
+                  l10n.signUpOrContinueWith,
                   style: textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -206,7 +211,7 @@ class SignUpPage extends GetView<GetxSignUpPresenter> {
                             } on UiError catch (e) {
                               if (context.mounted) Navigator.of(context).pop();
                               if (e != UiError.cancelled && context.mounted) {
-                                showErrorDialog(context, e.message);
+                                showErrorDialog(context, e.message(context));
                               }
                             }
                           },

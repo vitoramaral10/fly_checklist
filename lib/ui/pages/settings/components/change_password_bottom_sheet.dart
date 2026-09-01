@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:fly_checklist/ui/components/components.dart';
 import 'package:get/get.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../main/routes.dart';
 import '../../../../presentation/presenters/presenters.dart';
 import '../../../helpers/helpers.dart';
+import '../../../helpers/ui_error_translation.dart';
 
 void showChangePasswordBottomSheet(BuildContext context) {
   if (!context.mounted) return;
@@ -22,6 +24,7 @@ class _ChangePasswordBottomSheetContent extends GetView<GetxSettingsPresenter> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -49,15 +52,18 @@ class _ChangePasswordBottomSheetContent extends GetView<GetxSettingsPresenter> {
                   ),
                   const SizedBox(height: 24),
                   Center(
-                    child: Text('Alterar Senha', style: textTheme.titleLarge),
+                    child: Text(
+                      l10n.settingsChangePassword,
+                      style: textTheme.titleLarge,
+                    ),
                   ),
                   const SizedBox(height: 24),
                   TextFormField(
                     controller: controller.currentPasswordController,
                     obscureText: !controller.showCurrentPassword,
                     decoration: InputDecoration(
-                      labelText: 'Senha Atual',
-                      prefixIcon: Icon(Icons.lock_outline_rounded),
+                      labelText: l10n.fieldCurrentPasswordLabel,
+                      prefixIcon: const Icon(Icons.lock_outline_rounded),
                       suffixIcon: IconButton(
                         icon: Icon(
                           controller.showCurrentPassword
@@ -68,7 +74,7 @@ class _ChangePasswordBottomSheetContent extends GetView<GetxSettingsPresenter> {
                           controller.toggleShowCurrentPassword();
                         },
                       ),
-                      border: OutlineInputBorder(
+                      border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),
                     ),
@@ -76,10 +82,10 @@ class _ChangePasswordBottomSheetContent extends GetView<GetxSettingsPresenter> {
                     keyboardType: TextInputType.visiblePassword,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor, insira sua senha atual.';
+                        return l10n.validatorCurrentPasswordRequired;
                       }
                       if (value.length < 6) {
-                        return 'A senha deve ter pelo menos 6 caracteres.';
+                        return l10n.validatorPasswordMinLength;
                       }
                       return null;
                     },
@@ -89,8 +95,8 @@ class _ChangePasswordBottomSheetContent extends GetView<GetxSettingsPresenter> {
                     controller: controller.newPasswordController,
                     obscureText: !controller.showNewPassword,
                     decoration: InputDecoration(
-                      labelText: 'Nova Senha',
-                      prefixIcon: Icon(Icons.lock_outline_rounded),
+                      labelText: l10n.fieldNewPasswordLabel,
+                      prefixIcon: const Icon(Icons.lock_outline_rounded),
                       suffixIcon: IconButton(
                         icon: Icon(
                           controller.showNewPassword
@@ -101,17 +107,17 @@ class _ChangePasswordBottomSheetContent extends GetView<GetxSettingsPresenter> {
                           controller.toggleShowNewPassword();
                         },
                       ),
-                      border: OutlineInputBorder(
+                      border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),
                     ),
                     textInputAction: TextInputAction.next,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor, insira a nova senha.';
+                        return l10n.validatorNewPasswordRequired;
                       }
                       if (value.length < 6) {
-                        return 'A nova senha deve ter pelo menos 6 caracteres.';
+                        return l10n.validatorNewPasswordMinLength;
                       }
                       return null;
                     },
@@ -121,8 +127,8 @@ class _ChangePasswordBottomSheetContent extends GetView<GetxSettingsPresenter> {
                     controller: controller.confirmNewPasswordController,
                     obscureText: !controller.showConfirmNewPassword,
                     decoration: InputDecoration(
-                      labelText: 'Confirmar Nova Senha',
-                      prefixIcon: Icon(Icons.lock_outline_rounded),
+                      labelText: l10n.fieldConfirmNewPasswordLabel,
+                      prefixIcon: const Icon(Icons.lock_outline_rounded),
                       suffixIcon: IconButton(
                         icon: Icon(
                           controller.showConfirmNewPassword
@@ -133,17 +139,17 @@ class _ChangePasswordBottomSheetContent extends GetView<GetxSettingsPresenter> {
                           controller.toggleShowConfirmNewPassword();
                         },
                       ),
-                      border: OutlineInputBorder(
+                      border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),
                     ),
                     textInputAction: TextInputAction.done,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor, confirme a nova senha.';
+                        return l10n.validatorConfirmNewPasswordRequired;
                       }
                       if (value != controller.newPasswordController.text) {
-                        return 'As senhas não coincidem.';
+                        return l10n.validatorPasswordsDoNotMatch;
                       }
                       return null;
                     },
@@ -167,7 +173,8 @@ class _ChangePasswordBottomSheetContent extends GetView<GetxSettingsPresenter> {
 
                           Navigator.of(context).pop(); // Fecha o bottom sheet
                           showSuccessSnackbar(
-                            message: 'Senha alterada com sucesso!',
+                            context,
+                            message: l10n.changePasswordSuccess,
                           );
                           Get.offAllNamed(Routes.home);
                         } on UiError catch (e) {
@@ -175,11 +182,11 @@ class _ChangePasswordBottomSheetContent extends GetView<GetxSettingsPresenter> {
                           // diálogo (barrierDismissible: false) fica preso.
                           if (context.mounted) Navigator.of(context).pop();
                           if (context.mounted) {
-                            showErrorDialog(context, e.message);
+                            showErrorDialog(context, e.message(context));
                           }
                         }
                       },
-                      child: const Text('Salvar Alterações'),
+                      child: Text(l10n.changePasswordSubmit),
                     ),
                   ),
                 ],

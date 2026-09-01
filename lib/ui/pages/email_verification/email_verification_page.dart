@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../main/routes.dart';
 import '../../../presentation/presenters/presenters.dart';
 import '../../components/components.dart';
 import '../../helpers/helpers.dart';
+import '../../helpers/ui_error_translation.dart';
 
 class EmailVerificationPage extends GetView<GetxEmailVerificationPresenter> {
   const EmailVerificationPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -29,7 +32,7 @@ class EmailVerificationPage extends GetView<GetxEmailVerificationPresenter> {
               ),
               const SizedBox(height: 32),
               Text(
-                'Verifique seu e-mail',
+                l10n.emailVerificationTitle,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.headlineLarge?.copyWith(
                   fontWeight: FontWeight.bold,
@@ -37,7 +40,7 @@ class EmailVerificationPage extends GetView<GetxEmailVerificationPresenter> {
               ),
               const SizedBox(height: 16),
               Text(
-                'Enviamos um link de verificação para o seu e-mail. Por favor, verifique sua caixa de entrada e siga as instruções para ativar sua conta.',
+                l10n.emailVerificationMessage,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyLarge,
               ),
@@ -53,11 +56,13 @@ class EmailVerificationPage extends GetView<GetxEmailVerificationPresenter> {
                     }
                   } on UiError catch (e) {
                     if (context.mounted) Navigator.of(context).pop();
-                    if (context.mounted) showErrorDialog(context, e.message);
+                    if (context.mounted) {
+                      showErrorDialog(context, e.message(context));
+                    }
                   }
                 },
                 icon: const Icon(Icons.refresh),
-                label: const Text('Já verifiquei, continuar'),
+                label: Text(l10n.emailVerificationContinue),
               ),
               const SizedBox(height: 16),
               TextButton.icon(
@@ -69,16 +74,18 @@ class EmailVerificationPage extends GetView<GetxEmailVerificationPresenter> {
                     if (context.mounted) {
                       showSuccessDialog(
                         context,
-                        'E-mail de verificação reenviado com sucesso. Por favor, verifique sua caixa de entrada.',
+                        l10n.emailVerificationResentSuccess,
                       );
                     }
                   } on UiError catch (e) {
                     if (context.mounted) Navigator.of(context).pop();
-                    if (context.mounted) showErrorDialog(context, e.message);
+                    if (context.mounted) {
+                      showErrorDialog(context, e.message(context));
+                    }
                   }
                 },
                 icon: const Icon(Icons.send_outlined),
-                label: const Text('Reenviar e-mail de verificação'),
+                label: Text(l10n.emailVerificationResend),
               ),
               const SizedBox(height: 8),
               TextButton.icon(
@@ -87,7 +94,7 @@ class EmailVerificationPage extends GetView<GetxEmailVerificationPresenter> {
                   Get.offAllNamed(Routes.signIn);
                 },
                 icon: const Icon(Icons.logout),
-                label: const Text('Voltar para o login'),
+                label: Text(l10n.emailVerificationBackToLogin),
                 style: TextButton.styleFrom(foregroundColor: colorScheme.error),
               ),
             ],

@@ -47,7 +47,7 @@ class GetxGroupPresenter extends GetxController
   });
 
   final _isLoading = true.obs;
-  final _hasError = Rxn<String>();
+  final _hasError = Rxn<UiError>();
   final _group = Rxn<GroupEntity>();
   final _tasks = <TaskEntity>[].obs;
 
@@ -56,7 +56,7 @@ class GetxGroupPresenter extends GetxController
   @override
   bool get isLoading => _isLoading.value;
   @override
-  String? get hasError => _hasError.value;
+  UiError? get hasError => _hasError.value;
   @override
   List<TaskEntity> get tasks => _tasks;
 
@@ -89,7 +89,7 @@ class GetxGroupPresenter extends GetxController
       if (didReset) await syncTaskReminders(_tasks);
     } catch (e) {
       log(e.toString(), name: 'GetxGroupPresenter.loadAllData');
-      _hasError.value = UiError.unexpected.message;
+      _hasError.value = UiError.unexpected;
     } finally {
       _isLoading.value = false;
     }

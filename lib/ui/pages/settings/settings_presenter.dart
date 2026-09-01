@@ -1,9 +1,11 @@
 import 'package:fly_checklist/domain/entities/entities.dart';
 
+import '../../helpers/ui_error.dart';
+
 abstract class SettingsPresenter {
   bool get isLoading;
   UserEntity? get user;
-  String? get hasError;
+  UiError? get hasError;
   bool get showCurrentPassword;
   bool get showNewPassword;
   bool get showConfirmNewPassword;

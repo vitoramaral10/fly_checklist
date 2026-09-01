@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../main/routes.dart';
 import '../../../presentation/presenters/presenters.dart';
 
@@ -9,6 +10,7 @@ class HomePage extends GetView<GetxHomePresenter> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -60,7 +62,7 @@ class HomePage extends GetView<GetxHomePresenter> {
                     const SizedBox(height: 24),
                     // Título do aplicativo.
                     Text(
-                      'Fly Checklist',
+                      l10n.appTitle,
                       style: textTheme.displaySmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: colorScheme.onSurface,
@@ -70,7 +72,7 @@ class HomePage extends GetView<GetxHomePresenter> {
                     const SizedBox(height: 16),
                     // Subtítulo ou slogan.
                     Text(
-                      'Organize suas tarefas e alcance seus objetivos com simplicidade.',
+                      l10n.homeTagline,
                       style: textTheme.titleMedium?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
@@ -89,7 +91,7 @@ class HomePage extends GetView<GetxHomePresenter> {
                             Get.offAllNamed(Routes.signIn);
                           },
                           icon: const Icon(Icons.login_rounded),
-                          label: const Text('Acessar minha conta'),
+                          label: Text(l10n.homeSignIn),
                           style: FilledButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             textStyle: textTheme.titleMedium?.copyWith(
@@ -107,7 +109,7 @@ class HomePage extends GetView<GetxHomePresenter> {
                           onPressed: () {
                             Get.offAllNamed(Routes.signUp);
                           },
-                          child: const Text('Criar conta'),
+                          child: Text(l10n.homeSignUp),
                         ),
                       ),
                   ],

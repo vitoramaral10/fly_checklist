@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../domain/entities/entities.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../main/routes.dart';
 import '../../../presentation/presenters/presenters.dart';
 import '../../components/components.dart';
 import '../../helpers/helpers.dart';
+import '../../helpers/ui_error_translation.dart';
 import '../pages.dart';
 
 class DashboardPage extends GetView<GetxDashboardPresenter> {
@@ -24,6 +26,7 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
         return _buildErrorState(context);
       }
 
+      final l10n = AppLocalizations.of(context);
       final theme = Theme.of(context);
       final screenWidth = MediaQuery.of(context).size.width;
 
@@ -50,7 +53,7 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Olá,',
+                              l10n.dashboardGreeting,
                               style: theme.textTheme.titleLarge?.copyWith(
                                 color: theme.colorScheme.onSurfaceVariant,
                               ),
@@ -109,6 +112,8 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
   }
 
   Widget _buildErrorState(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -117,15 +122,16 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
             children: [
               EmptyState(
                 icon: Icons.cloud_off_rounded,
-                title: 'Não foi possível carregar seus dados',
-                message:
-                    controller.hasError ?? UiError.unexpected.message,
+                title: l10n.dashboardLoadErrorTitle,
+                message: (controller.hasError ?? UiError.unexpected).message(
+                  context,
+                ),
               ),
               const SizedBox(height: 16),
               FilledButton.icon(
                 onPressed: () => controller.loadAllData(),
                 icon: const Icon(Icons.refresh_rounded),
-                label: const Text('Tentar novamente'),
+                label: Text(l10n.commonRetry),
               ),
             ],
           ),
@@ -135,6 +141,8 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
   }
 
   Widget _buildQuickTasks(BuildContext context, ThemeData theme) {
+    final l10n = AppLocalizations.of(context);
+
     // Os dados das tarefas rápidas devem vir do presenter
     return Container(
       constraints: BoxConstraints(
@@ -146,7 +154,7 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SectionHeader(title: 'Tarefas Rápidas'),
+          SectionHeader(title: l10n.dashboardQuickTasksTitle),
           const SizedBox(height: 16),
           controller.tasks.isEmpty
               ? Expanded(
@@ -156,8 +164,8 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
                       children: [
                         EmptyState(
                           icon: Icons.flash_on_rounded,
-                          title: 'Nenhuma tarefa rápida',
-                          message: 'Crie uma nova tarefa para começar.',
+                          title: l10n.dashboardNoQuickTasksTitle,
+                          message: l10n.dashboardNoQuickTasksMessage,
                         ),
                         const SizedBox(height: 8),
                         AddTaskButton(
@@ -188,8 +196,8 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
                             await controller.toggleTaskCompletion(task);
                           } catch (e) {
                             showErrorSnackbar(
-                              'Erro ao atualizar tarefa',
-                              'Não foi possível atualizar o status da tarefa. Tente novamente mais tarde.',
+                              l10n.taskUpdateErrorTitle,
+                              l10n.taskUpdateErrorMessage,
                             );
                           }
                         },
@@ -203,11 +211,12 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
   }
 
   Future<bool> _confirmDeleteTask(BuildContext context, TaskEntity task) async {
+    final l10n = AppLocalizations.of(context);
+
     final isDelete = await showConfirmationDialog(
       context,
-      title: 'Excluir Tarefa',
-      content:
-          'Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.',
+      title: l10n.taskDeleteConfirmTitle,
+      content: l10n.taskDeleteConfirmContent,
       destructive: true,
     );
 
@@ -218,33 +227,35 @@ class DashboardPage extends GetView<GetxDashboardPresenter> {
     try {
       await controller.onDeleteTask(task);
       if (context.mounted) Navigator.of(context).pop();
-      showSuccessSnackbar(
-        title: 'Tarefa excluída',
-        message: 'A tarefa "${task.title}" foi excluída com sucesso.',
-      );
+      if (context.mounted) {
+        showSuccessSnackbar(
+          context,
+          title: l10n.taskDeletedSnackbarTitle,
+          message: l10n.taskDeletedSnackbarMessage(task.title),
+        );
+      }
       return true;
     } catch (e) {
       if (context.mounted) Navigator.of(context).pop();
-      showErrorSnackbar(
-        'Erro ao excluir tarefa',
-        'Não foi possível excluir a tarefa. Tente novamente mais tarde.',
-      );
+      showErrorSnackbar(l10n.taskDeleteErrorTitle, l10n.taskDeleteErrorMessage);
       return false;
     }
   }
 
   Widget _buildTaskGroupsHeader(BuildContext context, ThemeData theme) {
+    final l10n = AppLocalizations.of(context);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'Grupos de Tarefas',
+          l10n.dashboardGroupsTitle,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
         AddGroupButton(
-          label: 'Novo grupo',
+          label: l10n.dashboardNewGroup,
           onPressed: () {
             controller.clearFields();
             showGroupBottomSheet(context);

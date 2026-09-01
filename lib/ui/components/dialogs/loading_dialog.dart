@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/generated/app_localizations.dart';
+
 void showLoadingDialog(BuildContext context) {
+  final message = AppLocalizations.of(context).commonLoading;
+
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -13,10 +17,7 @@ void showLoadingDialog(BuildContext context) {
             children: [
               const CircularProgressIndicator(),
               const SizedBox(width: 20),
-              Text(
-                "Carregando...",
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
+              Text(message, style: Theme.of(context).textTheme.bodyLarge),
             ],
           ),
         ),

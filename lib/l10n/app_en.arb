@@ -1,0 +1,239 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Fly Checklist",
+
+  "commonCancel": "Cancel",
+  "commonConfirm": "Confirm",
+  "commonCreate": "Create",
+  "commonUpdate": "Update",
+  "commonDelete": "Delete",
+  "commonSend": "Send",
+  "commonClose": "Close",
+  "commonOk": "OK",
+  "commonGotIt": "Got it",
+  "commonRetry": "Try again",
+  "commonLoading": "Loading...",
+  "commonOr": "OR",
+
+  "errorDialogTitle": "Something went wrong",
+  "successDialogTitle": "Success!",
+  "confirmationDialogTitle": "Confirmation",
+  "confirmationDialogContent": "Are you sure you want to continue?",
+  "successSnackbarTitle": "Success",
+  "successSnackbarMessage": "Done.",
+
+  "errorUnexpected": "Something unexpected happened. Please try again later.",
+  "errorInvalidEmail": "That email address is not valid. Please check it and try again.",
+  "errorEmailInUse": "This email is already in use. Please try a different one.",
+  "errorWeakPassword": "That password is too weak. Please pick a stronger one.",
+  "errorInvalidCredential": "Those credentials are not valid. Please check them and try again.",
+  "errorEmailNotVerified": "Your email has not been verified yet. Please check your inbox and follow the instructions to activate your account.",
+  "errorInvalidDueDate": "The due date cannot be earlier than today.",
+  "errorCancelled": "Operation cancelled.",
+
+  "fieldEmailLabel": "Email",
+  "fieldPasswordLabel": "Password",
+  "fieldConfirmPasswordLabel": "Confirm your password",
+  "fieldFullNameLabel": "Full name",
+  "fieldCurrentPasswordLabel": "Current password",
+  "fieldNewPasswordLabel": "New password",
+  "fieldConfirmNewPasswordLabel": "Confirm new password",
+
+  "validatorEmailRequired": "Please enter your email.",
+  "validatorEmailInvalid": "Please enter a valid email.",
+  "validatorEmailInvalidShort": "Invalid email.",
+  "validatorPasswordRequired": "Please enter your password.",
+  "validatorPasswordMinLength": "The password must be at least 6 characters long.",
+  "validatorConfirmPasswordRequired": "Please confirm your password.",
+  "validatorPasswordsDoNotMatch": "The passwords do not match.",
+  "validatorFullNameRequired": "Please enter your full name.",
+  "validatorCurrentPasswordRequired": "Please enter your current password.",
+  "validatorNewPasswordRequired": "Please enter the new password.",
+  "validatorNewPasswordMinLength": "The new password must be at least 6 characters long.",
+  "validatorConfirmNewPasswordRequired": "Please confirm the new password.",
+  "validatorGroupNameRequired": "Please enter the group name.",
+  "validatorTaskTitleRequired": "Please enter the task title.",
+  "validatorDueDateInPast": "The date cannot be earlier than today.",
+  "validatorDueDateInvalid": "Invalid date.",
+  "validatorPriorityRequired": "Please select the task priority.",
+  "validatorPriorityRange": "Priority must be between 0 and 4.",
+
+  "homeTagline": "Organize your tasks and reach your goals, simply.",
+  "homeSignIn": "Sign in to my account",
+  "homeSignUp": "Create account",
+
+  "signInAppBarTitle": "Sign in",
+  "signInWelcomeTitle": "Welcome back!",
+  "signInWelcomeSubtitle": "Sign in to continue.",
+  "signInForgotPassword": "I forgot my password",
+  "signInSubmit": "Sign in",
+  "signInGoToSignUp": "No account yet? Sign up",
+  "signInWithGoogle": "Sign in with Google",
+
+  "signUpAppBarTitle": "Create account",
+  "signUpWelcomeTitle": "Welcome!",
+  "signUpWelcomeSubtitle": "Fill in the fields below to create your account.",
+  "signUpSubmit": "CREATE ACCOUNT",
+  "signUpSubmitLoading": "Creating...",
+  "signUpGoToSignIn": "Already have an account? Sign in",
+  "signUpOrContinueWith": "Or continue with",
+
+  "forgotPasswordTitle": "Reset password",
+  "forgotPasswordSubtitle": "Enter your email to receive recovery instructions.",
+  "forgotPasswordSuccess": "Recovery instructions sent to your email.",
+
+  "emailVerificationTitle": "Check your email",
+  "emailVerificationMessage": "We sent a verification link to your email. Please check your inbox and follow the instructions to activate your account.",
+  "emailVerificationContinue": "I verified it, continue",
+  "emailVerificationResend": "Resend verification email",
+  "emailVerificationResentSuccess": "Verification email sent again. Please check your inbox.",
+  "emailVerificationBackToLogin": "Back to sign in",
+
+  "dashboardGreeting": "Hi,",
+  "dashboardLoadErrorTitle": "We could not load your data",
+  "dashboardQuickTasksTitle": "Quick tasks",
+  "dashboardNoQuickTasksTitle": "No quick tasks",
+  "dashboardNoQuickTasksMessage": "Create a new task to get started.",
+  "dashboardGroupsTitle": "Task groups",
+  "dashboardNewGroup": "New group",
+
+  "addTaskButtonLabel": "Add task",
+  "addGroupButtonLabel": "Add group",
+
+  "groupCardTasksCount": "{completed}/{total} tasks",
+  "@groupCardTasksCount": {
+    "placeholders": {
+      "completed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "taskSheetCreateTitle": "New task",
+  "taskSheetEditTitle": "Edit task",
+  "taskSheetSubtitle": "Enter the details of the new task here.",
+  "taskFieldTitleLabel": "Task title",
+  "taskFieldDescriptionLabel": "Task description",
+  "taskFieldDueDateLabel": "Due date",
+  "taskFieldGroupLabel": "Group (optional)",
+  "taskGroupNone": "No group",
+  "taskFieldPriorityLabel": "Priority",
+  "taskPriorityNone": "No priority",
+  "taskPriorityLow": "Low",
+  "taskPriorityMedium": "Medium",
+  "taskPriorityHigh": "High",
+  "taskPriorityCritical": "Critical",
+  "taskCreatedSuccess": "Task created.",
+  "taskUpdatedSuccess": "Task updated.",
+  "taskDeletedSuccess": "Task deleted.",
+  "taskDeleteConfirmTitle": "Delete task",
+  "taskDeleteConfirmContent": "Are you sure you want to delete this task? This action cannot be undone.",
+  "taskDeletedSnackbarTitle": "Task deleted",
+  "taskDeletedSnackbarMessage": "Task \"{title}\" was deleted.",
+  "@taskDeletedSnackbarMessage": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "taskDeleteErrorTitle": "Could not delete the task",
+  "taskDeleteErrorMessage": "We could not delete the task. Please try again later.",
+  "taskUpdateErrorTitle": "Could not update the task",
+  "taskUpdateErrorMessage": "We could not update the task status. Please try again later.",
+
+  "groupSheetCreateTitle": "New group",
+  "groupSheetEditTitle": "Edit group",
+  "groupSheetSubtitle": "Set up the details of your task group.",
+  "groupFieldNameLabel": "Group name",
+  "groupFieldDescriptionLabel": "Description (optional)",
+  "groupColorLabel": "Group color",
+  "groupIconLabel": "Group icon",
+  "groupSaveCheckStateTitle": "Keep checked items",
+  "groupSaveCheckStateOn": "Checked items stay checked between sessions",
+  "groupSaveCheckStateOff": "Checked items reset on every new session",
+  "groupSheetCreateButton": "Create group",
+  "groupSheetUpdateButton": "Update group",
+  "groupCreatedSuccess": "Group created.",
+  "groupUpdatedSuccess": "Group updated.",
+  "groupSaveUnexpectedError": "Unexpected error while saving the group",
+  "groupDelete": "Delete group",
+  "groupDeleteConfirmContent": "Are you sure you want to delete this group? All tasks in it will be removed too. This action cannot be undone.",
+  "groupDeletedSuccess": "Group deleted.",
+  "groupDeleteError": "Could not delete the group",
+
+  "groupLoadError": "Could not load the group: {message}",
+  "@groupLoadError": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "groupNotFound": "Group not found.",
+  "groupEdit": "Edit group",
+  "groupDescriptionLabel": "Description",
+  "groupTasksTitle": "Tasks",
+  "groupNewTask": "New task",
+  "groupNoTasksTitle": "Nothing here yet",
+  "groupNoTasksMessage": "Start by adding the first task to this group.",
+  "groupReusableChecklistBadge": "Reusable checklist: the checks reset every day.",
+  "groupResetChecklist": "Reset checklist",
+  "groupResetConfirmContent": "Every task in \"{name}\" will be unchecked. The tasks themselves are not deleted.",
+  "@groupResetConfirmContent": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "groupResetConfirmAction": "Reset",
+  "groupResetSuccessTitle": "Checklist reset",
+  "groupResetSuccessMessage": "The tasks in \"{name}\" were unchecked.",
+  "@groupResetSuccessMessage": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "groupResetErrorTitle": "Could not reset the checklist",
+  "groupResetErrorMessage": "We could not uncheck the tasks. Please try again later.",
+
+  "settingsTitle": "Settings",
+  "settingsLoadErrorTitle": "We could not load your settings",
+  "settingsUserFallbackName": "User",
+  "settingsEmailUnavailable": "Email unavailable",
+  "settingsSectionAccount": "Account",
+  "settingsChangePassword": "Change password",
+  "settingsManageAccount": "Manage account",
+  "settingsSectionPreferences": "Preferences",
+  "settingsThemeLabel": "Theme",
+  "settingsNotifications": "Notifications",
+  "settingsSectionOther": "Other",
+  "settingsAbout": "About the app",
+  "settingsPrivacyPolicy": "Privacy policy",
+  "settingsTermsOfService": "Terms of service",
+  "settingsLogout": "Sign out",
+  "settingsLogoutErrorTitle": "Could not sign out",
+
+  "changePasswordSubmit": "Save changes",
+  "changePasswordSuccess": "Password changed.",
+
+  "aboutIntro": "Fly Checklist is a fresh take on task management that borrows the aviation checklist methodology to streamline your day.\n\nThe trick is being able to create groups of \"non-persistent\" checklists. While a traditional to-do list saves your check marks, Fly Checklist lets certain lists go back to their original state after use, which makes it perfect for recurring routines.",
+  "aboutFeaturesTitle": "Key features:",
+  "aboutFeatureReusableTitle": "Reusable checklists:",
+  "aboutFeatureReusableDescription": "The core feature. Create a list for a routine (making breakfast, your workout routine) and it will always be ready and unchecked for next time, saving you time and effort.",
+  "aboutFeatureAviationTitle": "Aviation methodology:",
+  "aboutFeatureAviationDescription": "Brings discipline and precision to make sure no step of an important process gets skipped.",
+  "aboutFeatureGroupingTitle": "Smart grouping:",
+  "aboutFeatureGroupingDescription": "Organize several checklists into themed groups (\"Morning\", \"End of day\", \"Project X\") and keep your personal and professional life perfectly in order.",
+  "aboutFeatureFlexibilityTitle": "Full flexibility:",
+  "aboutFeatureFlexibilityDescription": "Great for a simple to-do list and just as good for complex processes that need a verified sequence of steps.",
+  "aboutClosing": "Fly Checklist is the definitive tool for turning routines into solid, efficient habits.",
+  "aboutVersion": "Version {version}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "aboutDeveloper": "Developed by Vitor Melo",
+  "aboutCopyright": "© {year} Fly Checklist. All rights reserved.",
+  "@aboutCopyright": {
+    "placeholders": {
+      "year": { "type": "String" }
+    }
+  }
+}

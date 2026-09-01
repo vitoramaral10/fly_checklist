@@ -6,7 +6,6 @@ import 'package:fly_checklist/domain/usecases/usecases.dart';
 import 'package:fly_checklist/presentation/mixins/mixins.dart';
 import 'package:fly_checklist/ui/helpers/helpers.dart';
 import 'package:get/get.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _CreateTaskSpy extends Mock implements CreateTask {}
@@ -110,7 +109,7 @@ void main() {
   DateTime futureDueDate() => DateTime.now().add(const Duration(days: 30));
 
   setUpAll(() async {
-    await initializeDateFormatting(appDateLocale);
+    await initializeAppDateFormatting();
     registerFallbackValue(
       _makeTask(id: 'fallback', createdAt: DateTime(2026, 1, 1)),
     );

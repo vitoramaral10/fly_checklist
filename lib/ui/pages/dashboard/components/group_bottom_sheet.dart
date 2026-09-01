@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:fly_checklist/domain/entities/entities.dart';
 import 'package:get/get.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../presentation/presenters/presenters.dart';
 import '../../../components/components.dart';
 import '../../../helpers/helpers.dart';
+import '../../../helpers/ui_error_translation.dart';
 import '../../group_form_presenter.dart';
 
 Future<void> showGroupBottomSheet(
@@ -80,6 +82,7 @@ class _GroupBottomSheetState extends State<GroupBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final group = widget.group;
@@ -108,12 +111,14 @@ class _GroupBottomSheetState extends State<GroupBottomSheet> {
             children: [
               // Título do modal
               Text(
-                (group != null) ? 'Editar Grupo' : 'Novo Grupo',
+                (group != null)
+                    ? l10n.groupSheetEditTitle
+                    : l10n.groupSheetCreateTitle,
                 style: theme.textTheme.headlineSmall,
               ),
               const SizedBox(height: 16),
               Text(
-                'Configure os detalhes do seu grupo de tarefas.',
+                l10n.groupSheetSubtitle,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium,
               ),
@@ -122,10 +127,10 @@ class _GroupBottomSheetState extends State<GroupBottomSheet> {
               // Campo Nome do Grupo
               TextFormField(
                 controller: controller.groupNameController,
-                decoration: const InputDecoration(
-                  labelText: 'Nome do Grupo',
-                  prefixIcon: Icon(Icons.label_outline),
-                  border: OutlineInputBorder(
+                decoration: InputDecoration(
+                  labelText: l10n.groupFieldNameLabel,
+                  prefixIcon: const Icon(Icons.label_outline),
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                   ),
                 ),
@@ -133,7 +138,7 @@ class _GroupBottomSheetState extends State<GroupBottomSheet> {
                 textInputAction: TextInputAction.next,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Por favor, insira o nome do grupo.';
+                    return l10n.validatorGroupNameRequired;
                   }
                   return null;
                 },
@@ -143,10 +148,10 @@ class _GroupBottomSheetState extends State<GroupBottomSheet> {
               // Campo Descrição (opcional)
               TextFormField(
                 controller: controller.groupDescriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'Descrição (opcional)',
-                  prefixIcon: Icon(Icons.description_outlined),
-                  border: OutlineInputBorder(
+                decoration: InputDecoration(
+                  labelText: l10n.groupFieldDescriptionLabel,
+                  prefixIcon: const Icon(Icons.description_outlined),
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                   ),
                 ),
@@ -169,7 +174,7 @@ class _GroupBottomSheetState extends State<GroupBottomSheet> {
                         ),
                         const SizedBox(width: 12),
                         Text(
-                          'Cor do Grupo',
+                          l10n.groupColorLabel,
                           style: theme.textTheme.titleMedium,
                         ),
                         const Spacer(),
@@ -240,7 +245,7 @@ class _GroupBottomSheetState extends State<GroupBottomSheet> {
                         Icon(Icons.apps_outlined, color: colorScheme.onSurface),
                         const SizedBox(width: 12),
                         Text(
-                          'Ícone do Grupo',
+                          l10n.groupIconLabel,
                           style: theme.textTheme.titleMedium,
                         ),
                         const Spacer(),
@@ -326,13 +331,13 @@ class _GroupBottomSheetState extends State<GroupBottomSheet> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Salvar Estado dos Checks',
+                              l10n.groupSaveCheckStateTitle,
                               style: theme.textTheme.titleSmall,
                             ),
                             Text(
                               controller.saveCheckState
-                                  ? 'Os checks marcados serão mantidos entre sessões'
-                                  : 'Os checks serão resetados a cada nova sessão',
+                                  ? l10n.groupSaveCheckStateOn
+                                  : l10n.groupSaveCheckStateOff,
                               style: theme.textTheme.bodySmall?.copyWith(
                                 color: colorScheme.onSurface.withValues(
                                   alpha: 0.7,
@@ -370,29 +375,32 @@ class _GroupBottomSheetState extends State<GroupBottomSheet> {
 
                         if (context.mounted) {
                           showSuccessSnackbar(
+                            context,
                             message: (group != null)
-                                ? 'Grupo atualizado com sucesso!'
-                                : 'Grupo criado com sucesso!',
+                                ? l10n.groupUpdatedSuccess
+                                : l10n.groupCreatedSuccess,
                           );
                         }
                       } on UiError catch (e) {
                         if (context.mounted) Navigator.of(context).pop();
                         if (context.mounted) {
-                          showErrorDialog(context, e.message);
+                          showErrorDialog(context, e.message(context));
                         }
                       } catch (e) {
                         if (context.mounted) Navigator.of(context).pop();
                         if (context.mounted) {
                           showErrorDialog(
                             context,
-                            'Erro inesperado ao salvar grupo',
+                            l10n.groupSaveUnexpectedError,
                           );
                         }
                       }
                     }
                   },
                   child: Text(
-                    (group != null) ? 'Atualizar Grupo' : 'Criar Grupo',
+                    (group != null)
+                        ? l10n.groupSheetUpdateButton
+                        : l10n.groupSheetCreateButton,
                   ),
                 ),
               ),
@@ -404,9 +412,9 @@ class _GroupBottomSheetState extends State<GroupBottomSheet> {
                   width: double.infinity,
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.delete_outline, color: Colors.red),
-                    label: const Text(
-                      'Excluir Grupo',
-                      style: TextStyle(color: Colors.red),
+                    label: Text(
+                      l10n.groupDelete,
+                      style: const TextStyle(color: Colors.red),
                     ),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Colors.red),
@@ -414,9 +422,8 @@ class _GroupBottomSheetState extends State<GroupBottomSheet> {
                     onPressed: () async {
                       final isDelete = await showConfirmationDialog(
                         context,
-                        title: 'Excluir Grupo',
-                        content:
-                            'Tem certeza que deseja excluir este grupo? Todas as tarefas associadas também serão removidas. Esta ação não pode ser desfeita.',
+                        title: l10n.groupDelete,
+                        content: l10n.groupDeleteConfirmContent,
                         destructive: true,
                       );
 
@@ -429,18 +436,19 @@ class _GroupBottomSheetState extends State<GroupBottomSheet> {
                           widget.onDeleted?.call();
                           if (context.mounted) {
                             showSuccessSnackbar(
-                              message: 'Grupo excluído com sucesso!',
+                              context,
+                              message: l10n.groupDeletedSuccess,
                             );
                           }
                         } on UiError catch (e) {
                           if (context.mounted) Navigator.of(context).pop();
                           if (context.mounted) {
-                            showErrorDialog(context, e.message);
+                            showErrorDialog(context, e.message(context));
                           }
                         } catch (e) {
                           if (context.mounted) Navigator.of(context).pop();
                           if (context.mounted) {
-                            showErrorDialog(context, 'Erro ao excluir grupo');
+                            showErrorDialog(context, l10n.groupDeleteError);
                           }
                         }
                       }

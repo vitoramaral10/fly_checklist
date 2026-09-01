@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:fly_checklist/domain/entities/task_entity.dart';
 import 'package:get/get.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../presentation/presenters/presenters.dart';
 import '../../../components/components.dart';
 import '../../../helpers/helpers.dart';
+import '../../../helpers/ui_error_translation.dart';
 import '../../task_form_presenter.dart';
 
 Future<void> showTaskBottomSheet(
@@ -57,6 +59,7 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final task = widget.task;
 
@@ -69,22 +72,24 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                (task != null) ? 'Editar Tarefa' : 'Nova Tarefa',
+                (task != null)
+                    ? l10n.taskSheetEditTitle
+                    : l10n.taskSheetCreateTitle,
                 style: theme.textTheme.headlineSmall,
               ),
               const SizedBox(height: 16),
               Text(
-                'Insira os detalhes da nova tarefa aqui.',
+                l10n.taskSheetSubtitle,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium,
               ),
               const SizedBox(height: 24),
               TextFormField(
                 controller: controller.taskTitleController,
-                decoration: const InputDecoration(
-                  labelText: 'Título da Tarefa',
-                  prefixIcon: Icon(Icons.title_outlined),
-                  border: OutlineInputBorder(
+                decoration: InputDecoration(
+                  labelText: l10n.taskFieldTitleLabel,
+                  prefixIcon: const Icon(Icons.title_outlined),
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                   ),
                 ),
@@ -93,7 +98,7 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
 
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Por favor, insira o título da tarefa.';
+                    return l10n.validatorTaskTitleRequired;
                   }
                   return null;
                 },
@@ -101,10 +106,10 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: controller.taskDescriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'Descrição da Tarefa',
-                  prefixIcon: Icon(Icons.description_outlined),
-                  border: OutlineInputBorder(
+                decoration: InputDecoration(
+                  labelText: l10n.taskFieldDescriptionLabel,
+                  prefixIcon: const Icon(Icons.description_outlined),
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                   ),
                 ),
@@ -115,10 +120,10 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: controller.taskDueDateController,
-                decoration: const InputDecoration(
-                  labelText: 'Data de Vencimento',
-                  prefixIcon: Icon(Icons.date_range_outlined),
-                  border: OutlineInputBorder(
+                decoration: InputDecoration(
+                  labelText: l10n.taskFieldDueDateLabel,
+                  prefixIcon: const Icon(Icons.date_range_outlined),
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                   ),
                 ),
@@ -142,10 +147,10 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
                   try {
                     final date = appDateFormat.parseStrict(value);
                     if (isDateInPast(date)) {
-                      return 'A data não pode ser anterior a hoje.';
+                      return l10n.validatorDueDateInPast;
                     }
                   } on FormatException {
-                    return 'Data inválida.';
+                    return l10n.validatorDueDateInvalid;
                   }
                   return null;
                 },
@@ -155,17 +160,17 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
                 () => DropdownButtonFormField<String?>(
                   initialValue: controller.taskGroupId,
                   isExpanded: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Grupo (opcional)',
-                    prefixIcon: Icon(Icons.folder_outlined),
-                    border: OutlineInputBorder(
+                  decoration: InputDecoration(
+                    labelText: l10n.taskFieldGroupLabel,
+                    prefixIcon: const Icon(Icons.folder_outlined),
+                    border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16)),
                     ),
                   ),
                   items: [
-                    const DropdownMenuItem<String?>(
+                    DropdownMenuItem<String?>(
                       value: null,
-                      child: Text('Sem grupo'),
+                      child: Text(l10n.taskGroupNone),
                     ),
                     ...controller.groups.map(
                       (group) => DropdownMenuItem<String?>(
@@ -195,19 +200,34 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
               Obx(
                 () => DropdownButtonFormField<int>(
                   initialValue: controller.taskPriority,
-                  decoration: const InputDecoration(
-                    labelText: 'Prioridade',
-                    prefixIcon: Icon(Icons.priority_high_outlined),
-                    border: OutlineInputBorder(
+                  decoration: InputDecoration(
+                    labelText: l10n.taskFieldPriorityLabel,
+                    prefixIcon: const Icon(Icons.priority_high_outlined),
+                    border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16)),
                     ),
                   ),
-                  items: const [
-                    DropdownMenuItem(value: 0, child: Text('Sem prioridade')),
-                    DropdownMenuItem(value: 1, child: Text('Baixa')),
-                    DropdownMenuItem(value: 2, child: Text('Média')),
-                    DropdownMenuItem(value: 3, child: Text('Alta')),
-                    DropdownMenuItem(value: 4, child: Text('Crítica')),
+                  items: [
+                    DropdownMenuItem(
+                      value: 0,
+                      child: Text(l10n.taskPriorityNone),
+                    ),
+                    DropdownMenuItem(
+                      value: 1,
+                      child: Text(l10n.taskPriorityLow),
+                    ),
+                    DropdownMenuItem(
+                      value: 2,
+                      child: Text(l10n.taskPriorityMedium),
+                    ),
+                    DropdownMenuItem(
+                      value: 3,
+                      child: Text(l10n.taskPriorityHigh),
+                    ),
+                    DropdownMenuItem(
+                      value: 4,
+                      child: Text(l10n.taskPriorityCritical),
+                    ),
                   ],
                   onChanged: (value) {
                     if (value != null) {
@@ -216,10 +236,10 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
                   },
                   validator: (value) {
                     if (value == null) {
-                      return 'Por favor, selecione a prioridade da tarefa.';
+                      return l10n.validatorPriorityRequired;
                     }
                     if (value < 0 || value > 4) {
-                      return 'Prioridade deve estar entre 0 e 4.';
+                      return l10n.validatorPriorityRange;
                     }
                     return null;
                   },
@@ -257,20 +277,23 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
 
                         if (context.mounted) {
                           showSuccessSnackbar(
+                            context,
                             message: (task != null)
-                                ? 'Tarefa atualizada com sucesso!'
-                                : 'Tarefa criada com sucesso!',
+                                ? l10n.taskUpdatedSuccess
+                                : l10n.taskCreatedSuccess,
                           );
                         }
                       } on UiError catch (e) {
                         if (context.mounted) Navigator.of(context).pop();
                         if (context.mounted) {
-                          showErrorDialog(context, e.message);
+                          showErrorDialog(context, e.message(context));
                         }
                       }
                     }
                   },
-                  child: Text((task != null) ? 'Atualizar' : 'Criar'),
+                  child: Text(
+                    (task != null) ? l10n.commonUpdate : l10n.commonCreate,
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
@@ -279,9 +302,9 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
                   width: double.infinity,
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.delete_outline, color: Colors.red),
-                    label: const Text(
-                      'Excluir',
-                      style: TextStyle(color: Colors.red),
+                    label: Text(
+                      l10n.commonDelete,
+                      style: const TextStyle(color: Colors.red),
                     ),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Colors.red),
@@ -289,9 +312,8 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
                     onPressed: () async {
                       final isDelete = await showConfirmationDialog(
                         context,
-                        title: 'Excluir Tarefa',
-                        content:
-                            'Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.',
+                        title: l10n.taskDeleteConfirmTitle,
+                        content: l10n.taskDeleteConfirmContent,
                         destructive: true,
                       );
 
@@ -305,13 +327,14 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
 
                         if (context.mounted) {
                           showSuccessSnackbar(
-                            message: 'Tarefa excluída com sucesso!',
+                            context,
+                            message: l10n.taskDeletedSuccess,
                           );
                         }
                       } on UiError catch (e) {
                         if (context.mounted) Navigator.of(context).pop();
                         if (context.mounted) {
-                          showErrorDialog(context, e.message);
+                          showErrorDialog(context, e.message(context));
                         }
                       }
                     },

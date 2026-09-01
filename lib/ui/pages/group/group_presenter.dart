@@ -1,11 +1,12 @@
 import '../../../domain/entities/entities.dart';
+import '../../helpers/ui_error.dart';
 import '../group_form_presenter.dart';
 import '../task_form_presenter.dart';
 
 abstract class GroupPresenter implements TaskFormPresenter, GroupFormPresenter {
   GroupEntity? get group;
   bool get isLoading;
-  String? get hasError;
+  UiError? get hasError;
   List<TaskEntity> get tasks;
   UserEntity? get user;
 

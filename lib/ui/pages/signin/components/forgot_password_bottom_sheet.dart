@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../presentation/presenters/presenters.dart';
 import '../../../components/components.dart';
 import '../../../helpers/helpers.dart';
+import '../../../helpers/ui_error_translation.dart';
 
 Future<void> showForgotPasswordBottomSheet(BuildContext context) async {
   await showModalBottomSheet(
@@ -20,6 +22,7 @@ class ForgotPasswordBottomSheet extends GetView<GetxSignInPresenter> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -42,20 +45,23 @@ class ForgotPasswordBottomSheet extends GetView<GetxSignInPresenter> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                Text('Recuperar Senha', style: theme.textTheme.headlineSmall),
+                Text(
+                  l10n.forgotPasswordTitle,
+                  style: theme.textTheme.headlineSmall,
+                ),
                 const SizedBox(height: 16),
                 Text(
-                  'Insira seu e-mail para receber instruções de recuperação.',
+                  l10n.forgotPasswordSubtitle,
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 24),
                 TextFormField(
                   controller: controller.emailRecoveryController,
-                  decoration: const InputDecoration(
-                    labelText: 'E-mail',
-                    prefixIcon: Icon(Icons.email_outlined),
-                    border: OutlineInputBorder(
+                  decoration: InputDecoration(
+                    labelText: l10n.fieldEmailLabel,
+                    prefixIcon: const Icon(Icons.email_outlined),
+                    border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16)),
                     ),
                   ),
@@ -64,10 +70,10 @@ class ForgotPasswordBottomSheet extends GetView<GetxSignInPresenter> {
 
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, insira seu e-mail.';
+                      return l10n.validatorEmailRequired;
                     }
                     if (GetUtils.isEmail(value) == false) {
-                      return 'E-mail inválido.';
+                      return l10n.validatorEmailInvalidShort;
                     }
                     return null;
                   },
@@ -91,17 +97,17 @@ class ForgotPasswordBottomSheet extends GetView<GetxSignInPresenter> {
                         if (context.mounted) {
                           showSuccessDialog(
                             context,
-                            'Instruções de recuperação enviadas para o e-mail.',
+                            l10n.forgotPasswordSuccess,
                           );
                         }
                       } on UiError catch (e) {
                         if (context.mounted) Navigator.of(context).pop();
                         if (context.mounted) {
-                          showErrorDialog(context, e.message);
+                          showErrorDialog(context, e.message(context));
                         }
                       }
                     },
-                    child: const Text('Enviar'),
+                    child: Text(l10n.commonSend),
                   ),
                 ),
                 const SizedBox(height: 12),

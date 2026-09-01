@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../domain/entities/entities.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 
 class GroupCard extends StatelessWidget {
   final GroupEntity group;
@@ -52,7 +53,10 @@ class GroupCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${group.completedTasks}/${group.totalTasks} tarefas',
+                    AppLocalizations.of(context).groupCardTasksCount(
+                      group.completedTasks,
+                      group.totalTasks,
+                    ),
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),

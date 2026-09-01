@@ -1,0 +1,243 @@
+{
+  "@@locale": "pt",
+
+  "appTitle": "Fly Checklist",
+  "@appTitle": {
+    "description": "Nome do aplicativo, exibido no título da janela e na home"
+  },
+
+  "commonCancel": "Cancelar",
+  "commonConfirm": "Confirmar",
+  "commonCreate": "Criar",
+  "commonUpdate": "Atualizar",
+  "commonDelete": "Excluir",
+  "commonSend": "Enviar",
+  "commonClose": "Fechar",
+  "commonOk": "OK",
+  "commonGotIt": "Entendi",
+  "commonRetry": "Tentar novamente",
+  "commonLoading": "Carregando...",
+  "commonOr": "OU",
+
+  "errorDialogTitle": "Ocorreu um erro",
+  "successDialogTitle": "Sucesso!",
+  "confirmationDialogTitle": "Confirmação",
+  "confirmationDialogContent": "Você tem certeza que deseja continuar?",
+  "successSnackbarTitle": "Sucesso",
+  "successSnackbarMessage": "Ação realizada com sucesso.",
+
+  "errorUnexpected": "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.",
+  "errorInvalidEmail": "O e-mail informado é inválido. Por favor, verifique e tente novamente.",
+  "errorEmailInUse": "Este e-mail já está em uso. Por favor, tente com outro e-mail.",
+  "errorWeakPassword": "A senha informada é muito fraca. Por favor, escolha uma senha mais forte.",
+  "errorInvalidCredential": "As credenciais informadas são inválidas. Por favor, verifique e tente novamente.",
+  "errorEmailNotVerified": "Seu e-mail ainda não foi verificado. Por favor, verifique sua caixa de entrada e siga as instruções para ativar sua conta.",
+  "errorInvalidDueDate": "A data de vencimento não pode ser anterior a hoje.",
+  "errorCancelled": "Operação cancelada.",
+
+  "fieldEmailLabel": "E-mail",
+  "fieldPasswordLabel": "Senha",
+  "fieldConfirmPasswordLabel": "Confirme sua senha",
+  "fieldFullNameLabel": "Nome completo",
+  "fieldCurrentPasswordLabel": "Senha Atual",
+  "fieldNewPasswordLabel": "Nova Senha",
+  "fieldConfirmNewPasswordLabel": "Confirmar Nova Senha",
+
+  "validatorEmailRequired": "Por favor, insira seu e-mail.",
+  "validatorEmailInvalid": "Por favor, insira um e-mail válido.",
+  "validatorEmailInvalidShort": "E-mail inválido.",
+  "validatorPasswordRequired": "Por favor, insira sua senha.",
+  "validatorPasswordMinLength": "A senha deve ter pelo menos 6 caracteres.",
+  "validatorConfirmPasswordRequired": "Por favor, confirme sua senha.",
+  "validatorPasswordsDoNotMatch": "As senhas não coincidem.",
+  "validatorFullNameRequired": "Por favor, insira seu nome completo.",
+  "validatorCurrentPasswordRequired": "Por favor, insira sua senha atual.",
+  "validatorNewPasswordRequired": "Por favor, insira a nova senha.",
+  "validatorNewPasswordMinLength": "A nova senha deve ter pelo menos 6 caracteres.",
+  "validatorConfirmNewPasswordRequired": "Por favor, confirme a nova senha.",
+  "validatorGroupNameRequired": "Por favor, insira o nome do grupo.",
+  "validatorTaskTitleRequired": "Por favor, insira o título da tarefa.",
+  "validatorDueDateInPast": "A data não pode ser anterior a hoje.",
+  "validatorDueDateInvalid": "Data inválida.",
+  "validatorPriorityRequired": "Por favor, selecione a prioridade da tarefa.",
+  "validatorPriorityRange": "Prioridade deve estar entre 0 e 4.",
+
+  "homeTagline": "Organize suas tarefas e alcance seus objetivos com simplicidade.",
+  "homeSignIn": "Acessar minha conta",
+  "homeSignUp": "Criar conta",
+
+  "signInAppBarTitle": "Login",
+  "signInWelcomeTitle": "Bem-vindo(a) de volta!",
+  "signInWelcomeSubtitle": "Faça login para continuar.",
+  "signInForgotPassword": "Esqueci minha senha",
+  "signInSubmit": "Entrar",
+  "signInGoToSignUp": "Não tem uma conta? Cadastre-se",
+  "signInWithGoogle": "Entrar com Google",
+
+  "signUpAppBarTitle": "Criar conta",
+  "signUpWelcomeTitle": "Bem-vindo(a)!",
+  "signUpWelcomeSubtitle": "Preencha os campos abaixo para criar sua conta.",
+  "signUpSubmit": "CRIAR CONTA",
+  "signUpSubmitLoading": "Criando...",
+  "signUpGoToSignIn": "Já tem uma conta? Faça login",
+  "signUpOrContinueWith": "Ou continue com",
+
+  "forgotPasswordTitle": "Recuperar Senha",
+  "forgotPasswordSubtitle": "Insira seu e-mail para receber instruções de recuperação.",
+  "forgotPasswordSuccess": "Instruções de recuperação enviadas para o e-mail.",
+
+  "emailVerificationTitle": "Verifique seu e-mail",
+  "emailVerificationMessage": "Enviamos um link de verificação para o seu e-mail. Por favor, verifique sua caixa de entrada e siga as instruções para ativar sua conta.",
+  "emailVerificationContinue": "Já verifiquei, continuar",
+  "emailVerificationResend": "Reenviar e-mail de verificação",
+  "emailVerificationResentSuccess": "E-mail de verificação reenviado com sucesso. Por favor, verifique sua caixa de entrada.",
+  "emailVerificationBackToLogin": "Voltar para o login",
+
+  "dashboardGreeting": "Olá,",
+  "dashboardLoadErrorTitle": "Não foi possível carregar seus dados",
+  "dashboardQuickTasksTitle": "Tarefas Rápidas",
+  "dashboardNoQuickTasksTitle": "Nenhuma tarefa rápida",
+  "dashboardNoQuickTasksMessage": "Crie uma nova tarefa para começar.",
+  "dashboardGroupsTitle": "Grupos de Tarefas",
+  "dashboardNewGroup": "Novo grupo",
+
+  "addTaskButtonLabel": "Adicionar tarefa",
+  "addGroupButtonLabel": "Adicionar grupo",
+
+  "groupCardTasksCount": "{completed}/{total} tarefas",
+  "@groupCardTasksCount": {
+    "description": "Progresso do grupo no card do dashboard",
+    "placeholders": {
+      "completed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "taskSheetCreateTitle": "Nova Tarefa",
+  "taskSheetEditTitle": "Editar Tarefa",
+  "taskSheetSubtitle": "Insira os detalhes da nova tarefa aqui.",
+  "taskFieldTitleLabel": "Título da Tarefa",
+  "taskFieldDescriptionLabel": "Descrição da Tarefa",
+  "taskFieldDueDateLabel": "Data de Vencimento",
+  "taskFieldGroupLabel": "Grupo (opcional)",
+  "taskGroupNone": "Sem grupo",
+  "taskFieldPriorityLabel": "Prioridade",
+  "taskPriorityNone": "Sem prioridade",
+  "taskPriorityLow": "Baixa",
+  "taskPriorityMedium": "Média",
+  "taskPriorityHigh": "Alta",
+  "taskPriorityCritical": "Crítica",
+  "taskCreatedSuccess": "Tarefa criada com sucesso!",
+  "taskUpdatedSuccess": "Tarefa atualizada com sucesso!",
+  "taskDeletedSuccess": "Tarefa excluída com sucesso!",
+  "taskDeleteConfirmTitle": "Excluir Tarefa",
+  "taskDeleteConfirmContent": "Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.",
+  "taskDeletedSnackbarTitle": "Tarefa excluída",
+  "taskDeletedSnackbarMessage": "A tarefa \"{title}\" foi excluída com sucesso.",
+  "@taskDeletedSnackbarMessage": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "taskDeleteErrorTitle": "Erro ao excluir tarefa",
+  "taskDeleteErrorMessage": "Não foi possível excluir a tarefa. Tente novamente mais tarde.",
+  "taskUpdateErrorTitle": "Erro ao atualizar tarefa",
+  "taskUpdateErrorMessage": "Não foi possível atualizar o status da tarefa. Tente novamente mais tarde.",
+
+  "groupSheetCreateTitle": "Novo Grupo",
+  "groupSheetEditTitle": "Editar Grupo",
+  "groupSheetSubtitle": "Configure os detalhes do seu grupo de tarefas.",
+  "groupFieldNameLabel": "Nome do Grupo",
+  "groupFieldDescriptionLabel": "Descrição (opcional)",
+  "groupColorLabel": "Cor do Grupo",
+  "groupIconLabel": "Ícone do Grupo",
+  "groupSaveCheckStateTitle": "Salvar Estado dos Checks",
+  "groupSaveCheckStateOn": "Os checks marcados serão mantidos entre sessões",
+  "groupSaveCheckStateOff": "Os checks serão resetados a cada nova sessão",
+  "groupSheetCreateButton": "Criar Grupo",
+  "groupSheetUpdateButton": "Atualizar Grupo",
+  "groupCreatedSuccess": "Grupo criado com sucesso!",
+  "groupUpdatedSuccess": "Grupo atualizado com sucesso!",
+  "groupSaveUnexpectedError": "Erro inesperado ao salvar grupo",
+  "groupDelete": "Excluir grupo",
+  "groupDeleteConfirmContent": "Tem certeza que deseja excluir este grupo? Todas as tarefas associadas também serão removidas. Esta ação não pode ser desfeita.",
+  "groupDeletedSuccess": "Grupo excluído com sucesso!",
+  "groupDeleteError": "Erro ao excluir grupo",
+
+  "groupLoadError": "Erro ao carregar o grupo: {message}",
+  "@groupLoadError": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "groupNotFound": "Grupo não encontrado.",
+  "groupEdit": "Editar grupo",
+  "groupDescriptionLabel": "Descrição",
+  "groupTasksTitle": "Tarefas",
+  "groupNewTask": "Nova tarefa",
+  "groupNoTasksTitle": "Sem tarefas por aqui",
+  "groupNoTasksMessage": "Comece adicionando a primeira tarefa para este grupo.",
+  "groupReusableChecklistBadge": "Checklist reutilizável: os checks são reiniciados a cada dia.",
+  "groupResetChecklist": "Reiniciar checklist",
+  "groupResetConfirmContent": "Todas as tarefas de \"{name}\" voltarão a ficar desmarcadas. As tarefas em si não são excluídas.",
+  "@groupResetConfirmContent": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "groupResetConfirmAction": "Reiniciar",
+  "groupResetSuccessTitle": "Checklist reiniciado",
+  "groupResetSuccessMessage": "As tarefas de \"{name}\" foram desmarcadas.",
+  "@groupResetSuccessMessage": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "groupResetErrorTitle": "Erro ao reiniciar checklist",
+  "groupResetErrorMessage": "Não foi possível desmarcar as tarefas. Tente novamente mais tarde.",
+
+  "settingsTitle": "Configurações",
+  "settingsLoadErrorTitle": "Não foi possível carregar suas configurações",
+  "settingsUserFallbackName": "Usuário",
+  "settingsEmailUnavailable": "E-mail não disponível",
+  "settingsSectionAccount": "Conta",
+  "settingsChangePassword": "Alterar Senha",
+  "settingsManageAccount": "Gerenciar Conta",
+  "settingsSectionPreferences": "Preferências",
+  "settingsThemeLabel": "Tema",
+  "settingsNotifications": "Notificações",
+  "settingsSectionOther": "Outros",
+  "settingsAbout": "Sobre o App",
+  "settingsPrivacyPolicy": "Política de Privacidade",
+  "settingsTermsOfService": "Termos de Serviço",
+  "settingsLogout": "Sair da Conta",
+  "settingsLogoutErrorTitle": "Erro ao Sair",
+
+  "changePasswordSubmit": "Salvar Alterações",
+  "changePasswordSuccess": "Senha alterada com sucesso!",
+
+  "aboutIntro": "O Fly Checklist é uma solução inovadora para gerenciamento de tarefas, que aplica a metodologia dos checklists de aviação para otimizar seu dia a dia.\n\nO segredo está na capacidade de criar grupos de checklists \"não persistentes\". Enquanto um To-Do list tradicional salva suas marcações, o Fly Checklist permite que certas listas voltem ao estado original após o uso, tornando-o perfeito para tarefas recorrentes.",
+  "aboutFeaturesTitle": "Principais Funcionalidades:",
+  "aboutFeatureReusableTitle": "Checklists Reutilizáveis:",
+  "aboutFeatureReusableDescription": "O recurso principal. Crie uma lista para sua rotina (ex: preparar o café da manhã, rotina de exercícios) e ela estará sempre pronta e desmarcada para a próxima vez, economizando seu tempo e esforço.",
+  "aboutFeatureAviationTitle": "Metodologia da Aviação:",
+  "aboutFeatureAviationDescription": "Traz um conceito de disciplina e precisão para garantir que nenhuma etapa de um processo importante seja pulada.",
+  "aboutFeatureGroupingTitle": "Agrupamento Inteligente:",
+  "aboutFeatureGroupingDescription": "Organize múltiplos checklists em grupos temáticos (ex: \"Manhã\", \"Fim do Dia\", \"Projeto X\"), mantendo sua vida pessoal e profissional perfeitamente ordenada.",
+  "aboutFeatureFlexibilityTitle": "Flexibilidade Total:",
+  "aboutFeatureFlexibilityDescription": "Ideal tanto para uma simples lista de tarefas quanto para processos complexos que exigem uma sequência de ações verificadas.",
+  "aboutClosing": "Fly Checklist é a ferramenta definitiva para quem busca transformar rotinas em hábitos sólidos e eficientes.",
+  "aboutVersion": "Versão {version}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "aboutDeveloper": "Desenvolvido por Vitor Melo",
+  "aboutCopyright": "© {year} Fly Checklist. Todos os direitos reservados.",
+  "@aboutCopyright": {
+    "placeholders": {
+      "year": { "type": "String" }
+    }
+  }
+}

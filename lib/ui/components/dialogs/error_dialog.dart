@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-void showErrorDialog(
-  BuildContext context,
-  String message, {
-  String title = 'Ocorreu um erro',
-}) {
+import '../../../l10n/generated/app_localizations.dart';
+
+void showErrorDialog(BuildContext context, String message, {String? title}) {
+  final l10n = AppLocalizations.of(context);
+
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         icon: const Icon(Icons.error_outline),
-        title: Text(title),
+        title: Text(title ?? l10n.errorDialogTitle),
         content: Text(message, textAlign: TextAlign.center),
         actionsAlignment: MainAxisAlignment.center,
         actions: <Widget>[
@@ -18,7 +18,7 @@ void showErrorDialog(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('Entendi'),
+            child: Text(l10n.commonGotIt),
           ),
         ],
       );

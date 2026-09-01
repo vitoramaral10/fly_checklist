@@ -2,19 +2,18 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 import 'domain/entities/entities.dart';
 import 'firebase_options.dart';
+import 'l10n/generated/app_localizations.dart';
 import 'main/factories/factories.dart';
 import 'main/routes.dart';
 import 'ui/helpers/helpers.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeDateFormatting(appDateLocale);
+  await initializeAppDateFormatting();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
@@ -50,23 +49,25 @@ class MyApp extends StatelessWidget {
     );
 
     return GetMaterialApp(
-      title: 'Fly Checklist',
+      onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       themeMode: _toFlutterThemeMode(initialThemeMode),
       theme: _buildTheme(lightScheme),
       darkTheme: _buildTheme(darkScheme),
       initialRoute: Routes.home,
       getPages: Routes.pages,
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        // Add your app-specific localization delegate here
-      ],
-      supportedLocales: [
-        const Locale('en', ''), // English
-        const Locale('es', ''), // Spanish
-        const Locale('pt', 'BR'), // Portuguese (Brazil)
-      ],
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      // `locale` fica nulo de propósito: sem ele o app segue o idioma do
+      // aparelho, e o callback abaixo garante o português quando nenhum dos
+      // idiomas preferidos do usuário é suportado.
+      fallbackLocale: appFallbackLocale,
+      localeListResolutionCallback: resolveAppLocale,
+      // Roda abaixo do `Localizations`, então aqui o idioma já está resolvido:
+      // é o ponto certo para alinhar o locale de datas ao da interface.
+      builder: (context, child) {
+        setAppDateLocale(Localizations.localeOf(context));
+        return child ?? const SizedBox.shrink();
+      },
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/generated/app_localizations.dart';
+
 class GoogleButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
@@ -12,7 +14,10 @@ class GoogleButton extends StatelessWidget {
     return FilledButton.icon(
       onPressed: onPressed,
       icon: Image.asset('assets/images/google.png', height: 24),
-      label: const Text('Entrar com Google', style: TextStyle(fontSize: 16)),
+      label: Text(
+        AppLocalizations.of(context).signInWithGoogle,
+        style: const TextStyle(fontSize: 16),
+      ),
       style: FilledButton.styleFrom(
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,

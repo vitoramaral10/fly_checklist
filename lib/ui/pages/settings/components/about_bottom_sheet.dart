@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../../l10n/generated/app_localizations.dart';
+
 void showAboutBottomSheet(BuildContext context) async {
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
@@ -20,30 +22,27 @@ class _AboutBottomSheetContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
     final features = [
-      {
-        'title': 'Checklists Reutilizáveis:',
-        'description':
-            'O recurso principal. Crie uma lista para sua rotina (ex: preparar o café da manhã, rotina de exercícios) e ela estará sempre pronta e desmarcada para a próxima vez, economizando seu tempo e esforço.',
-      },
-      {
-        'title': 'Metodologia da Aviação:',
-        'description':
-            'Traz um conceito de disciplina e precisão para garantir que nenhuma etapa de um processo importante seja pulada.',
-      },
-      {
-        'title': 'Agrupamento Inteligente:',
-        'description':
-            'Organize múltiplos checklists em grupos temáticos (ex: "Manhã", "Fim do Dia", "Projeto X"), mantendo sua vida pessoal e profissional perfeitamente ordenada.',
-      },
-      {
-        'title': 'Flexibilidade Total:',
-        'description':
-            'Ideal tanto para uma simples lista de tarefas quanto para processos complexos que exigem uma sequência de ações verificadas.',
-      },
+      (
+        title: l10n.aboutFeatureReusableTitle,
+        description: l10n.aboutFeatureReusableDescription,
+      ),
+      (
+        title: l10n.aboutFeatureAviationTitle,
+        description: l10n.aboutFeatureAviationDescription,
+      ),
+      (
+        title: l10n.aboutFeatureGroupingTitle,
+        description: l10n.aboutFeatureGroupingDescription,
+      ),
+      (
+        title: l10n.aboutFeatureFlexibilityTitle,
+        description: l10n.aboutFeatureFlexibilityDescription,
+      ),
     ];
 
     return Padding(
@@ -67,15 +66,12 @@ class _AboutBottomSheetContent extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               Center(
-                child: Text('Sobre o App', style: textTheme.headlineSmall),
+                child: Text(l10n.settingsAbout, style: textTheme.headlineSmall),
               ),
               const SizedBox(height: 16),
-              const Text(
-                'O Fly Checklist é uma solução inovadora para gerenciamento de tarefas, que aplica a metodologia dos checklists de aviação para otimizar seu dia a dia.\n\n'
-                'O segredo está na capacidade de criar grupos de checklists "não persistentes". Enquanto um To-Do list tradicional salva suas marcações, o Fly Checklist permite que certas listas voltem ao estado original após o uso, tornando-o perfeito para tarefas recorrentes.',
-              ),
+              Text(l10n.aboutIntro),
               const SizedBox(height: 24),
-              Text('Principais Funcionalidades:', style: textTheme.titleLarge),
+              Text(l10n.aboutFeaturesTitle, style: textTheme.titleLarge),
               const SizedBox(height: 12),
               ...features.map(
                 (feature) => ListTile(
@@ -85,26 +81,23 @@ class _AboutBottomSheetContent extends StatelessWidget {
                     TextSpan(
                       children: [
                         TextSpan(
-                          text: feature['title'],
+                          text: feature.title,
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        TextSpan(text: ' ${feature['description']}'),
+                        TextSpan(text: ' ${feature.description}'),
                       ],
                     ),
                   ),
                 ),
               ),
               const SizedBox(height: 24),
-              const Center(
-                child: Text(
-                  'Fly Checklist é a ferramenta definitiva para quem busca transformar rotinas em hábitos sólidos e eficientes.',
-                  textAlign: TextAlign.center,
-                ),
+              Center(
+                child: Text(l10n.aboutClosing, textAlign: TextAlign.center),
               ),
               const SizedBox(height: 24),
               Center(
                 child: Text(
-                  'Versão ${packageInfo.version}',
+                  l10n.aboutVersion(packageInfo.version),
                   style: textTheme.bodySmall?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -113,7 +106,7 @@ class _AboutBottomSheetContent extends StatelessWidget {
               const SizedBox(height: 8),
               Center(
                 child: Text(
-                  'Desenvolvido por Vitor Melo',
+                  l10n.aboutDeveloper,
                   style: textTheme.bodySmall?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -122,7 +115,7 @@ class _AboutBottomSheetContent extends StatelessWidget {
               const SizedBox(height: 8),
               Center(
                 child: Text(
-                  '© ${DateTime.now().year} Fly Checklist. Todos os direitos reservados.',
+                  l10n.aboutCopyright('${DateTime.now().year}'),
                   style: textTheme.bodySmall?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -134,7 +127,7 @@ class _AboutBottomSheetContent extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Fechar'),
+                  child: Text(l10n.commonClose),
                 ),
               ),
             ],

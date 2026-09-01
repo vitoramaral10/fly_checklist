@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
-void showSuccessDialog(
-  BuildContext context,
-  String message, {
-  String title = 'Sucesso!',
-}) {
+import '../../../l10n/generated/app_localizations.dart';
+
+void showSuccessDialog(BuildContext context, String message, {String? title}) {
   final theme = Theme.of(context);
   final colorScheme = theme.colorScheme;
+  final l10n = AppLocalizations.of(context);
 
   showDialog(
     context: context,
@@ -17,7 +16,7 @@ void showSuccessDialog(
         ),
         icon: Icon(Icons.task_alt, color: colorScheme.primary, size: 48),
         title: Text(
-          title,
+          title ?? l10n.successDialogTitle,
           style: theme.textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -34,7 +33,7 @@ void showSuccessDialog(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('OK'),
+            child: Text(l10n.commonOk),
           ),
         ],
       );

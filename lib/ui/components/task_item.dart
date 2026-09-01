@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fly_checklist/domain/entities/entities.dart';
-import 'package:intl/intl.dart';
+
+import '../helpers/helpers.dart';
 
 class TaskItem extends StatelessWidget {
   final TaskEntity task;
@@ -89,7 +90,7 @@ class TaskItem extends StatelessWidget {
           ),
           subtitle: task.dueDate != null
               ? Text(
-                  DateFormat.yMd().format(task.dueDate!),
+                  appDateFormat.format(task.dueDate!),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),

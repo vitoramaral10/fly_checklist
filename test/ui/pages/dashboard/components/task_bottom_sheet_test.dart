@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fly_checklist/domain/entities/entities.dart';
+import 'package:fly_checklist/l10n/generated/app_localizations.dart';
 import 'package:fly_checklist/ui/helpers/helpers.dart';
 import 'package:fly_checklist/ui/pages/dashboard/components/components.dart';
 import 'package:fly_checklist/ui/pages/task_form_presenter.dart';
 import 'package:get/get.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 /// Fake do contrato consumido pelo [TaskBottomSheet]. É um dublê escrito à
 /// mão (e não um `Mock` do mocktail) porque o widget lê e escreve
@@ -72,17 +72,30 @@ class _TaskFormPresenterFake implements TaskFormPresenter {
 void main() {
   late _TaskFormPresenterFake presenter;
 
+  /// O teste fixa o português: o formulário é verificado pelos textos que o
+  /// usuário lê, e eles mudam com o idioma.
+  const testLocale = Locale('pt');
+  final l10n = lookupAppLocalizations(testLocale);
+
   Future<void> pumpSut(WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(home: Scaffold(body: TaskBottomSheet(presenter: presenter))),
+      MaterialApp(
+        locale: testLocale,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(body: TaskBottomSheet(presenter: presenter)),
+      ),
     );
   }
 
   setUpAll(() async {
-    await initializeDateFormatting(appDateLocale);
+    await initializeAppDateFormatting();
   });
 
   setUp(() {
+    // O formato da data escrita no campo precisa ser o mesmo que o validador
+    // vai ler — e ambos vêm do locale ativo.
+    setAppDateLocale(testLocale);
     presenter = _TaskFormPresenterFake();
   });
 
@@ -91,13 +104,10 @@ void main() {
     (tester) async {
       await pumpSut(tester);
 
-      await tester.tap(find.widgetWithText(FilledButton, 'Criar'));
+      await tester.tap(find.widgetWithText(FilledButton, l10n.commonCreate));
       await tester.pump();
 
-      expect(
-        find.text('Por favor, insira o título da tarefa.'),
-        findsOneWidget,
-      );
+      expect(find.text(l10n.validatorTaskTitleRequired), findsOneWidget);
       expect(presenter.onCreateTaskCallCount, 0);
     },
   );
@@ -112,13 +122,10 @@ void main() {
 
       await pumpSut(tester);
 
-      await tester.tap(find.widgetWithText(FilledButton, 'Criar'));
+      await tester.tap(find.widgetWithText(FilledButton, l10n.commonCreate));
       await tester.pump();
 
-      expect(
-        find.text('A data não pode ser anterior a hoje.'),
-        findsOneWidget,
-      );
+      expect(find.text(l10n.validatorDueDateInPast), findsOneWidget);
       expect(presenter.onCreateTaskCallCount, 0);
     },
   );

@@ -34,7 +34,7 @@ class GetxSettingsPresenter extends GetxController
 
   final _isLoading = true.obs;
   final _user = Rxn<UserEntity?>();
-  final _hasError = Rxn<String>();
+  final _hasError = Rxn<UiError>();
   final _showCurrentPassword = false.obs;
   final _showNewPassword = false.obs;
   final _showConfirmNewPassword = false.obs;
@@ -45,7 +45,7 @@ class GetxSettingsPresenter extends GetxController
   @override
   UserEntity? get user => _user.value;
   @override
-  String? get hasError => _hasError.value;
+  UiError? get hasError => _hasError.value;
   @override
   bool get showCurrentPassword => _showCurrentPassword.value;
   @override
@@ -78,7 +78,7 @@ class GetxSettingsPresenter extends GetxController
       await loadUserData();
     } catch (e) {
       log(e.toString(), name: 'GetxSettingsPresenter.loadAllData');
-      _hasError.value = UiError.unexpected.message;
+      _hasError.value = UiError.unexpected;
       _user.value = null;
     } finally {
       _isLoading.value = false;

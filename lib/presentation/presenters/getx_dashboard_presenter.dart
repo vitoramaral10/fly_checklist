@@ -47,7 +47,7 @@ class GetxDashboardPresenter extends GetxController
   });
 
   final _isLoading = true.obs;
-  final _hasError = Rxn<String>();
+  final _hasError = Rxn<UiError>();
   final _tasks = <TaskEntity>[].obs;
   final _groups = <GroupEntity>[].obs;
   final _allTasks = <TaskEntity>[];
@@ -55,7 +55,7 @@ class GetxDashboardPresenter extends GetxController
   @override
   bool get isLoading => _isLoading.value;
   @override
-  String? get hasError => _hasError.value;
+  UiError? get hasError => _hasError.value;
   @override
   List<TaskEntity> get tasks => _tasks;
   @override
@@ -82,7 +82,7 @@ class GetxDashboardPresenter extends GetxController
       await getAllGroups();
     } catch (e) {
       log(e.toString(), name: 'GetxDashboardPresenter.loadAllData');
-      _hasError.value = UiError.unexpected.message;
+      _hasError.value = UiError.unexpected;
       clearUser();
     } finally {
       _isLoading.value = false;
